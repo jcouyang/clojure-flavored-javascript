@@ -10,7 +10,6 @@ Still, it's not textbook for JavaScript, for whoever want to learn JavaScript I 
 Trying to learn Clojure::
 Again, it's not a textbook for Clojure/Script either, all Clojure snippet in this book is for demonstrating purpose only, for whoever want to learn Clojure, _The Joy of Clojure_ is a good choice, and alternately http://braveclojure.com/[Brave Clojure] for online reading.
 
-
 ==== For expert of functional language::
 If you already programming with languages such as Scala, Clojure or Haskell, you're probably not going to get much benafit from the functional part of this book. Howerver, if you want to migrate to JavaScript, this book will be pretty helpful for you, for you will find similar approach from those languages in javascript.
 

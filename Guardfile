@@ -2,7 +2,7 @@ Bundler.require(:default)
 
 guard 'shell' do
   watch(/^[^.].+\.adoc$/) {|files|
-    `asciidoctor -r asciidoctor-diagram book.adoc`
+    `asciidoctor -r asciidoctor-diagram index.adoc -o public/index.html`
   }
 end
 
