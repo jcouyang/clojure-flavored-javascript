@@ -1,0 +1,65 @@
+=== Before Reading This Book, You Better...
+
+Be able to read JavaScript code::
+It's neither a textbook for Clojure nor for JavaScript, of course I'm gonna borrow the functional part of clojure and introduce into JavaScript, but it's all about functional programming in JavaScript, Clojure code in this book is relatively simple and for demonstrating functional thinking.
+
+==== You bought the wrong book if you're
+Trying to learn JavaScript::
+Still, it's not textbook for JavaScript, for whoever want to learn JavaScript I highly recommend _JavaScript The Good Parts_ and https://leanpub.com/javascriptallongesix/read[_JavaScript Allong_].
+
+Trying to learn Clojure::
+Again, it's not a textbook for Clojure/Script either, all Clojure snippet in this book is for demonstrating purpose only, for whoever want to learn Clojure, _The Joy of Clojure_ is a good choice, and alternately http://braveclojure.com/[Brave Clojure] for online reading.
+
+
+==== For expert of functional language::
+If you already programming with languages such as Scala, Clojure or Haskell, you're probably not going to get much benafit from the functional part of this book. Howerver, if you want to migrate to JavaScript, this book will be pretty helpful for you, for you will find similar approach from those languages in javascript.
+
+==== Env Setup
+Before start reading, if you like to run all the example code in this book, you better setup a cozy environment first. it won't take long :)
+
+===== JavaScript
+
+There are two options you can run native javascript code, Modern Browser(Firefox,Chrome) and Node.js. Eventually, there will be some code including macro that which require sweet.js to compile. Alternately, pasting codes in http://ru-lang.org/try is a good choice though.
+
+Install Node/iojs::
+
+   1. Download from https://nodejs.org/[node] or https://iojs.org/[iojs]
+
+   2. or if you're using mac, just
+
+   brew install node # or
+
+   brew install iojs
+
+
+   3. using nvm to maintain multiple version of node/iojs
+
+   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
+
+   # then
+   nvm install stable # or
+
+   nvm install iojs
+
+
+Install sweet.js::
+----
+npm install -g sweet.js
+----
+
+===== Clojure
+
+If you like to run all clojure expamle as well, please make sure you have http://www.oracle.com/technetwork/java/javase/downloads/index.html[JVM/JDK] installed first, then...
+
+install leiningen::
+leiningen package manager of clojure, equivalent of npm to node, bundle to ruby, pip to ruby. Plus, you can also using leinigen as scaffolding tool. you can get install instruction from http://leiningen.org/[official website]。
+
+then, all clojure code can be safely running in repl
+----
+lein repl
+user=> (+ 1 1)
+2
+----
+
+Editor::
+http://lighttable.com/[Light Table] is good clojure editor for non-emacs user.Off cause emacs still the best editor I ever used.
