@@ -1,13 +1,13 @@
-=== Underscore你错了
+=== Underscore You're Wrong
 
-如果提到JavaScript的函数式库，可能会联想到Underscore footnote:[Underscore在github上的收藏量已经超过一万五了，无疑是JavaScript最流行的库之一。]。Underscore官网解释是这样的
+You'll probably come up with underscore.js in mind when mentioning functional programmint in JavaScript, here's the description of underscore.js:
+__Underscore provides over 100 functions that support both your favorite workaday functional helpers: map, filter, invoke — as well as more specialized goodies: function binding, javascript templating……__
 
-__Underscore 提供了100多个函数，不仅有常见的函数式小助手: map，filter，invoke，还有更多的一些额外的好处……__
+wait, I'm not agree on the term "fucntional helpers" that much。
 
-我就懒得翻译完了，重点是这句话里面的“函数式小助手”，这点我实在不是很同意。
+==== "map" is different
 
-==== 跟别人不一样的 map 函数
-比如map作为函数式编程中比较常见的一个函数，我们来看看看函数式语言中都是怎么map的：
+let's see how other functional language doing map:
 
 Clojure::
 ----
@@ -18,15 +18,16 @@ Haskell::
 map (1+) [1,2,3]
 ----
 
-这是非常简单的map操作，应用函数 `inc`, `(1+)` 到数组的每一个元素。同样的事情我们试试用Underscore来实现一下：
+`inc` is a function simply increase the number. now lets see how underscore doing map:
 ----
 _.map([1,2,3], function(x){return x+1})
 ----
-感觉到有什么变化了吗？有没有发现参数的顺序完全不同了？
 
-好吧，你可能要说这并不是什么问题啊？不就是map的api不太一样么？也没有必要保持所有的语言的map都是一样的吧？
+any difference? yeah, the order of arguments.
 
-在回答这个问题之前，我想再举几个例子，因为除了Underscore，JavaScript的函数式库还有很多很多：
+OK, you'll gonna say just difference in order, not a big deal.
+
+but let's compare with other JavaScript functional library:
 
 http://ramdajs.com/[ramdajs]::
 ----
@@ -37,22 +38,16 @@ http://functionaljs.com/[functionaljs]::
 fjs.map(function(x){return x+1}, [1,2,3])
 ----
 
-应该不需要再多的例子了，不管怎么样看，underscore的map是否都略显另类了呢？跟别的语言不一样就算了，跟其他JavaScript的函数式库都不一样的话，是不是有些说不过去了。是否有种每次考试出来跟同学对答案，发现自己的答案跟别人的完全不一样的心情。
-
-Underscore 先别急着认错，大家都这么做，肯定不是偶然。但是原因就手来话长了，我将会在第6章详细解释其他函数式库为什么都跟 Underscore 不一样呢。footnote:[当然我并不是第一个发现 Undersocre 奇怪的人，13年一次js大会上就有人提出了这个话题 https://www.youtube.com/watch?v=m3svKOdZijA]
+now is it a little bit awkward?
 
 ==== ClojureScript
-Clojure 是跑着 JVM 上的语言，ClojureScript 是能编译成 JavaScript 的Clojure。但是请不要把 ClojureScript  与 CoffeeScript，LiveScript，TypeScript做比较，就像每一行 Clojure 代码不能一一对应到 Java 代码一样，你可能很难像 CoffeeScript 对应 JavaScript 一样能找到 ClojureScript 与其编译出来的 JavaScript 的对应关系。
+Underscore is different, so there should be a reason how all others doing. I'm not gonna use it as functional library in this book, instead, clojure seems so simple and pure functional. it's lisp so it simple, and it running on JVM which make it powerful. But the more important thing is, ClojureScript can compile to JavaScript, so it can be running on browser and anywhere JavaScript can.
 
-.各种编译成 JavaScript 的函数式语言
+.some language that compiles to JavaScript
 image::images/everyscript.png[]
 
-不管怎么样，ClojureScript 把 Clojure 带到了前端确实是非常令人激动的一件事情。就跟前端程序员能在后端写 JavaScript 一样，Clojure 程序员终于能在前端也能找到自己熟悉的编程姿势。但是如同 Clojure 于 Java的交互一样（或者更坏）， ClojureScript 与 JavaScript 及JavaScript 的库的交互并不是那么容易，或者可以说，不那么优雅。
+But I'm not talking about ClojureScript here, i'm looking for a functional library.
 
 ==== Mori
 
-由于 Underscore 并不是我认为的最利于函数式编程的库，所以在本书中使用的函数式库是ClojureScript作者从 ClojureScript 移植过来的JavaScript 库—— https://github.com/swannodette/mori[mori]。由于是移植的，所有的数据结构以及操作数据结构的函数都是 ClojureScript 保持一致，而且是作为 JavaScript 库可以在原生 JavaScript 的代码中使用。当然也是本书为什么说是 Clojure 风格的函数式 JavaScript 的原因了。
-
-选择 mori 的另一原因是因为它特别区别于其他的函数式库的地方——它使用ClojureScript 的数据结构。也就是说从根本上消除了 JavaScript 可变的数据结构模型，更利于我们的进行函数式编程。
-
-NOTE: 为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro—— http://ru-lang.org[ru-lang]。更多的关于 macro 的讨论我会放到第5章。
+mori is basically a compiled ClojureScript data structure and functions, it's perfect choice that I can use it as a functional library for JavaScript, and gain all the good part of immutable data structure from Clojure。
