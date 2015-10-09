@@ -488,7 +488,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_functional_javascript">1. Functional JavaScript</a>
 <ul class="sectlevel2">
 <li><a href="#_before_reading_this_book_you_better">1.1. Before Reading This Book, You Better&#8230;&#8203;</a></li>
-<li><a href="#_underscore你错了">1.2. Underscore你错了</a></li>
+<li><a href="#_how_is_javascript_functional">1.2. How is JavaScript Functional?</a></li>
+<li><a href="#_underscore_you_re_wrong">1.3. Underscore You&#8217;re Wrong</a></li>
 </ul>
 </li>
 </ul>
@@ -528,7 +529,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_before_reading_this_book_you_better">1.1. Before Reading This Book, You Better&#8230;&#8203;</h3>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Be able to read JavaScript code</dt>
+<dt class="hdlist1">Be able to read JavaScript code, that&#8217;s it</dt>
 <dd>
 <p>It&#8217;s neither a textbook for Clojure nor for JavaScript, of course I&#8217;m gonna borrow the functional part of clojure and introduce into JavaScript, but it&#8217;s all about functional programming in JavaScript, Clojure code in this book is relatively simple and for demonstrating functional thinking.</p>
 </dd>
@@ -546,15 +547,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <dd>
 <p>Again, it&#8217;s not a textbook for Clojure/Script either, all Clojure snippet in this book is for demonstrating purpose only, for whoever want to learn Clojure, <em>The Joy of Clojure</em> is a good choice, and alternately <a href="http://braveclojure.com/">Brave Clojure</a> for online reading.</p>
 </dd>
-<dt class="hdlist1">==== For expert of functional language</dt>
-<dd>
-<p>If you already programming with languages such as Scala, Clojure or Haskell, you&#8217;re probably not going to get much benafit from the functional part of this book. Howerver, if you want to migrate to JavaScript, this book will be pretty helpful for you, for you will find similar approach from those languages in javascript.</p>
-</dd>
 </dl>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_env_setup">1.1.2. Env Setup</h4>
+<h4 id="_for_expert_of_functional_language">1.1.2. For expert of functional language</h4>
+<div class="paragraph">
+<p>If you already programming with languages such as Scala, Clojure or Haskell, you&#8217;re probably not going to get much benafit from the functional part of this book. Howerver, if you want to migrate to JavaScript, this book will be pretty helpful for you, for you will find similar approach from those languages in javascript.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_env_setup">1.1.3. Env Setup</h4>
 <div class="paragraph">
 <p>Before start reading, if you like to run all the example code in this book, you better setup a cozy environment first. it won&#8217;t take long :)</p>
 </div>
@@ -576,12 +579,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>or if you&#8217;re using mac, just</p>
 <div class="literalblock">
 <div class="content">
-<pre>brew install node # or</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>brew install iojs</pre>
+<pre>brew install node # or
+brew install iojs</pre>
 </div>
 </div>
 </li>
@@ -589,18 +588,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>using nvm to maintain multiple version of node/iojs</p>
 <div class="literalblock">
 <div class="content">
-<pre>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre># then
-nvm install stable # or</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>nvm install iojs</pre>
+<pre>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.4/install.sh | bash
+# then
+nvm install stable
+# or
+nvm install iojs</pre>
 </div>
 </div>
 </li>
@@ -647,30 +639,369 @@ user=&gt; (+ 1 1)
 </dd>
 </dl>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in chapter1/index.adoc - include::js-is-fp-language.adoc[]</p>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in chapter1/index.adoc - include::what-is-missing.adoc[]</p>
-</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_underscore你错了">1.2. Underscore你错了</h3>
+<h3 id="_how_is_javascript_functional">1.2. How is JavaScript Functional?</h3>
 <div class="paragraph">
-<p>如果提到JavaScript的函数式库，可能会联想到Underscore <span class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</span>。Underscore官网解释是这样的</p>
-</div>
-<div class="paragraph">
-<p><em>Underscore 提供了100多个函数，不仅有常见的函数式小助手: map，filter，invoke，还有更多的一些额外的好处……</em></p>
-</div>
-<div class="paragraph">
-<p>我就懒得翻译完了，重点是这句话里面的“函数式小助手”，这点我实在不是很同意。</p>
+<p>You may think JavaScript is OO language, but actually, JavaScript is prototype-based multi paradigm language, which means, it also can be use to functional programming.</p>
 </div>
 <div class="sect3">
-<h4 id="_跟别人不一样的_map_函数">1.2.1. 跟别人不一样的 map 函数</h4>
+<h4 id="_programming_paradigm">1.2.1. Programming Paradigm</h4>
 <div class="paragraph">
-<p>比如map作为函数式编程中比较常见的一个函数，我们来看看看函数式语言中都是怎么map的：</p>
+<p>There&#8217;re 3 commom paradigms, imperative, object oriented and functional. Actually we may also use logic programming sometimes.</p>
+</div>
+<div class="sect4">
+<h5 id="_imperative">Imperative</h5>
+<div class="paragraph">
+<p>just commands, and some control flow：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-k">for</span><span class="tok-p">(</span><span class="tok-kd">var</span> <span class="tok-nx">i</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-nx">i</span><span class="tok-o">&lt;</span><span class="tok-mi">10</span><span class="tok-p">;</span><span class="tok-nx">i</span><span class="tok-o">++</span><span class="tok-p">){</span>
+  <span class="tok-nx">console</span><span class="tok-p">.</span><span class="tok-nx">log</span><span class="tok-p">(</span><span class="tok-s1">&#39;命令&#39;</span><span class="tok-p">,</span><span class="tok-nx">i</span><span class="tok-p">)</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_oo">OO</h5>
+<div class="paragraph">
+<p>this is so common I don&#8217;t want to explain.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_functional">Functional</h5>
+<div class="paragraph">
+<p>There is no standard defination of functional programming, but basically all about expression, lambda, higher order, immutability, laziness. And you better thinking about data, and abstraction of actions over data.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/paradigm.png" alt="paradigm">
+</div>
+<div class="title">Figure 1. programming paradigms</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_logic">Logic</h5>
+<div class="paragraph">
+<p>You may hear the term logic programming not very often, but I&#8217;m sure you heart of SQL：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="sql"><span class="tok-k">select</span> <span class="tok-n">lastname</span> <span class="tok-k">from</span> <span class="tok-n">someTable</span> <span class="tok-k">where</span> <span class="tok-n">sex</span><span class="tok-o">=</span><span class="tok-s1">&#39;girl&#39;</span> <span class="tok-k">and</span> <span class="tok-n">firstname</span> <span class="tok-k">in</span> <span class="tok-p">(</span><span class="tok-s1">&#39;leela&#39;</span><span class="tok-p">,</span><span class="tok-s1">&#39;amy&#39;</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>there&#8217;re 2 query, or should i say&#8230;&#8203; question:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>sex is girl?</p>
+</li>
+<li>
+<p>first name is leela or amy？</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>I&#8217;ll cover detail of logic programming in JavaScript in chapter 9.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_javascript对函数式的原生支持">1.2.2. JavaScript对函数式的原生支持</h4>
+<div class="paragraph">
+<p>说了这么多种编程范式，JavaScript 对函数式的支持到底如何呢？</p>
+</div>
+<div class="paragraph">
+<p>首先如果语言中的函数不是一等的，那么也就跟函数式编程也就基本划清界限了。比如Java 8之前的版本，值和对象才是一等公民，要写一个高阶函数可能还需要把函数包在对象中才行。<span class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</span></p>
+</div>
+<div class="paragraph">
+<p>幸好 JavaScript 中的函数是一等函数，所谓一等，就是说跟值一样都是一等公民，所有值能到的地方，都可以替换成函数。例如，可以跟值一样作为别的函数的参数，可以被别的函数想值一样返回，而这个“别的函数”叫做 <em>高阶函数</em>。</p>
+</div>
+<div class="sect4">
+<h5 id="_函数作为参数">函数作为参数</h5>
+<div class="paragraph">
+<p>函数作为参数最典型的应用要数 map 了，想必如果没有使用过 Underscore，也或多或少会用过 ECMAScript 5 中 Array 的 map 方法吧。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[1,2,3,4].map(function(x){return x++})
+// =&gt; [2,3,4,5]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>可以看到函数 <code>function(x){return x++}</code> 是作为参数被传入 Array 的 <code>map</code> 方法中。map 是函数式编程最常见的标志性函数，想想在 ECMAScript 5 出来之前应该怎么做类似的事情：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>var array = [1,2,3,4];
+var result;
+for(var i in array){
+  result.push(i++);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>这段命令式的代码跟利用 map 的函数式代码解决问题的方式和角度是完全不同的。命令式需要操心所有的过程，如何遍历以及如何组织结果数据。而 map 由于将遍历，操作以及结果数据的组织的过程封装至 Array 中，从而参数化了最核心过程。而这里的核心过程就是 map 的参数里的匿名函数中的过程，也是我们真正关心的主要逻辑。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_函数作为返回值">函数作为返回值</h5>
+<div class="paragraph">
+<p>函数作为返回值的用法可能在 JavaScript 中会更为常见。而且在不同场景下被返回的函数又有着不同的名字。</p>
+</div>
+<div class="sect5">
+<h6 id="_柯里化">柯里化</h6>
+<div class="paragraph">
+<p>我们把一个多参的函数变成一次只能接受一个参数的函数的过程叫做柯里化。如：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>var curriedSum = curry(sum)
+var sum5 = curriedSum(5)
+var sum5and4 = sum5(4) //=&gt; 9
+sum5and4(3) // =&gt; 12</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>当然柯里化这样做的目的非常简单，可以部分的配置函数，然后可以继续使用这些配置过的函数。当然，我会在第四章函数组合那里更详细的解释为什么要柯里化，在这之前闲不住的读者可以先猜猜为什么要把柯里化放函数组合那一章？</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_thunk">thunk</h6>
+<div class="paragraph">
+<p>thunk（槽）<span class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</span> 是指有一些操作不被立即执行，也就是说准备好一个函数，但是不执行，默默等待着合适的时候被合适的人调用。我实在想不出能比下图这个玩意更能解释 thunk 的了。 在下一章，你会见到如何用 thunk 实现
+惰性序列。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/thunk.png" alt="thunk">
+</div>
+<div class="title">Figure 2. thunk 像是一个封装好待执行的容器</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_越来越函数式的es6">1.2.3. 越来越函数式的ES6</h4>
+<div class="paragraph">
+<p>ECMAScript 6（也被叫做 ECMAScript 2015，本书中会简称为 ES6）终于正式发布了，新的规范有非常的新特性，其中不少借鉴自其他函数式语言的特性，给 JavaScript 语言添加了不少函数式的新特性。</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>虽然浏览器厂商都还没有完全实现 ES6 的所有规范，但是其实我们是可以通过一些中间编译器使用大部分的 ES6 的新特性，如</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Babel</dt>
+<dd>
+<p>这是目前支持 ES6 实现最多的编译器了，没有之一。也是目前能实现尾递归优化的唯一编译器。不过关于尾递归只能优化尾子递归，相互递归的优化还没有实现。</p>
+</dd>
+<dt class="hdlist1">Traceur</dt>
+<dd>
+<p>Google 出的比较早得一个老牌编译器，支持的 ES6 也不少了。但是从 github 上来看似乎已经没有 babel 活跃了。</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>当然，除了这些也可以直接使用 FireFox。作为 ES6 规范的主要制定者之一的 Mozilla 出的 Firefox 当然也是浏览器中实现 ES6 标准最多的。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_箭头函数">1.2.4. 箭头函数</h4>
+<div class="paragraph">
+<p>这是 ES6 发布的一个新特性，虽然 Firefox 支持已久了，不算什么新东西，但是标准化之后还是比较令人激动的。 <em>箭头函数</em> 也被叫做 <em>肥箭头（fat arrow）</em> <span class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</span>，大致是借鉴自 CoffeeScript 或者 Scala 语言。箭头函数是提供词法作用域的匿名函数。</p>
+</div>
+<div class="sect4">
+<h5 id="_声明一个箭头函数">声明一个箭头函数</h5>
+<div class="paragraph">
+<p>你可以通过两种方式定义一个箭头函数：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>([param] [, param]) =&gt; {
+   statement
+}
+// 或者
+param =&gt; expression</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>表达式可以省略块（block）括号，而多行语句则需要用块括号括起来。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_为什么要用箭头函数">为什么要用箭头函数</h5>
+<div class="paragraph">
+<p>虽然看上去跟以前的匿名函数没有什么区别，我们可以对比旧的匿名函数是如何写一个使数组中数字都乘 2 的函数.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">a</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-mi">1</span><span class="tok-p">,</span> <span class="tok-mi">2</span><span class="tok-p">,</span> <span class="tok-mi">3</span><span class="tok-p">,</span> <span class="tok-mi">4</span><span class="tok-p">,</span><span class="tok-mi">5</span><span class="tok-p">];</span>
+<span class="tok-nx">a</span><span class="tok-p">.</span><span class="tok-nx">map</span><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">x</span><span class="tok-p">){</span> <span class="tok-k">return</span> <span class="tok-nx">x</span><span class="tok-o">*</span><span class="tok-mi">2</span> <span class="tok-p">});</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>而使用箭头函数会变成：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nx">a</span><span class="tok-p">.</span><span class="tok-nx">map</span><span class="tok-p">(</span><span class="tok-nx">x</span> <span class="tok-o">=&gt;</span> <span class="tok-nx">x</span><span class="tok-o">*</span><span class="tok-mi">2</span><span class="tok-p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>使用箭头函数可以少写 function 和 return 以及块括号，从而让我们其实更关心的转换关系变得更明显。略去没用的长的匿名函数定义其实可以让代码更简洁更可读。特别是在传入高阶函数作为参数的时候，<code>map(x &#8658; x*2)</code> 更形象和突出的表达了变换的逻辑。</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_词法绑定">词法绑定</h5>
+<div class="paragraph">
+<p>如果你觉得这种简化的语法糖还不足以说服你改变匿名函数的写法，那么想想以前写匿名函数中的经常需要 <code>var self=this`</code> 的苦恼吧。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript">    <span class="tok-kd">var</span> <span class="tok-nx">Multipler</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">inc</span><span class="tok-p">){</span>
+      <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">inc</span> <span class="tok-o">=</span> <span class="tok-nx">inc</span><span class="tok-p">;</span>
+    <span class="tok-p">}</span>
+    <span class="tok-nx">Multipler</span><span class="tok-p">.</span><span class="tok-nx">prototype</span><span class="tok-p">.</span><span class="tok-nx">multiple</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">numbers</span><span class="tok-p">){</span>
+      <span class="tok-kd">var</span> <span class="tok-nx">self</span> <span class="tok-o">=</span> <span class="tok-k">this</span><span class="tok-p">;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="tok-k">return</span> <span class="tok-nx">numbers</span><span class="tok-p">.</span><span class="tok-nx">map</span><span class="tok-p">(</span><span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">number</span><span class="tok-p">){</span>
+        <span class="tok-k">return</span> <span class="tok-nx">self</span><span class="tok-p">.</span><span class="tok-nx">inc</span> <span class="tok-o">*</span> <span class="tok-nx">number</span><span class="tok-p">;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-p">})</span>
+    <span class="tok-p">}</span>
+    <span class="tok-k">new</span> <span class="tok-nx">Multipler</span><span class="tok-p">(</span><span class="tok-mi">2</span><span class="tok-p">).</span><span class="tok-nx">multiple</span><span class="tok-p">([</span><span class="tok-mi">1</span><span class="tok-p">,</span><span class="tok-mi">2</span><span class="tok-p">,</span><span class="tok-mi">3</span><span class="tok-p">,</span><span class="tok-mi">4</span><span class="tok-p">])</span> <span class="tok-c1">// =&gt; [ 2, 4, 6, 8 ]</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>保持 Multipler 的 this 引用的缓存</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>使用 self 引用 Multipler 的实例而不是 this</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>这样做很怪不是吗，因此经常出现在各种面试题中，让你猜猜 this 到底是谁。或者让你去修正 this 绑定，方法如此之多，但是不管是使用 EcmaScript 5 的 bind，还是 map 的第三个参数来保证 this 的绑定不会出错，都逃脱不了要手动修正 this 绑定的命运。</p>
+</div>
+<div class="paragraph">
+<p>那么如果用箭头函数就不会存在这种问题：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-nx">Multipler</span><span class="tok-p">.</span><span class="tok-nx">prototype</span><span class="tok-p">.</span><span class="tok-nx">multiple</span> <span class="tok-o">=</span> <span class="tok-kd">function</span><span class="tok-p">(</span><span class="tok-nx">numbers</span><span class="tok-p">){</span>
+  <span class="tok-k">return</span> <span class="tok-nx">numbers</span><span class="tok-p">.</span><span class="tok-nx">map</span><span class="tok-p">(</span><span class="tok-nx">number</span> <span class="tok-o">=&gt;</span> <span class="tok-nx">number</span><span class="tok-o">*</span><span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-nx">inc</span><span class="tok-p">);</span>
+<span class="tok-p">};</span>
+
+<span class="tok-k">new</span> <span class="tok-nx">Multipler</span><span class="tok-p">(</span><span class="tok-mi">2</span><span class="tok-p">).</span><span class="tok-nx">multiple</span><span class="tok-p">([</span><span class="tok-mi">1</span><span class="tok-p">,</span><span class="tok-mi">2</span><span class="tok-p">,</span><span class="tok-mi">3</span><span class="tok-p">,</span><span class="tok-mi">4</span><span class="tok-p">]);</span><span class="tok-c1">// =&gt; [ 2, 4, 6, 8 ]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>现在，箭头函数里面的 this 绑定的是外层函数的 this 值，不会受到运行时上下文的影响。<span class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</span>而是从词法上就能轻松确定 this 的绑定。不需要 <code>var self=this</code> 了是不是确实方便了许多，不仅不会再被各种怪异的面试题坑了，还让代码更容易推理。</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_尾递归优化">1.2.5. 尾递归优化</h4>
+<div class="paragraph">
+<p>Clojure 能够通过 <em>recur</em> 函数对 <em>尾递归</em> 进行优化，但是 ES5 的 JavaScript 实现是不会对尾递归进行任何优化，很容易出现 <em>爆栈</em> 的现象。但是 ES6 的标准已经发布了对尾递归优化的支持，下来我们能做的只是等各大浏览器厂商的实现了。</p>
+</div>
+<div class="paragraph">
+<p>不过在干等原生实现的同时，我们也可以通过一些中间编译器如 Babel，把 ES6 的代码编译成 ES5 标准 JavaScript，而在 Babel 编译的过程就可以把尾递归优化成循环。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_destructure">1.2.6. Destructure</h4>
+<div class="paragraph">
+<p>在解释 Destructure <span class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</span> 之前，先举个生动的例子，比如吃在奥利奥的是时候，我的吃法是这样的：</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>掰成两片，一片是不带馅的，一份是带馅的</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>带馅的一半沾一下牛奶</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>舔掉馅</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>合起来吃掉</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>如果写成代码，大致应该是这样的：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-nx">orea</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-s2">&quot;top&quot;</span><span class="tok-p">,</span><span class="tok-s2">&quot;middle&quot;</span><span class="tok-p">,</span><span class="tok-s2">&quot;bottom&quot;</span><span class="tok-p">]</span>
+<span class="tok-kd">var</span> <span class="tok-nx">top</span> <span class="tok-o">=</span> <span class="tok-nx">orea</span><span class="tok-p">.</span><span class="tok-nx">shift</span><span class="tok-p">(),</span><span class="tok-nx">middleAndButton</span><span class="tok-o">=</span><span class="tok-nx">orea</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tok-kd">var</span> <span class="tok-nx">wetMiddleAndButton</span> <span class="tok-o">=</span> <span class="tok-nx">dipMilk</span><span class="tok-p">(</span><span class="tok-nx">middleAndButton</span><span class="tok-p">)</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="tok-kd">var</span> <span class="tok-nx">button</span> <span class="tok-o">=</span> <span class="tok-nx">lip</span><span class="tok-p">(</span><span class="tok-nx">wetMiddleAndButton</span><span class="tok-p">)</span> <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="tok-nx">eat</span><span class="tok-p">([</span><span class="tok-nx">top</span><span class="tok-p">,</span><span class="tok-nx">button</span><span class="tok-p">])</span> <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>注意那个诡异的 <code>shift</code>，如果用 destructure 会写得稍微优雅一些：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="javascript"><span class="tok-kd">var</span> <span class="tok-p">[</span><span class="tok-nx">top</span><span class="tok-p">,</span> <span class="tok-p">...</span><span class="tok-nx">middleAndButton</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-s2">&quot;top&quot;</span><span class="tok-p">,</span><span class="tok-s2">&quot;middle&quot;</span><span class="tok-p">,</span><span class="tok-s2">&quot;bottom&quot;</span><span class="tok-p">]</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tok-kd">var</span> <span class="tok-nx">wetMiddleAndButton</span> <span class="tok-o">=</span> <span class="tok-nx">dipMilk</span><span class="tok-p">(</span><span class="tok-nx">middleAndButton</span><span class="tok-p">)</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="tok-kd">var</span> <span class="tok-nx">button</span> <span class="tok-o">=</span> <span class="tok-nx">lip</span><span class="tok-p">(</span><span class="tok-nx">wetMiddleAndButton</span><span class="tok-p">)</span> <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="tok-nx">eat</span><span class="tok-p">([</span><span class="tok-nx">top</span><span class="tok-p">,</span><span class="tok-nx">button</span><span class="tok-p">])</span> <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>有没有觉得我掰奥利奥的姿势变酷了许多？这就是 destructure，给定一个特定的模式 <code>[top, &#8230;&#8203;middleAndButton]</code>，让数据 <code>["top","middle","bottom"]</code> 按照该模式匹配进来。同样的，会专门在第6章介绍模式匹配这个概念，虽然它不是 Clojure 的重要概念，但是确实 Scala 或 Haskell 的核心所在。不过可以放心的是，你不必先学习 Scala 和 Haskell，我还是会用最流行的 JavaScript 来介绍模式匹配。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/patten-matching.jpg" alt="patten matching">
+</div>
+<div class="title">Figure 3. 我觉得这个玩具可以特别形象的解释模式匹配这个概念</div>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in chapter1/index.adoc - include::what-is-mbbissing.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_underscore_you_re_wrong">1.3. Underscore You&#8217;re Wrong</h3>
+<div class="paragraph">
+<p>You&#8217;ll probably come up with underscore.js in mind when mentioning functional programmint in JavaScript, here&#8217;s the description of underscore.js:
+<em>Underscore provides over 100 functions that support both your favorite workaday functional helpers: map, filter, invoke — as well as more specialized goodies: function binding, javascript templating……</em></p>
+</div>
+<div class="paragraph">
+<p>wait, I&#8217;m not agree on the term "fucntional helpers" that much。</p>
+</div>
+<div class="sect3">
+<h4 id="__map_is_different">1.3.1. "map" is different</h4>
+<div class="paragraph">
+<p>let&#8217;s see how other functional language doing map:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -693,7 +1024,7 @@ user=&gt; (+ 1 1)
 </div>
 </div>
 <div class="paragraph">
-<p>这是非常简单的map操作，应用函数 <code>inc</code>, <code>(1+)</code> 到数组的每一个元素。同样的事情我们试试用Underscore来实现一下：</p>
+<p><code>inc</code> is a function simply increase the number. now lets see how underscore doing map:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -701,13 +1032,13 @@ user=&gt; (+ 1 1)
 </div>
 </div>
 <div class="paragraph">
-<p>感觉到有什么变化了吗？有没有发现参数的顺序完全不同了？</p>
+<p>any difference? yeah, the order of arguments.</p>
 </div>
 <div class="paragraph">
-<p>好吧，你可能要说这并不是什么问题啊？不就是map的api不太一样么？也没有必要保持所有的语言的map都是一样的吧？</p>
+<p>OK, you&#8217;ll gonna say just difference in order, not a big deal.</p>
 </div>
 <div class="paragraph">
-<p>在回答这个问题之前，我想再举几个例子，因为除了Underscore，JavaScript的函数式库还有很多很多：</p>
+<p>but let&#8217;s compare with other JavaScript functional library:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -730,46 +1061,28 @@ user=&gt; (+ 1 1)
 </div>
 </div>
 <div class="paragraph">
-<p>应该不需要再多的例子了，不管怎么样看，underscore的map是否都略显另类了呢？跟别的语言不一样就算了，跟其他JavaScript的函数式库都不一样的话，是不是有些说不过去了。是否有种每次考试出来跟同学对答案，发现自己的答案跟别人的完全不一样的心情。</p>
-</div>
-<div class="paragraph">
-<p>Underscore 先别急着认错，大家都这么做，肯定不是偶然。但是原因就手来话长了，我将会在第6章详细解释其他函数式库为什么都跟 Underscore 不一样呢。<span class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</span></p>
+<p>now is it a little bit awkward?</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_clojurescript">1.2.2. ClojureScript</h4>
+<h4 id="_clojurescript">1.3.2. ClojureScript</h4>
 <div class="paragraph">
-<p>Clojure 是跑着 JVM 上的语言，ClojureScript 是能编译成 JavaScript 的Clojure。但是请不要把 ClojureScript  与 CoffeeScript，LiveScript，TypeScript做比较，就像每一行 Clojure 代码不能一一对应到 Java 代码一样，你可能很难像 CoffeeScript 对应 JavaScript 一样能找到 ClojureScript 与其编译出来的 JavaScript 的对应关系。</p>
+<p>Underscore is different, so there should be a reason how all others doing. I&#8217;m not gonna use it as functional library in this book, instead, clojure seems so simple and pure functional. it&#8217;s lisp so it simple, and it running on JVM which make it powerful. But the more important thing is, ClojureScript can compile to JavaScript, so it can be running on browser and anywhere JavaScript can.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="images/everyscript.png" alt="everyscript">
 </div>
-<div class="title">Figure 1. 各种编译成 JavaScript 的函数式语言</div>
+<div class="title">Figure 4. some language that compiles to JavaScript</div>
 </div>
 <div class="paragraph">
-<p>不管怎么样，ClojureScript 把 Clojure 带到了前端确实是非常令人激动的一件事情。就跟前端程序员能在后端写 JavaScript 一样，Clojure 程序员终于能在前端也能找到自己熟悉的编程姿势。但是如同 Clojure 于 Java的交互一样（或者更坏）， ClojureScript 与 JavaScript 及JavaScript 的库的交互并不是那么容易，或者可以说，不那么优雅。</p>
+<p>But I&#8217;m not talking about ClojureScript here, i&#8217;m looking for a functional library.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_mori">1.2.3. Mori</h4>
+<h4 id="_mori">1.3.3. Mori</h4>
 <div class="paragraph">
-<p>由于 Underscore 并不是我认为的最利于函数式编程的库，所以在本书中使用的函数式库是ClojureScript作者从 ClojureScript 移植过来的JavaScript 库—— <a href="https://github.com/swannodette/mori">mori</a>。由于是移植的，所有的数据结构以及操作数据结构的函数都是 ClojureScript 保持一致，而且是作为 JavaScript 库可以在原生 JavaScript 的代码中使用。当然也是本书为什么说是 Clojure 风格的函数式 JavaScript 的原因了。</p>
-</div>
-<div class="paragraph">
-<p>选择 mori 的另一原因是因为它特别区别于其他的函数式库的地方——它使用ClojureScript 的数据结构。也就是说从根本上消除了 JavaScript 可变的数据结构模型，更利于我们的进行函数式编程。</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro—— <a href="http://ru-lang.org">ru-lang</a>。更多的关于 macro 的讨论我会放到第5章。
-</td>
-</tr>
-</table>
+<p>mori is basically a compiled ClojureScript data structure and functions, it&#8217;s perfect choice that I can use it as a functional library for JavaScript, and gain all the good part of immutable data structure from Clojure。</p>
 </div>
 <div class="paragraph">
 <p>Unresolved directive in index.adoc - include::chapter2/index.adoc[]</p>
@@ -803,10 +1116,19 @@ user=&gt; (+ 1 1)
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. Underscore在github上的收藏量已经超过一万五了，无疑是JavaScript最流行的库之一。
+<a href="#_footnoteref_1">1</a>. 事实上，JavaScript 或者 Scala 其实也是通过把函数作为一种特殊的对象，来把函数变成一等公民。不过，在使用上基本感觉不到函数是对象。而在 Clojure 中，函数确确实实就是一等公民，因为所有 lisp 语言都一样，代码即是数据。
 </div>
 <div class="footnote" id="_footnote_2">
-<a href="#_footnoteref_2">2</a>. 当然我并不是第一个发现 Undersocre 奇怪的人，13年一次js大会上就有人提出了这个话题 <a href="https://www.youtube.com/watch?v=m3svKOdZijA" class="bare">https://www.youtube.com/watch?v=m3svKOdZijA</a>
+<a href="#_footnoteref_2">2</a>. thunk 的翻译“槽”来自《计算机程序的构造与解释》，但是我个人倾向不做翻译，因为很难从“槽”这一个字中获取到足够多的解释。
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. 相对于廋箭头（thin arrow）。
+</div>
+<div class="footnote" id="_footnote_4">
+<a href="#_footnoteref_4">4</a>. 正如我说的本书不是 JavaScript 的教科书，所以关于动态绑定和词法绑定，这里不会做太多的解释。简单的解释就是词法绑定可以从词法分析（通俗的说就是肉眼直接能看出来）判断出来绑定的值，而相反动态绑定需要根据运行时上下文决定。
+</div>
+<div class="footnote" id="_footnote_5">
+<a href="#_footnoteref_5">5</a>. 同样的，我读的中文技术书太少，倾向于不翻译此类专业名词。翻译错了反而体会不出来原词的意思。这里明显 structure 是构造，前面加 de 词根，就是构造的反过程。
 </div>
 </div>
 <div id="footer">
