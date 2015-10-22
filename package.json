@@ -1,0 +1,28 @@
+{
+  "name": "clojure-flavored-javascript",
+  "version": "1.0.0",
+  "description": "source code for book clojure flavored javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcouyang/clojure-flavored-javascript.git"
+  },
+  "author": "Jichao Ouyang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jcouyang/clojure-flavored-javascript/issues"
+  },
+  "homepage": "https://github.com/jcouyang/clojure-flavored-javascript#readme",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.3",
+    "eslint": "^1.6.0",
+    "eslint-config-airbnb": "^0.1.0",
+    "mocha": "^2.3.3",
+    "should": "^7.1.0",
+    "sinon": "^1.17.1"
+  }
+}
