@@ -1,16 +1,16 @@
-const sinon = require('sinon')
-      should = require('should');
+const sinon = require('sinon');
+const should = require('should');
+
 describe('Chapter 1', function() {
   describe('#1.2.1 Programming Paradigm', function() {
     it('print 10 times 命令',function() {
       sinon.spy(console, 'log');
-      for(var i=0;i<10;i++){
+      for (let i=0;i<10;i++){
         console.log('命令',i)
       }
       console.log.callCount.should.be.eql(10);
     })
   });
-
   describe('#1.2.2 Native functional javascript', function() {
     it('support function as arguments', function() {
       [1,2,3,4].map(function(x){return ++x})
@@ -35,7 +35,7 @@ describe('Chapter 1', function() {
     };
     
     context('self = this', function() {
-      Multipler.prototype.multiple = function(numbers){
+      Multipler.prototype.multiple = function(numbers) {
         var self = this; 
         return numbers.map(function(number){
           return self.inc * number; 
@@ -56,7 +56,7 @@ describe('Chapter 1', function() {
     });
   });
 
-  describe('#1.2.5 Desctructure', function() {
+  describe('#1.2.6 Desctructure', () => {
     describe('eating oreo', function() {
       let dipMilk = sinon.stub(),
           lip = sinon.stub().returns('wetMiddleAndButton'),
@@ -67,11 +67,38 @@ describe('Chapter 1', function() {
             top = orea.shift(), middleAndButton=orea,
             wetMiddleAndButton = dipMilk(middleAndButton),
             button = lip(wetMiddleAndButton);
-        it("in correct way", function() {
-          eat([top,button]);
+        it("sucks", function() {
+          eat([top, button]);
+          eat.calledWith(['top', 'wetMiddleAndButton']).should.be.ok();
+        });
+      });
+
+      context('the es6 way', function() {
+        let [top, ...middleAndButton] = ["top","middle","bottom"];
+        let wetMiddleAndButton = dipMilk(middleAndButton) ;
+        let button = lip(wetMiddleAndButton);
+        it("is awesome", function() {
+          eat([top, button]);
           eat.calledWith(['top', 'wetMiddleAndButton']).should.be.ok();
         });
       });
     });
+  });
+
+  describe('#1.3.1 Immutable', () => {
+    context('Array is Mutable', () => {
+      var a = [1,2,3]
+      a.push(4)
+      it('a should be mutated', () => {
+        a.should.be.eql([1,2,3,4])
+      });      
+    });
+    context('Vector is Immutable', () => {
+      
+    });
+  });
+
+  describe('', () => {
+    
   });
 });
