@@ -1,12 +1,12 @@
 Bundler.require(:default)
 
 guard 'shell' do
-  watch(/^[^.].+\.adoc$/) {|files|
-    `asciidoctor -r asciidoctor-diagram index.adoc -o public/index.html`
+  watch(/book\/[^.].+\.org$/) {|files|
+    `cask exec emacs --batch -l emacs.el -f org-publish-all`
   }
 end
 
 guard 'livereload' do
-  watch(/^[^.].+\.html$/)
+  watch(/public\/[^.].+\.html$/)
 end
 
