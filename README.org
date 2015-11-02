@@ -1,22 +1,19 @@
-* Clojure Flavor JavaScript
+* Clojure Flavored JavaScript
 
-This is Draft Version of Book /Clojure Flavor JavaScript/, 
+This is Draft Version of Book /Clojure Flavored JavaScript/, 
 it's free to read and contribution welcome.
-
-** [[book/chapter-1.org][Chapter 1 - Functional JavaScript]]
 
 * License
 #+HTML: <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
 
 Pull Request Welcome, please see the contribution guide for how this works for accepting pull requests.
 
+
 -----------------------------
 
 * Clojure风格JavaScript编程
 
-这里是《Clojure风格JavaScript编程》的草稿和源码，完成后由电子工业出版社出版。英文版只有电子版。
-
-** [[book/%E7%AC%AC%E4%B8%80%E7%AB%A0.org][第一章 函数式 JavaScript]]
+这里是《Clojure风格JavaScript编程》的草稿和源码，完成后中文纸质版由电子工业出版社出版。英文版只有电子版。
 
 * 版权
 本草稿的版权为：
