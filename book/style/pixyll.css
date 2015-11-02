@@ -637,3 +637,8 @@ blockquote footer { background-color: #fff; border-color: transparent; color: #7
 .todo.IN_PROGRESS { color: orange;}
 .todo.HOLD { color: orange;}
 .done { display: none; }
+.org-center {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
