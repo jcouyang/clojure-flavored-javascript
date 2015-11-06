@@ -376,7 +376,7 @@ Clojure 通常会使用 reduce 解决，然而如果硬要用循环的话就会�
 
 在第五章我会更详细的介绍不可变数据结构以及递归。
 
-** Underscore你错了
+** Underscore 你错了
 
 如果提到 JavaScript 的函数式库，可能会联想到 Underscore[fn:9]。Underscore  的官网解释是这样的：
 #+BEGIN_QUOTE
@@ -436,7 +436,7 @@ Clojure 是跑着 JVM 上的lisp 方言，而 ClojureScript 是能编译成 Java
 
 *** Mori
 
-由于是移植的，所有的数据结构以及操作数据结构的函数都是 ClojureScript 保持一致，而且是作为 JavaScript 库，可以在原生 JavaScript 的代码中使用。显然mori是最适合用于前端函数式实践的库，当然也是本书为什么说是 Clojure 风格的函数式 JavaScript 的原因了。
+由于是移植的，所有的数据结构以及操作数据结构的函数都是 ClojureScript 保持一致，而且是作为 JavaScript 库，可以在原生 JavaScript 的代码中使用。显然 mori 是最适合用于前端函数式实践的库，当然也是本书为什么说是 Clojure 风格的函数式 JavaScript 的原因了。
 
 选择 mori 的另一原因是因为它特别区别于其他的函数式库的地方——它使用 ClojureScript 的数据结构。也就是说从根本上消除了 JavaScript 可变的数据结构模型，更利于我们的进行函数式编程。
 

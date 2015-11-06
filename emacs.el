@@ -36,7 +36,7 @@
         :publishing-function org-html-publish-to-html
         :recursive t
         :headline-levels 5
-        :with-sub-superscript nil
+        ;; :with-sub-superscript nil
         :section-numbers nil
         :html-head-include-default-style nil
         )
