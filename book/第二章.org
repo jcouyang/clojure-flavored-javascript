@@ -63,6 +63,12 @@ repl.enter(content)
 #+RESULTS:
 | 1 | 2 | 3 | 4 |
 
+#+BEGIN_SRC clojure
+  (+ 1 1)
+#+END_SRC
+
+#+RESULTS:
+: 2
 
 其中，方括号用于字面创建向量，而圆括号表示调用了 =vector= 函数，参数列表为 ~1 2 3 4~ 。
 
@@ -82,13 +88,17 @@ mori.vector(1,2,3,4)
 : [object Object]
 
 #+BEGIN_QUOTE
-🎯 从 JavaScript 或其他语言转换 clojure 或 lisp 的语法非常简单，只需要将括号 =(=  向左移一个函数名，逗号去掉即可。因此，mori 的 api 则正是这个过程的反转。
+从 JavaScript 或其他语言转换 clojure 或 lisp 的语法非常简单，只需要将括号 =(=  向左移一个函数名，逗号去掉即可。因此，mori 的 api 则正是这个过程的反转。
 #+END_QUOTE
 
 如果是在 node 的 repl 中就可以看见类似 Clojure 字面定义 vector 的输出 =[1 2 3 4]= 。
 
 ****  获取向量中的元素
 通常在 JavaScript Array 中我们获取元素通常会通过 =somearray[0]= 直接用索引获取，当然使用 vector 也非常类似，只不过需要使用 get 方法：
+#+BEGIN_SRC js :session MozRepl
+a= _=>_=>_=>3
+a()()(3)
+#+END_SRC
 
 #+RESULTS:
 : org-babel-js-eoe
@@ -695,7 +705,7 @@ var wetOreoPack = mori.map(lipMiddle,oreoPack) // 无打印信息
 
 以此类推，需要吃第二块奥利奥时，同样的再对上式 =lazy-seq= 容器中的序列求值。
 
-好了，生动的故事真的要圆满结束了，如果这个故事都听明白了的话，再加上几个学术名词，我想我已经解释完什么是惰性和为什么要使用惰性了。故事中的小条，叫做 thunk（我在第一章提过），而这种贴过条的序列，叫做惰性（lazy)序列，对应的 map 操作方式，叫惰性求值。 Underscore 的这种立即执行的 map 方式，叫做及早（eager）求值。
+好了，生动的故事真的要圆满结束了，如果这个故事都听明白了的话，再加上几个学术名词，我想我已经解释完什么是惰性和为什么要使用惰性了。故事中的小条，叫做 /thunk/ （我在第一章提过），而这种贴过条的序列，叫做 /惰性序列/ ，对应的 map 操作方式，叫 /惰性求值/ 。 Underscore 的这种立即执行的 map 方式，叫做 /及早求值/ 。
 
 * Footnotes
 
