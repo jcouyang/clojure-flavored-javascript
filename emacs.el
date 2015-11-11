@@ -37,7 +37,7 @@
         :recursive t
         :headline-levels 5
         ;; :with-sub-superscript nil
-        :section-numbers nil
+        :section-numbers 3
         :html-head-include-default-style nil
         )
 
