@@ -7,9 +7,11 @@
 : ob-ditaa
 
 * 并发编程
+并发编程一直是令人头疼的编程方式，直到 Clojure 和 Go 的出现， 改变了我们并发编程的模式。而对于单线程的 JavaScript，基于事件循环的 并发模型也一直困扰着我们，到底能从 Clojure 学些什么，可以使我们的前端编程之路更顺畅一些呢？
 
+- 
 ** 什么是并发
- 首先在介绍 CSP 之前有两个概念需要强调一下，那就是并发与并行。 为了便于理解，我会结合现实生活举一个例子。
+首先在介绍 CSP 之前有两个概念需要强调一下，那就是并发与并行。 为了便于理解，我会结合现实生活举一个例子。
 
 假设我正在上班写代码，老板过来拍着肩膀说明天要发布，加个班吧。于是我发个短信给老婆说晚点回，发完以后继续敲代码。那么请问，发短信和敲代码两个任务是 *并发* 还是并行 ？
 
@@ -52,6 +54,7 @@
 
 #+END_SRC
 
+#+caption: 线程任务到达 CPU 的不确定顺序
 #+RESULTS:
 [[file:images/multithread.png]]
 
@@ -92,6 +95,7 @@ JavaScript 的并发模型主要基于事件循环，运行 JavaScript 代码其
                +---+ +-+-+    
 #+END_SRC
 
+#+caption: callback 会加到消息队列末尾
 #+RESULTS:
 [[file:images/event-loop-model.png]]
 
@@ -429,9 +433,10 @@ texting();
 
 
 ** 在前端实践中使用 core.async
+
 之前的实验性的代码只是为了说明 CSP 的原理和实现思路之一，更切合实际的，我们可以通过一些库来使用到 Clojure 的 core.async。这里我简单的介绍一下我从 ClojureScript 的 core.async 移植过来的 conjs。
 
-由于 go block 在 Clojure 中是用 macro 生成状态机来实现的，要移植过来困难不小，因此这里我只将 core.async 的 channel 搬了过来，但是是以接受回调函数的方式。
+由于 go block 在 Clojure 中是用 macro 生成状态机来实现的，要移植过来困难不小，因此这里我只将 core.async 的 channel 移植了过来，但是是以接受回调函数的方式。
 #+BEGIN_SRC js
 const _ = require('con.js');
 const {async} = _;
@@ -448,6 +453,7 @@ async.put$(c2, 'c2');
 #+END_SRC
 
 有意思的是，我顺带实现了 Promise 版本的 core.async，会比回调要稍微更方便一些。
+
 #+BEGIN_SRC js
   async.alts([c1,c2])
     .then((v) => {
@@ -458,27 +464,55 @@ async.put$(c2, 'c2');
   async.put(c2, 'c2').then(_=>{console.log('put c2 into c2')})
 #+END_SRC
 
- 但是虽然把 channel 能移植过来，但是缺少 macro 原生支持的 JavaScript 似乎对 go block 也无能为力。除非能有 generator 的支持。 [[https://github.com/ubolonton/js-csp][js-csp]] 是另一
+虽然把 channel 能移植过来，但是缺少 macro 原生支持的 JavaScript 似乎对 go block 也无能为力，除非能有 generator 的支持。
 
-** ES7 中的异步函数
- 由于在实践中我们经常会使用到 babel 来将 ES6 规范的代码编译成 ES5的代码。所以顺便可以将 ES7 的开关打开，这样我们就可以使用 ES7 规范中的一个新特性—— async/await
-#+BEGIN_SRC js
-(async function(){
-  var v = await a.atls([c1,c2]);
-  console.log(v.get(0)); // => c1
-    console.log(_.equals(c1, v.get(1))) // => true
-})()
+** 使用 ES7 中的异步函数
+ 由于在实践中我们经常会使用到 babel 来将 ES6 规范的代码编译成 ES5 的代码。所以顺便可以将 ES7 的开关打开，这样我们就可以使用 ES7 规范中的一个新特性—— async 函数。 使用 async 函数实现我们之前的例子估计代码并不会有大的变化，让我们使用 async 函数和 channel 实现一下 go 经典的乒乓球小例子。
 
-(async function(){
-  await a.put(c1, 'c1')
-  console.log('put c1 into c1')
-})()
-(async function(){
-  await a.put(c2, 'c2')
-  console.log('put c2 into c2')
-})()  
+#+BEGIN_SRC js -n -r
+  let _ = require('con.js');
+  let {async} = _;
+
+  async function player(name, table) {
+    while (true) {
+      var ball = await table.take(); (ref:take)
+      ball.hits += 1;
+      console.log(name + " " + ball.hits);
+      await async.timeout(100).take();
+      table.put(ball);
+    }
+  }
+
+  (async function () {
+    var table = async.chan();
+
+    player("ping", table);
+    player("pong", table);
+
+    await table.put({hits: 0});
+    await async.timeout(1000).take();
+    table.close();
+  })();
 #+END_SRC
- 通过 async/await，结合 conjs 的 channel，可以让我们真正的写出了 Clojure core.async 风格的代码。
+当把球 ={hist:0}=  放到 =table= channel 上的时候，阻塞在第[[(take)][(take)]]行 =take= 的 player ping 会先接到球，player ping 击完球 100ms 之后，球又回到了 =table= channel。之后 player pong 之间来回击球知道 table 在 1000ms 后被关闭。
+
+所以我们运行代码后看到的间断性的 100ms 的打印出：
+#+BEGIN_EXAMPLE
+pong 1
+ping 2
+pong 3
+ping 4
+pong 5
+ping 6
+pong 7
+ping 8
+pong 9
+ping 10
+pong 11
+ping 12
+#+END_EXAMPLE
+
+ 通过 async/await，结合 conjs 的 channel， 真正让我们写出了 Clojure core.async 风格的代码。利用 CSP 异步编程的方式，我们可以用同步的思路，去编写实际运行时异步的代码。
 
 * Footnotes
 

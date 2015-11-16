@@ -1,26 +1,5 @@
 * COMMENT install
-#+BEGIN_SRC emacs-lisp
-  (require 'ob-dot)
-  (require 'ob-clojure)
-  (require 'ob-js)
-  (setq org-babel-js-cmd "mozrepl")
-  (setq org-bable-js-eoe "")
-#+END_SRC
 
-#+RESULTS:
-
-#+BEGIN_SRC js :session MozRepl
-content.location.href = 'http://swannodette.github.io/mori/'
-repl.enter(content)
-#+END_SRC
-
-#+RESULTS:
-: [object Window]
-
-#+BEGIN_SRC emacs-lisp
-(require 'moz)
-(moz-send-string "1+1")
-#+END_SRC
 
 * 集合
 
@@ -79,7 +58,7 @@ console.log(1+1)
 
 #+RESULTS:
 
-#+BEGIN_SRC js :session MozRepl
+#+BEGIN_SRC js
 mori.vector(1,2,3,4)
 // => [1 2 3 4]
 #+END_SRC
@@ -95,7 +74,7 @@ mori.vector(1,2,3,4)
 
 ****  获取向量中的元素
 通常在 JavaScript Array 中我们获取元素通常会通过 =somearray[0]= 直接用索引获取，当然使用 vector 也非常类似，只不过需要使用 get 方法：
-#+BEGIN_SRC js :session MozRepl
+#+BEGIN_SRC js
 a= _=>_=>_=>3
 a()()(3)
 #+END_SRC
