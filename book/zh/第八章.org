@@ -1,3 +1,4 @@
+#+LANGUAGE: zh-CN
 * COMMENT Import
 #+BEGIN_SRC emacs-lisp
 (require 'ob-ditaa)
@@ -7,9 +8,8 @@
 : ob-ditaa
 
 * 并发编程
-并发编程一直是令人头疼的编程方式，直到 Clojure 和 Go 的出现， 改变了我们并发编程的模式。而对于单线程的 JavaScript，基于事件循环的 并发模型也一直困扰着我们，到底能从 Clojure 学些什么，可以使我们的前端编程之路更顺畅一些呢？
+并发编程一直是令人头疼的编程方式，直到 Clojure 和 Go 的出现， 改变了我们并发编程的模式。而对于单线程的 JavaScript，基于事件循环的 并发模型也一直困扰着我们，到底能从 Clojure 学些什么，可以使我们的前端 并发编程之路更顺畅一些呢？
 
-- 
 ** 什么是并发
 首先在介绍 CSP 之前有两个概念需要强调一下，那就是并发与并行。 为了便于理解，我会结合现实生活举一个例子。
 
@@ -26,10 +26,10 @@
 *** 异步与多线程
 所以说到并发，如果不是系统编程，我们大多关心的是多线程。因为进程调度是需要操作系统更关心的事情。
 
-继续敲代码这个例子，加入我现在能 fork 出来一只手发来短信，但是我还是只有一个脑袋，在发短信的时候我的脑子还是只能集中在
+继续敲代码这个例子，假如我现在能 fork 出来一只手发来短信，但是我还是只有一个脑袋，在发短信的时候我的脑子还是只能集中在
 如何编一个理由向老婆请假，而另外两只手只能放在键盘上什么也干不了，直到短信发出去，才能继续写代码。
 
-所以多线程开销大至需要长出（fork）一只手，结束后缩回去（join），但是这个代价并没有带来时间上的好处，发短信时其它两只手其实是闲置(阻塞)着的。
+所以多线程开销大至需要长出（fork）一只手，结束后缩回去（join），但是这  些代价并没有带来时间上的好处，发短信时其它两只手其实是闲置(阻塞)着的。
 
 #+BEGIN_SRC ditaa :file images/multithread.png :exports results
 
@@ -58,7 +58,7 @@
 #+RESULTS:
 [[file:images/multithread.png]]
 
-因此，另外一种更省资源的处理并发的方式就出现了——异步编程，或者叫事件驱动模型。对的，就是我们在 JavaScript 代码里经常发的 Ajax 那个异步。
+因此，另外一种更省资源的处理并发的方式就出现了——异步编程，或者叫 /事件驱动模型/ 。对的，就是我们在 JavaScript 代码里经常发的 Ajax 那个异步。
 
 比如我还是两只手，我发完短信继续就敲代码了，这时，老婆给我回了一条短信，那我放下手中的活，拿起手机看看，老牌居然说了“同意”，于是就安心的放下手机继续敲代码了。
 
@@ -117,7 +117,7 @@ b();
 // => "timeout"
 #+END_SRC
 
-这个例子中的 =timeout=  函数并没有在 =a= 或 =b= 之前被调用，因为当时的消息队列应该是这样的(处理顺序从左至右)
+这个例子中的 =timeout= 函数并没有在 =a= 或 =b= 之前被调用，因为当时的消息队列应该是这样的(处理顺序从左至右)
 
 #+BEGIN_SRC ditaa :file images/message-queue.png :exports results
        +-----------+-----+-----+--------+
@@ -191,7 +191,7 @@ else
 于是前段事件特别火的 Promise，似乎能够缓解一下回调地狱的窘境。但是，Promise 并不是专门用来消除回调地狱的，Promise 更有意义的应该是在于 monadic 编程。对于回调地狱，promise 能做的也只是把这些回调平铺开而已。
 
 #+BEGIN_QUOTE
-从手扶电梯下回调地狱，变成了是坐直梯下回调地狱
+从乘坐手扶电梯下回调地狱，变成了乘坐直梯下回调地狱。
 #+END_QUOTE
 
 #+BEGIN_SRC js
@@ -237,7 +237,7 @@ CSP 的概念非常简单, 想象一下事件循环，类似的：
 [[file:images/csp.png]]
 
 
-这样就成功的把任务和异步数据成功从回调地狱中分离开来。还是刚才发短信的例子，我们来用CSP实现一遍：
+这样就成功的把任务和异步数据成功从回调地狱中分离开来。还是刚才发短信的例子，我们来用 CSP 实现一遍：
 
 #+BEGIN_SRC clojure -r
 (def working (chan))
@@ -273,36 +273,36 @@ CSP 的概念非常简单, 想象一下事件循环，类似的：
 #+END_SRC
 #+HTML: <a class="jsbin-embed" href="http://jsbin.com/muliva/2/embed?console">JS Bin</a><script src="http://static.jsbin.com/js/embed.js"></script>
 
-不懂clojure没有关系,我可以解释 +我不听我不听我不听!+ 而且我还会在后面用JS实现一遍
-- 可以看出 boss yelling, wife texting, me working 和 reading text 四个任务是 *并发* 进行的
-- 所有任务都相互没有依赖, 完全没有callback, 没有哪个任务是另一个任务的callback, 他们都只依赖于 =working= 和 =texting= 两个channel
-- 其中的 =go-loop= 神奇的地方是, 它循环获取channel中的数据, 当队列空时,它会 +阻塞+ parking, 因为并没有阻塞线程, 而是保存当前状态, 继续去试另一个 =go= 语句.
-- 拿 =work= 来说, =(<! texting)= 就是从 channel texting 中取数据, 如果texting为空,则parking
-- 而对于任务 =wife-texting=, =(>! texting "wife say: come home!")= 是往 channel texting 中加数据, 如果 channel 已满, 则 parking
+- 可以看出 boss yelling，wife texting，me working 和 reading text 四个任务是 *并发* 进行的
+- 所有任务都相互没有依赖，之间完全没有 callback，没有哪个任务是另一个任务的 callback。 而且他们都只依赖于 =working= 和 =texting= 这两个channel
+- 其中的 =go-loop= 神奇的地方是，它循环获取channel中的数据，当队列空时，它的状态会变成 parking，并没有阻塞线程，而是保存当前状态，继续去试另一个 =go= 语句。
+- 拿 =work= 来说， =(<! texting)= 就是从 channel texting 中取数据，如果 texting 为空，则parking
+- 而对于任务 =wife-texting= ， =(>! texting "wife say: come home!")= 是往 channel texting 中加数据，如果 channel 已满，则也切到 parking 状态。
 
+** 使用 generator 实现 CSP [fn:2]
+在看明白了 Clojure 是如何使用 channel 来解耦我的问题后，再回过头来看 JavaScript 如何实现类似的 CSP 编程呢？
 
-** CSP in JavaScript[fn:2]
-瞅瞅我们都要实现写什么
-- goroutines
-- timeout
-- take (<!)
-- put (>!)
+先理一下我们都要实现些什么：
+- go block：当然是需要这样的个block，只有在这个 block 内我们可以自如的切换状态。
+- channel：用来存放消息
+- timeout：一个特殊的 channel，在规定时间内关闭
+- take (<!)：尝试 take channel 的一条消息的动作会决定下一个状态会是什么。
+- put (>!)：同样的，往 channe 中发消息，也会决定下一个状态是什么。
 
-当然首先要实现最重要的 goroutines，但是在这之前，让我们看看 ES6 的一个的新标准—— /generator/ 。
+当然，首先要实现的当然是最重要的 go block，但是在这之前，让我们看看实现 go block 的前提 ES6 的一个的新标准—— /generator/ 。
 
 *** Generator
-[[http://blog.dev/javascript/essential-ecmascript6.html#sec-9][ES6 终于支持了Generator]]，目前Firefox与Chrome都已经实现。[fn:1] Generator 在每次被调用时返回 =yield= 的值，并保存状态，下次调用时继续运行。 
+[[http://blog.dev/javascript/essential-ecmascript6.html#sec-9][ES6 终于支持了Generator]]，目前Firefox与Chrome都已经实现。[fn:1] Generator 在每次被调用时返回 =yield= 后边表达式的值，并保存状态，下次调用时继续运行。 
 
-这种功能听起来刚好符合上例中神奇的 parking 的行为，因此我们可以试试用 generator 来实现刚刚 Clojure 的 CSP 版本。
+这种功能听起来刚好符合上例中神奇的 parking 的行为，于是，我们可以试试用 generator 来实现刚刚 Clojure 的 CSP 版本。
 
-
-*** Goroutines in JavaScript
-goroutines 其实就是一个状态机，generator 为输入
+*** Go Block
+go block 其实就是一个状态机，generator 为状态机的输入，根据不同的输入使得状态机状态转移。所以实现 go block 其实就是：
 - 一个函数
-- 他可以接受一个 [[(generator)][generator]]
-- 如果generator没有下一步,则结束
-- 如果该步的返回值状态为 park, [[(parking)][那么就是什么也不做, 过一会再来进入状态机尝试]]
-- 如果为 continue, [[(continue)][这接着generator下一步, 继续循环]]
+- 可以接受一个 [[(generator)][generator]]
+- 如果 generator 没有下一步，则结束
+- 如果该步的返回值状态为 park，[[(parking)][那么就是什么也不做, 过一会继续尝试新的输入]]
+- 如果为 continue，[[(continue)][就接着去 generator]] 取下一输入
 #+BEGIN_SRC javascript -r
 function go_(machine, step) {
   while(!step.done) {
@@ -337,9 +337,9 @@ timeout 是一个类似于 thread sleep 的功能，想让任务能等待个一�
 ...
 #+END_SRC
 
-如果状态是timeout，那么等待 =value= 那么长的时间再执行 generator 下一步。
+如果状态是 timeout，那么等待 =value= 那么长的时间再继续运行 generator。
 
-另外还需要一个返回 timeout channel 的函数：
+另外，当然还需要一个返回 timeout channel 的函数：
 #+BEGIN_SRC javascript
 function timeout(interval){
   var chan = [interval];
@@ -348,11 +348,13 @@ function timeout(interval){
 }
 #+END_SRC
 
+每次使用 timeout 都会生成一个新的 channel，但是 channel 内只有一个消息，就是 timeout 的 毫秒数。
+
 *** take <!
-当 generator 从 channel 中 take 数据时
-  - 如果 channel 空, 状态变为 park
-  - 如果 channel 非空, 获得数据, 状态改成 continue
-  - 如果是 timeout channel, 状态置成 timeout
+当 generator 从 channel 中 take 数据时的状态转移如下：
+  - 如果 channel 空，状态变为 park
+  - 如果 channel 非空，获得数据, 状态改成 continue
+  - 如果是 timeout channel，状态置成 timeout
 
 #+BEGIN_SRC javascript
 function take(chan) {
@@ -370,9 +372,9 @@ function take(chan) {
 #+END_SRC
 
 *** put >!
-当 generator 往 channel 中 put 数据
-  - 如果 channel 空, 状态变为 continue, 放入数据
-  - 如果 channel 非空, parking
+当 generator 往 channel 中 put 消息
+  - 如果 channel 空，则将消息放入，状态变为 continue
+  - 如果 channel 非空，则进入 parking 状态
 
 #+BEGIN_SRC javascript
 function put(chan, val) {
@@ -387,8 +389,8 @@ function put(chan, val) {
 }
 #+END_SRC
 
-*** JavaScript 版本 的 CSP
-现在可以原原本本的将之前的clojure的例子翻译成JavaScript了
+*** JavaScript CSP 版本的例子
+有了 go block 这个状态机以及使他状态转移表之后，终于可以原原本本的将之前的 clojure 的例子翻译成 JavaScript 了。
 #+BEGIN_SRC javascript
 function boss_yelling(){
   go(function*(){
@@ -431,11 +433,45 @@ working();
 texting();
 #+END_SRC
 
+是不是决定跟 Clojure 的例子非常相似呢？注意每一次 yield 都是操作 go block 这个状态机，因此就这个例子来说，我们可以跟踪一下它的状态转移过程，这样可能会对这个简单的 go block 状态机有更深得理解。
 
-** 在前端实践中使用 core.async
+1. 首先看 =boss_yelling= 这个 go 状态机，当操作为 =take(timeout(1000))= 时，状态会切换到  =timeout= 这样状态机会停一个 1000 毫秒。
+2. 其他的状态机会继续运行，接下来应该就到 =wife_texting= ，同样的这个状态机也会停 4000秒
+3. 现在轮到 =working= ，但是 work channel 中并没有任何的消息，所以也进入 parking 状态。
+4. 同样 =texting=  状态机也进入 parking 状态。
+
+直到 1000 毫秒后， =boss_yelling= timeout
+
+1. =bose_yelling= 状态机继续运行，往 work channel 中放了一条消息。
+2. =working= 状态机得以继续运行，打印消息。
+
+此时没有别的状态机的状态可以变化，又过了 1000 毫秒， =working= 还会继续打印，直到第 4000 毫秒， =wife_texting= timeout，状态机继续运行，往 text channel 添加了一条消息。这时状态机 =texting= 的状态才从 parking 切到 continue，开始打印消息。
+
+以此类推，就会得到这样的结果：
+#+BEGIN_EXAMPLE
+"boss say: work 0"
+"me working"
+"boss say: work 1"
+"me working"
+"boss say: work 2"
+"me working"
+"boss say: work 3"
+"me working"
+"boss say: work 4"
+"me working"
+"wife say: come home"
+"me ignoring"
+"boss say: work 5"
+"me working"
+...
+#+END_EXAMPLE
+
+
+** 在前端实践中使用  CSP
 
 之前的实验性的代码只是为了说明 CSP 的原理和实现思路之一，更切合实际的，我们可以通过一些库来使用到 Clojure 的 core.async。这里我简单的介绍一下我从 ClojureScript 的 core.async 移植过来的 conjs。
 
+***  使用移植的 core.async
 由于 go block 在 Clojure 中是用 macro 生成状态机来实现的，要移植过来困难不小，因此这里我只将 core.async 的 channel 移植了过来，但是是以接受回调函数的方式。
 #+BEGIN_SRC js
 const _ = require('con.js');
@@ -466,7 +502,7 @@ async.put$(c2, 'c2');
 
 虽然把 channel 能移植过来，但是缺少 macro 原生支持的 JavaScript 似乎对 go block 也无能为力，除非能有 generator 的支持。
 
-** 使用 ES7 中的异步函数
+*** 使用 ES7 中的异步函数
  由于在实践中我们经常会使用到 babel 来将 ES6 规范的代码编译成 ES5 的代码。所以顺便可以将 ES7 的开关打开，这样我们就可以使用 ES7 规范中的一个新特性—— async 函数。 使用 async 函数实现我们之前的例子估计代码并不会有大的变化，让我们使用 async 函数和 channel 实现一下 go 经典的乒乓球小例子。
 
 #+BEGIN_SRC js -n -r
@@ -512,9 +548,15 @@ pong 11
 ping 12
 #+END_EXAMPLE
 
- 通过 async/await，结合 conjs 的 channel， 真正让我们写出了 Clojure core.async 风格的代码。利用 CSP 异步编程的方式，我们可以用同步的思路，去编写实际运行时异步的代码。
+ #+BEGIN_QUOTE
+ 我不会告诉你为什么打印到12而不是10，因为我的数学不是体育老师教的。
+ #+END_QUOTE
+
+通过 async/await，结合 conjs 的 channel， 真正让我们写出了 Clojure core.async 风格的代码。利用 CSP 异步编程的方式，我们可以用同步的思路，去编写实际运行时异步的代码。
+
 
 * Footnotes
+
 
 [fn:3] /goroutine/  名字取自 /coroutine/ (协程)，由于是 go 的实现，所以叫 goroutine 了。
 

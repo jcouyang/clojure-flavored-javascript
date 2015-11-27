@@ -1,8 +1,8 @@
 #+title: Clojure Flavored JavaScript
 #+author: Jichao Ouyang
 #+keywords: clojure, javascript, functional, mori, clojurescript
-#+OPTIONS: num:3
-
+#+OPTIONS: num:3 
+#+LANGUAGE: zh-CN
 #+include: "./前言.org"
 #+include: "./第一章.org"
 #+include: "./第二章.org"
