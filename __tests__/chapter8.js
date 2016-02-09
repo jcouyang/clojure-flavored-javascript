@@ -1,6 +1,6 @@
 const mori = require('con.js')
 require("babel-polyfill");
-const {async} = require('con.js/async');
+const {async} = require('con.js/withAsync');
 describe('Chapter 8', function() {
 
   describe('#8.1.2 Cocurrent modle of JS', function() {
@@ -58,7 +58,7 @@ describe('Chapter 8', function() {
       })
     })
   });
-  describe('#8.4.2 async function', () => {
+  xdescribe('#8.4.2 async function', () => {
     it('run a ping pong game', (done) => {
       // node async/async-csp.js
     });

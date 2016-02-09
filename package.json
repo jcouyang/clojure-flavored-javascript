@@ -32,6 +32,7 @@
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/con.js",
+      "<rootDir>/node_modules/mori",
       "<rootDir>/node_modules/core-js"
     ],
     "testFileExtensions": [
@@ -45,6 +46,7 @@
     ]
   },
   "dependencies": {
-    "con.js": "^0.5.3"
+    "con.js": "^0.6.0",
+    "mori": "^0.3.2"
   }
 }
