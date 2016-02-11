@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 2016-02-11 Thu 22:50 -->
+<meta  charset="utf-8">
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Jichao Ouyang">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style/pixyll.css"/>
+<link rel="stylesheet" href="style/gh-fork-ribbon.css" />
+<!--[if lt IE 9]>
+     <link rel="stylesheet" href="/style/gh-fork-ribbon.ie.css" />
+     <![endif]-->
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline1">1. 前言</a></li>
+</ul>
+</div>
+</nav>
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"><span class="section-number-2">1</span> 前言</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+函数式编程可以说是非常古老的编程范式，
+但是近年来函数式编程越来越受到关注。不管是 Google 力推的 Go, 学术派的 Scala 与 Haskell，还是 lisp 跑在 JVM 上的新方言 Clojure，这些新的函数式编程语言也都越来越受到关注。
+</p>
+
+<p>
+当然不仅是后端函数式语言层出不穷，前端也不甘示弱。
+即便前端浏览器只支持一门语言——JavaScript，但是
+能支持函数式编程的 JavaScript 库越来越多，比如 Functional
+JavaScript<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，Underscore, lodash&#x2026;不仅如此，
+还有一些能编译成 JavaScript 的语言，能让前端的函数式编程发挥到极致,
+Haskell 的 PureScript, Scala 的 scalajs, Clojure 的 ClojureScript。
+</p>
+
+<p>
+我两次都以 Clojure 结尾，是因为我喜欢把重点的留到最后。
+Clojure 独特于其他的语言，它即是一门新的语言，
+一门函数式编程范式的语言，同时又流淌着着古老的lisp血液<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+这是我选择用 Clojure 来诠释函数式编程的原因之一。
+</p>
+
+<p>
+那么为什么我要选 JavaScript 作为函数式编程的目标呢。首先，正如 Rich Hickey 所言——“Clojure is Awesome, but JavaScript reaches”。Michael Fogus
+用二百多页向大家展示了不一样的《Functional JavaScript》编程方式，
+可惜 Fogus 作为 ClojureScript 编译器的贡献者，
+竟然选择了 Underscore 作为函数式库，
+直接导致并不能完全展示 JavaScript 所能达到的函数式编程能力。有趣的是，
+ClojureScript 的作者把 ClojureScript 的不可变（Immutable）数据结构移植到了 JavaScript,
+这下彻底将 JavaScript 的函数式编程提升到了用其他库都完成不了的新高度（虽然 facebook 也尝试实现自己的一个不可变数据结构 Immutable.js）。
+不仅如此, Mozilla 的 Sweet.js（<a href="https://github.com/mozilla/sweet.js">https://github.com/mozilla/sweet.js</a>）
+更是完成了另一个突破 —— JavaScript 的 macro，
+虽然不能算是函数式的概念，但也算是 lisp 语言的一项独门绝技了（虽然很多新的语言都在
+尝试实现 macro，比如 scala, rust 和 julia，但是由于语法过于复杂）。
+</p>
+
+<p>
+这一切的一切，都让我忍不住要帮 Fogus 出一本续集，用 JavaScript 实现其他函数式编程语言如 Clojure 甚至是 Haskell（就当是bonus了）的奇淫巧技，
+让大家进一步感受用 JavaScript 这门不完美的语言，
+同样可以编写出优雅的函数式代码，以不一样的方式思考和解决问题。
+于是不管你是想转行 JavaScript 的 Clojure 开发者，
+亦或是像了解 Clojure 或函数式编程的 JavaScript 开发者,
+都可以在此找到一些启发。
+但这并不是一本 JavaScript 入门的好书（Douglas 的《JavaScript 语言精粹》 是个不错的选择。另外如果读者的英文好的话，还有一本可以在线免费阅读的<a href="https://leanpub.com/javascriptallongesix/read">《JavaScript Allonge》</a>）。
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+作者真的有够懒的，名字都懒得起。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+还记得《计算机程序构造与解释》里面用的怪怪的括号语言 scheme 吗？就是 lisp 的一种方言。
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p>Author: Jichao Ouyang <a aria-label="Follow @jcouyang on GitHub" data-count-aria-label="# followers on GitHub" data-count-api="/users/jcouyang#followers" data-count-href="/jcouyang/followers" href="https://github.com/jcouyang" class="github-button">Follow @jcouyang</a>
+</p>
+<p>Modified: 2016-02-11 Thu 22:47</p>
+<p>Generated by: <a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.2)</p>
+<p>&lt;Publish&gt; with _(:з」∠)_ by <a href="https://github.com/jcouyang/orgpress">OrgPress</a></p>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
+<div class="github-fork-ribbon-wrapper right-bottom"><div class="github-fork-ribbon"><a href="https://github.com/jcouyang/clojure-flavored-javascript">Fork me on GitHub</a></div></div>
+
+
+<script>
+ (function(){
+   document.getElementById('edit-in-github').addEventListener("click",function(){
+     var pathname = window.location.pathname;
+     window.location.href = "https://github.com/jcouyang/clojure-flavored-javascript/edit/master/book/"+pathname.replace(".html",".org");
+   })
+ })()
+</script>
+<!-- Google Analystics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-32314154-10', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+ var disqus_shortname = 'orgblog';
+ var href = window.location.href;
+ href.replace(/^https/, 'http');
+ var disqus_url = href;
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</body>
+</html>

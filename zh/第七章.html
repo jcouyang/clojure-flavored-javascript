@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 2016-02-11 Thu 22:50 -->
+<meta  charset="utf-8">
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Jichao Ouyang">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style/pixyll.css"/>
+<link rel="stylesheet" href="style/gh-fork-ribbon.css" />
+<!--[if lt IE 9]>
+     <link rel="stylesheet" href="/style/gh-fork-ribbon.ie.css" />
+     <![endif]-->
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline25">1. Monadic编程</a>
+<ul>
+<li><a href="#orgheadline3">1.1. 链式调用</a>
+<ul>
+<li><a href="#orgheadline1">1.1.1. Promise</a></li>
+<li><a href="#orgheadline2">1.1.2. 高阶 Promise</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline9">1.2. Monad</a>
+<ul>
+<li><a href="#orgheadline4">1.2.1. 函子（Functor）</a></li>
+<li><a href="#orgheadline5">1.2.2. Applicative Functor</a></li>
+<li><a href="#orgheadline6">1.2.3. 含幺半群（Monoid）</a></li>
+<li><a href="#orgheadline7">1.2.4. Monad</a></li>
+<li><a href="#orgheadline8">1.2.5. <span class="todo nilTODO">TODO</span> Monad 就是自函子范畴上的一个幺半群</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline13">1.3. 走钢丝</a>
+<ul>
+<li><a href="#orgheadline12">1.3.1. 皮尔斯走钢丝</a>
+<ul>
+<li><a href="#orgheadline10">一般解法</a></li>
+<li><a href="#orgheadline11">现在来试试用 Either</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline18">1.4. Monad 在 JavaScript 中的应用</a>
+<ul>
+<li><a href="#orgheadline14">1.4.1. Promise 版本的走钢丝</a></li>
+<li><a href="#orgheadline17">1.4.2. When</a>
+<ul>
+<li><a href="#orgheadline15">lift</a></li>
+<li><a href="#orgheadline16">when.map</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline24">1.5. Reactive 编程</a>
+<ul>
+<li><a href="#orgheadline19">1.5.1. 流（stream）</a></li>
+<li><a href="#orgheadline20">1.5.2. Functor</a></li>
+<li><a href="#orgheadline21">1.5.3. Applicative</a></li>
+<li><a href="#orgheadline22">1.5.4. Monad</a></li>
+<li><a href="#orgheadline23">1.5.5. Object.observe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+<div id="outline-container-orgheadline25" class="outline-2">
+<h2 id="orgheadline25"><span class="section-number-2">1</span> Monadic编程</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+这是 Haskell 弄出来的神秘玩意，但你可能没有在意，其实在前端世界早都被玩腻了。
+</p>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3"><span class="section-number-3">1.1</span> 链式调用</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+说到 <i>链式调用</i> ，用过 jQuery 或是 Underscore 的人再熟悉不过了。虽然我一直在强调函数组合如何复用性更好，更持续可组合，但是其实这两者之间并不对立，反而应该是可以互相结合的两种非常好的模式。
+</p>
+
+<p>
+作为前端比较流行的模式，我们其实甚至不需要借助于任何库也可以进行简单的链式调用，比如 ES5 的 Array：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">[1,2,3,4]
+.map(n=&gt;n+1)
+.filter(n=&gt;n%2**0)
+.reduce((acc, n)=&gt;acc+n);
+</pre>
+</div>
+
+<p>
+由于 Array 的 map，filter 都仍然返回 Array，所以很自然的，可以链式的继续调用 Array 的方法。
+</p>
+
+<p>
+当然，如果做这种运算我肯定是更推荐使用 Transducer 来做，将会更高效而且易于组合再利用。相比之下，链式调用其实有着更为适用的场景，那就是 ES6 标准中新加入的 Promise。
+</p>
+</div>
+
+<div id="outline-container-orgheadline1" class="outline-4">
+<h4 id="orgheadline1"><span class="section-number-4">1.1.1</span> Promise</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Promise 跟语义上一样，表示将来会发生但是还没有发生的事情。在不同的编程语言中名字略有不同，但都是同一个东西。只是，Promise 在 JavaScript 中是非阻塞的，也就是你不能直接 await 一个 Promise， 这样会使得主线程被阻塞。
+</p>
+
+<p>
+而在 Clojure 中，可以
+</p>
+
+<ol class="org-ol">
+<li>定义一个 promise</li>
+<li>非阻塞的开启另一个线程给 promise 递一个值</li>
+<li>阻塞的从 promise 把值取出来， <code>@</code> 相当于 await</li>
+</ol>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">fancy-promise</span> (promise)) <span style="color: #8c8c8c; font-style: italic;">; 1</span>
+(future (<span style="color: #36648b;">Thread</span><span style="color: #000000; background-color: #ffffff;">/</span>sleep 1000)
+  (deliver fancy-promise (+ 1 1))) <span style="color: #8c8c8c; font-style: italic;">;2</span>
+(print <span style="color: #8b0000;">"waiting..."</span>)
+@fancy-promise <span style="color: #8c8c8c; font-style: italic;">;2</span>
+<span style="color: #8c8c8c; font-style: italic;">;</span><span style="color: #8c8c8c; font-style: italic;">=&gt; waiting...</span>
+<span style="color: #8c8c8c; font-style: italic;">;</span><span style="color: #8c8c8c; font-style: italic;">&#19968;&#31186;&#21518; =&gt; 2</span>
+</pre>
+</div>
+
+<p>
+但是在资源有限的前端 JavaScript，宝贵的主线程只有一个，是不能让你能阻塞的去取一个 promise 的值的。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">defered</span> = when.defer();
+setTimeout(_=&gt;defered.resovle(1+1), 1000);
+defered.promise.then(_=&gt;console.log(_));
+</pre>
+</div>
+
+<p>
+你会发现 JavaScript 的 promise 略有不同。首先，在 JavaScript 中不能开一个线程去等上1秒，再给 promise 递一个值。前端只能依靠浏览器的 timer 线程去计算时间，1 秒后回调递值的函数；其次，当然也不能阻塞主线程来等待 promise 的值，只能通过传入回调函数给 promise 的 then 方法，来接受 promise 中的值并做处理。因为 JavaScript 引擎只有一个线程，这意味着如果我们阻塞的等待 promise 的值：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#20266;&#20195;&#30721;</span>
+...
+setTimeout(_=&gt;defered.resovle(1+1), 1000);
+await defered.promise
+</pre>
+</div>
+
+<p>
+那么 <code>defered.resovle(1+1)</code> 永远不会被执行。因为 JavaScript 是事件循环的并发模型<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，意味着事件循环会不停的从消息队列中拿任务。所以这几行代码大概的执行过程是这样的：
+</p>
+
+<ol class="org-ol">
+<li>setTimeout 的执行分派了浏览器 timer 去计时。</li>
+<li>promise.then 的执行给 promise 挂了一个回调，当 promise 满足时调用。</li>
+<li>代码都执行完了， 消息队列里此时没有消息。</li>
+<li>1秒后 timer 把  <code>defered.resovle(1+1)</code>  放入消息队列。</li>
+<li><code>defered.resovle(1+1)</code>   随即促发 promise.then 上的回调。</li>
+</ol>
+
+<p>
+所以如果 2 被阻塞，意味着 4 放回到消息队列的任务永远也轮询不上，因为当 event loop 还正阻塞在 2，而 2 却在等 5 的结果。
+</p>
+
+<p>
+因此，前后端 JavaScript 的所有的 IO 操作（timer，XHR，worker）才被设计成为非阻塞的。
+</p>
+
+<p>
+回到我们的问题上来，我们不知道 promise 什么时候有值，也不能阻塞的等待 promise 有值，所以只能是把回调函数给 promise，什么时候有值了再回调这个函数。而这个回调函数需要通过 promise 的 then 方法传给 promise。跟使用 jQuery 一样，then 返回的还是一个 promise，因此我们可以继续调用 then 方法给更多的的回调函数。
+</p>
+
+<p>
+当然，除了传入一个接受 promise 内的值，返回另一个值（或不返回）的函数，还可以传入一个返回 Promise 的函数：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">when.promise(resolve=&gt;setTimeout(_=&gt;resolve(1),1000))
+    .then(value=&gt;when.promise(resovle=&gt;setTimeout(_=&gt;resolve(value+1),1000)))
+    .then(_=&gt;console.log(_))
+</pre>
+</div>
+
+<p>
+两秒后打印出来的是2，而不是一个 promise。注意这里用的是更简洁的创建 promise 的方法，直接给 promise 的参数传入一个 resolve 函数，告诉 promise 什么时候能 resolve。 至于为什么最终打印的不是 promise，而是 promise 的值，我想看完 7.3 节 Monad 自然会明白。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-4">
+<h4 id="orgheadline2"><span class="section-number-4">1.1.2</span> 高阶 Promise</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+不像普通的操作值，可以通过高阶函数轻松的操作整个数组：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">data</span> = [1, 2, 3, 4];
+
+<span style="color: #00008b;">var</span> <span style="color: #36648b;">double</span> = data.map(_=&gt;_*2);
+
+console.log(<span style="color: #36648b;">double</span>); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">[2,4,6,8]</span>
+</pre>
+</div>
+
+<p>
+如果是一个 promise 的数组，在想做 map 或者 filter 之类的用高阶函数来操作数组似乎就遇到了麻烦。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">data</span> = [when(1), when(2), when(3), when(4)];
+
+<span style="color: #00008b;">var</span> <span style="color: #36648b;">double</span> = data.map(_=&gt;_*2);
+
+console.log(<span style="color: #36648b;">double</span>); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">[NaN,NaN,NaN,NaN]</span>
+</pre>
+</div>
+
+<p>
+当然，想着都不可能会工作。这里期望的结果应该是 promise 级别的 map，而不仅仅是把函数 map 到值上。选择使用 when 正是因为它提供更强大的 promise，不但有操作单个 promise 的方法，还提供通过 map，reduce 等高阶函数轻松的操作 promise 的数组。 只需要做小小的改动， 使用  <code>when.map</code>  方法就好了：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #36648b;">double</span> = when.map(data, _=&gt;_*2);
+
+<span style="color: #36648b;">double</span>.then(_=&gt;console.log(_)); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">[2,4,6,8]</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline9" class="outline-3">
+<h3 id="orgheadline9"><span class="section-number-3">1.2</span> Monad</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+我为什么要在链式调用之后介绍 Monad，这个来自 Haskell 的这个看似令人费解的东西呢？虽然说当你问一个 Haskell 的人如何理解 Monad 时，他们经常会让你先了解下 Category Theory，但其实并没有这个必要。Crockford 在解释 Monad 的时候就说过：
+</p>
+
+<blockquote>
+<p>
+吃墨西哥鸡卷前要先学会墨西哥语吗？ —— Crockford
+</p>
+</blockquote>
+
+<p>
+所以，我也并不打算在这里讲晦涩的范畴论（Catergory Theory），当然如果感兴趣的话网上有大把的资料。不过，你有可能会在本节结束时能理解下面这句话：
+</p>
+<blockquote>
+<p>
+Monad 就是自函子范畴上的一个幺半群。
+</p>
+</blockquote>
+
+<p>
+那么，在了解 monad 之前，我们先来聊聊函子（Functor）。
+</p>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-4">
+<h4 id="orgheadline4"><span class="section-number-4">1.2.1</span> 函子（Functor）</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+Functor 简单的来说是可以被 map over 的类型. 但是什么叫 map over？
+</p>
+
+<p>
+比如 Array 就可以说是可以被 map over 的类型，来看看 Haskell 中如何解释的：
+</p>
+
+<pre class="example">
+ghci &gt; :t fmap
+fmap :: (a -&gt; b) -&gt; fa -&gt; f b
+</pre>
+
+<p>
+这里的 <code>fmap</code> 就是 map over 在 Functor 上的函数。这个函数只干一个事情，
+<code>(a -&gt; b) -&gt; f a -&gt; f b</code> 这个类型标记告诉了我们，一个 a 到 b 的映射在接收 a 的 Functor 之后，返回一个 b 的 Functor。
+</p>
+
+<p>
+跟所有的数学定义一样，这个太抽象，我们来具体化一下以便理解。例如我现有有一个 number 类型的 a，那么我可以定义一个由 number 到 string 的映射，也就是接受 a 为参数的函数 f，使得 f(a) 返回 string 类型 b。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">f</span> = x =&gt; x + <span style="color: #8b0000;">'b'</span>;
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = 2;
+<span style="color: #00008b;">typeof</span> a == <span style="color: #8b0000;">'number'</span>;
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">b</span> = f(a); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 2b</span>
+<span style="color: #00008b;">typeof</span> b == <span style="color: #8b0000;">'string'</span>
+</pre>
+</div>
+
+
+<figure>
+<p><img src="./images/func-value.png" alt="func-value.png">
+</p>
+<figcaption><span class="figure-number">Figure 1:</span> 映射值的函数</figcaption>
+</figure>
+
+<p>
+那么如果 a 存在一个容器 fa 中，显然我们不能简单的通过 f(fa) 就能得到一个 b 类型的容器 fb。制作一个容器很简单，只需要创建一个对象就好了，这里我们把这个对象叫 Just 好了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">Just</span>(<span style="color: #b8860b;">val</span>){
+  <span style="color: #6b8e23;">this</span>.value = val;
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">fa</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Just</span>(a);
+f(fa)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [object Object]b</span>
+</pre>
+</div>
+
+<p>
+显然这时候映射 f 是不工作的，输出的是一个奇怪的结果，而不是期望的包含 b 的容器 fb，也就是 Just(b)。
+</p>
+
+<p>
+要实现这种映射其实也非常简单，只需要容器 Just 能告诉映射 f 如何应用到容器内的值就好了，而这种如何将函数应用到自己内部值的方法，就是 fmap，而实现了 fmap 的容器，就叫做 Functor。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.<span style="color: #6b8e23;">prototype</span>.fmap = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">f</span>) { <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">Just</span>(f(<span style="color: #6b8e23;">this</span>.value))}
+Just.<span style="color: #6b8e23;">prototype</span>.of = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">value</span>) {
+  <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">Just</span>(value)
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">fa</span> = Just.of(a);
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">fb</span> = fa.fmap(f); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; Object { value: "2b" }</span>
+fb <span style="color: #00008b;">instanceof</span> <span style="color: #36648b;">Just</span>; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; true</span>
+</pre>
+</div>
+
+<p>
+可以看到通过 fmap，得到了期望的在容器 Just 中的值 "2b"。其中的  <code>of</code>   方法是为了在构造一个 Just 容器时代码更可读一些。
+</p>
+
+
+<figure>
+<p><img src="./images/functor.png" alt="functor.png">
+</p>
+<figcaption><span class="figure-number">Figure 2:</span> Functor 可以通过 map 把函数映射应用到容器内的值</figcaption>
+</figure>
+
+<p>
+而刚刚的 Just 就是 Functor，由于它实现了 fmap，所以就可以说是可以 map over 了，自然就成为了 Functor。
+</p>
+
+<p>
+所以照这个逻辑，那么我只需要做一点点手脚，那么 Array 也会变成 Functor 了：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Array.<span style="color: #6b8e23;">prototype</span>.fmap = Array.<span style="color: #6b8e23;">prototype</span>.map
+</pre>
+</div>
+
+<p>
+等一下，出自 Category 理论，难道就没有写什么 Functor 的定理什么的？
+</p>
+
+<p>
+当然，由于出自完整的理论，这里也顺便提一下 Functor 具有以下性质：
+</p>
+
+<ol class="org-ol">
+<li>fa.fmap(x=&gt;x) 恒等于 fa</li>
+<li>fa.fmap(x=&gt;f(g(x))) 恒等于 fa.fmap(g).fmap(f)</li>
+</ol>
+
+<p>
+我们先来测试一下 Array：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">[1,2,3].fmap(x=&gt;x); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1,2,3]</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">f</span> = x=&gt;x+2
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">g</span> = x=&gt;x*2
+[1,2,3].fmap(x=&gt;f(g(x))); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [4,6,8]</span>
+[1,2,3].fmap(g).fmap(f) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [4,6,7]</span>
+</pre>
+</div>
+
+<p>
+看上去是没有什么问题的，我就不充分证明了，但是这个定理在后面的理解会是非常有帮助的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5"><span class="section-number-4">1.2.2</span> Applicative Functor</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+现在，我们已经有 fmap 可以把一个函数应用到一个 Functor 上，接着来看看下一个概念——Applicative Functor（下面简称 Applicative）。有了 Functor 之后，我们可以直接给容易加一组映射，但是，函数既然是一等的，那么值能放到容器中，函数是不是也可以放到容器里呢？
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">fplus2</span> = Just.of(x=&gt;x+2);
+fplus2(Just.of(3));
+</pre>
+</div>
+<p>
+显然在一个含有函数的容器是不能直接应用到任何容器或者值的，fmap 显然也不能帮我们把装有函数的容器打开。这时候 Applicative 就出来解决这种问题了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.<span style="color: #6b8e23;">prototype</span>.ap = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">container</span>){
+  container.fmap(<span style="color: #6b8e23;">this</span>.value);
+}
+fplus2.ap(Just.of(3)) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 5</span>
+</pre>
+</div>
+
+<p>
+没有想到，只是这么简单就又实现了 Applicative 吧。 现在知道为什么我先介绍 Functor 了吧。所以现在看来，所有的 Applicative 都也是 Functor，因为需要实现 fmap 方法。
+</p>
+
+<p>
+所以来看下 Applicative 的类型注解  <code>f (a -&gt; b) -&gt; f a -&gt; f b</code> ，一个 a 到 b 映射的容器，接收 a 的容器返回 b 的容器，那么这个容器就是 Applicative。
+</p>
+
+<p>
+同样的，Applicative 也具备一些性质：
+</p>
+
+<ol class="org-ol">
+<li>恒等性： <code>a.of(x=&gt;x).ap(value)</code>   恒等于 value</li>
+<li>同态：  <code>a.of(f).op(a.of(x))</code>  等于  <code>a.of(f(x))</code></li>
+<li>交换律：  <code>u.ap(a.of(y))</code>  等于  <code>a.of(f=&gt;f(y)).ap(u)</code></li>
+</ol>
+
+<p>
+刚好试一下我们的新 Just 有没有符合这些性质：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.of(x=&gt;x).ap(3) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 3</span>
+Just.of(x=&gt;x+1).ap(Just.of(2)) == Just.of((x=&gt;x+1)(2)) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">true</span>
+Just.of(x=&gt;y).ap(Just.of(3)) == Just.of(f=&gt;f(3)).ap(Just.of(x=&gt;y)) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">true</span>
+</pre>
+</div>
+
+<p>
+如果把容器看成是 lift 的话，那么把坐电梯下来（把容器剥开，这里既是去掉所有的 Just.of 和 ap），他们其实保持着函数与值同样的关系：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">(x=&gt;x)(3) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 3</span>
+(x=&gt;x+1)(2) == (x=&gt;x+1)(2) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">true</span>
+(x=&gt;y)(3) == (f=&gt;f(3))(x=&gt;y) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">true</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">1.2.3</span> 含幺半群（Monoid）</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+前面说了两个抽象的 Functor 与 Applicative，分别是两种不同等级的 lift 操作，前者 lift 了值，后者 lift 函数，但都是为了 lift 或者说抽象函数应用，例如  <code>f(x)</code> 。
+</p>
+
+<p>
+那么值之间的二元操作该如何抽象或者说 lift 呢？比如简单的值之间的算术运算加法：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">1 + 2 <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 3</span>
+</pre>
+</div>
+
+<p>
+这并不是想  <code>f(x)</code>  的简单一元操作，这里如果把  <code>+</code>   号理解成函数的话，这将是二元操作：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">add(1, 2) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 3</span>
+</pre>
+</div>
+
+<p>
+那么这里需要抽象三个东西，或者说把三个值放到容器中，或者所如何把容器中的两个值叠加起来？
+</p>
+
+<p>
+这样看来，无论是 Functor 或者 Applicative 都没有办法把这些盒子撮合到一起，变成一个含有3的盒子 <code>Just.of(3)</code> 。
+</p>
+
+<p>
+于是，我们需要把它们抽象成 Monoid，先别着急问 Monoid 的概念是什么，等我举完这个例子先。这里用 Just 来做算术运算不太合适，请允许我换一个语义更好一些的容器比如 Sum。这里我们要做的 大概是像这样叠加两个容器：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Sum.of(1).append(Sum.of(2)) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; Sum.of(3)</span>
+</pre>
+</div>
+
+<p>
+所以重点是这个 append 方法，实现上应该要把两个盒子内的值做加法：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Sum.<span style="color: #6b8e23;">prototype</span>.append = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">anotherSum</span>){
+  <span style="color: #00008b;">return</span> anotherSum.fmap(value=&gt;<span style="color: #6b8e23;">this</span>.value+value);
+}
+</pre>
+</div>
+
+<p>
+有意思的是，加法会存在一个类似 identity 的元素 empty，使得任何数加 empty 值完全不变，因此加法的 emtpy 就是 0。那么当我抽象到容器之后，应该符合同样的规则，Sum 应该也存在一个 empty，使得  <code>Sum.of(any).append(Sum.empty)</code>  任然是 any。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Sum.<span style="color: #6b8e23;">prototype</span>.empty = Sum.of(0);
+</pre>
+</div>
+
+<p>
+没有错，那就是 Sum.of(0)，我们管这个 empty 叫做 _幺元_（identity element）. 好了这个简单的例子讲完也实现了，现在可以来定义 Monoid 了，现在这个 Sum 就是 Monoid， 因为他
+</p>
+
+<ol class="org-ol">
+<li>存在一个二元操作返回值仍然是 Sum</li>
+<li>有一个幺元，满足 <code>Sum.empty.append(Sum.of(2)) == Sum.of(2)</code></li>
+<li>满足结合律  <code>Sum.of(1).append(Sum.of(2)).append(Sum.of(3)) == Sum.of(2).append(Sum.of(2).append(Sum.of(3)))</code></li>
+</ol>
+
+<p>
+对于 Monoid 的实现非常简单，可能并没有人会关系实现，而更重要的是，为什么要满足这些条件，这些公理能带来什么好处。
+</p>
+
+
+<figure>
+<p><img src="./images/monoid.png" alt="monoid.png">
+</p>
+<figcaption><span class="figure-number">Figure 3:</span> monoid 只是抽象到容器的二元操作</figcaption>
+</figure>
+
+<p>
+想一想我们要叠加多个数，可以这样：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">1+2+3+4+5
+</pre>
+</div>
+
+<p>
+当然有更高雅的 reduce 方式：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">[1,2,3,4,5].reduce((_1,_2)=&gt;_1+_2)
+</pre>
+</div>
+
+<p>
+好了，那么抽象到容器，我们是不是可以干同样的事情？
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">[Sum.of(1), Sum.of(2), Sum.of(3), Sum.of(4), Sum.of(5)].reduce((_1,_2)=&gt;_1.append(_2))
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7"><span class="section-number-4">1.2.4</span> Monad</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+好了，有了包在容器中的函数或值之后，我们可以 fmap 一个函数到容器，我们还可以直接应用含有函数的容器到另一个容器，我们还可以像函数组合一样组合这些容器们。但是，还记得与函数组合（compose)一起介绍的管道（pipeline）吗？通过管道，可以让函数组合的顺序更符合阅读习惯，更适合一眼就能看出数据的流向。激动人心的时刻到了，Monad 这个被解释的过于抽象的东西，我要说其实就是容器界的管道。
+</p>
+
+<p>
+如果我告诉你在前一节其实已经见过 Monad 了（如果不小心跳过了上一节，赶紧回去补一补），你会信吗？
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Promise(resolve=&gt;0)
+.then(x=&gt;x+1) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">1</span>
+.then(x=&gt;2/x) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">2</span>
+</pre>
+</div>
+
+<p>
+当然，这个并不是 Monad，这是简单的 pipe，等同于：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">mori.pipeline(0, x=&gt;x+1, x=&gt;2/x)
+</pre>
+</div>
+
+<p>
+正常的函数组合的顺序应该是这样的：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">(x=&gt;2/x)((x=&gt;x+1)(0))
+</pre>
+</div>
+
+<p>
+运用我们前面学过的 Applicative Functor，来把这些都装容器里试试，首先，来把函数组合装容器中，继续使用我们刚刚实现的 Just：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.of(x=&gt;2/x).ap(Just.of(x=&gt;x+1).ap(Just.of(0)))
+</pre>
+</div>
+
+<p>
+本来看函数的嵌套调用都已经有些头晕了，这回全部包了层容器，更是摸不着头脑了。试试用 Functor 实现：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.of(0).map(x=&gt;x+1).map(x=&gt;2/x)
+</pre>
+</div>
+
+<p>
+似乎已经非常像 pipeline，以及可以链式编程的 Promise 了，但是现在问题来了，如果我再 map 一个函数，而且这时输入变成了 Just.of(1)
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.of(1).fmap(x=&gt;x+1).fmap(x=&gt;2/x).fmap(x=&gt;x*x)
+</pre>
+</div>
+
+<p>
+你会看到直接抛异常了，因为输入改成  <code>Just.of(1)</code>  之后，当数据通过第一个函数返回的是 0，也就是当  <code>Just.of(0)</code>  再  <code>map(x=&gt;2/x)</code>   相当于除零运算，当然是异常。
+</p>
+
+<p>
+好，这时候如果能让我避免异常，可以在 map 里的函数加 try catch，或者 if else 验证输入条件。但是，最后的那个 map 怎么办？如果是 try catch 没有返回，意味着后面的 x*x 自然也会出错，如果是 if else，那么 else 里面应该返回什么呢？
+</p>
+
+<p>
+如果能返回一个容器，map 任何函数到它都还是它自己，似乎就可以忽略掉一旦出错后面的一大堆 map 了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">Nothing</span>(){};
+Nothing.<span style="color: #6b8e23;">prototype</span>.fmap = <span style="color: #00008b;">function</span>(){
+  <span style="color: #00008b;">return</span> <span style="color: #6b8e23;">this</span>;
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">nothing</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Nothing</span>;
+</pre>
+</div>
+
+<p>
+问题是，Just 不管怎么 fmap 都是 Just，如何能让它变成 Nothing 呢？
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.of(1).fmap(x=&gt;x+1).fmap(x=&gt;{
+  <span style="color: #00008b;">if</span>(x==0) <span style="color: #00008b;">return</span> nothing;
+  <span style="color: #00008b;">return</span> Just.of(2/x);
+})
+</pre>
+</div>
+
+<p>
+没有错，这段代码返回的会是一个在容器里的容器， <code>Just.of(Nothing)</code>  或者  <code>Just.of(Just.of(2/x))</code> ，所以我们还需要修改后面 map 中的函数程序才能正常工作：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.of(1).fmap(x=&gt;x+1).fmap(x=&gt;{
+  <span style="color: #00008b;">if</span>(x==0) <span style="color: #00008b;">return</span> nothing;
+  <span style="color: #00008b;">return</span> Just.of(2/x);
+}).fmap(x=&gt;x.fmap(y=&gt;y*y))
+</pre>
+</div>
+
+<p>
+这显然越改越复杂了，现实包一层，后面的 fmap 再拆掉前面包的这一层容器，那我们何必要多包一层呢？不如直接不包，比如将包和拆包放到 flatmap 方法中。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.<span style="color: #6b8e23;">prototype</span>.flat = <span style="color: #00008b;">function</span>(){
+  <span style="color: #00008b;">return</span> <span style="color: #6b8e23;">this</span>.value
+}
+Just.<span style="color: #6b8e23;">prototype</span>.flatmap = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">f</span>){
+  <span style="color: #6b8e23;">this</span>.fmap(f).flat();
+}
+Nothing.<span style="color: #6b8e23;">prototype</span>.flatmap = Nothing.<span style="color: #6b8e23;">prototype</span>.fmap
+</pre>
+</div>
+
+<p>
+当然 ，这样我们能写出一个更优雅的带容器的 pipeline 了：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Just.of(1).flatmap(x=&gt;Just.of(x+1)).flatmap(x=&gt;{
+  <span style="color: #00008b;">if</span>(x==0) <span style="color: #00008b;">return</span> nothing;
+  <span style="color: #00008b;">return</span> Just.of(2/x);
+}).flatmap(x=&gt;Just.of(x*x));
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; nothing</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-4">
+<h4 id="orgheadline8"><span class="section-number-4">1.2.5</span> <span class="todo TODO">TODO</span> Monad 就是自函子范畴上的一个幺半群</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<p>
+但是举了这么些例子，怎么一点也看不出来 monad 与 monoid 的关系呢？倒是很明确 Monad 是个比较特殊的 Functor。
+</p>
+
+<p>
+我们需要进一步的抽象才能解释这句话，首先，回顾前面 Monoid 的知识，比如那个 Sum 的 Monoid。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Sum.of(1).append(Sum.of(2)).append(Sum.of(0)) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; Sum.of(3)</span>
+</pre>
+</div>
+
+<p>
+这个 Monoid 很明显，它的二元操作是 <code>append</code> ，幺元是 <code>Sum.of(0)</code> ，范畴是 <code>Sum</code> 。 为了更明显我们可以降一个维度（范畴），把 <code>Sum.of(1)</code> 降成 <code>1</code>
+</p>
+
+<p>
+(1 + 2 + 0)
+</p>
+
+<p>
+但是 Monad 哪来的二元操作啊？一个 <code>flat</code> ，一个 <code>fmap</code> ，都是一元操作啊？
+</p>
+
+<p>
+如果我们降一个维度， 到只有数字的维度上，
+</p>
+
+<pre class="example">
+(1.2).3 = 1.(2.3)
+</pre>
+
+<p>
+二元操作 <code>+</code> 可以使得这个等式成立。
+而幺元 0，又可以使得
+</p>
+
+<pre class="example">
+0.2 = 2 = 2.0
+</pre>
+<p>
+在二元操作 <code>+</code> 上成立。
+</p>
+
+<p>
+所以我们得到的 monoid 为 (数字集合，二元操作 <code>+</code> ，幺元 0)。
+</p>
+
+<p>
+同样的，上升到函子的范畴上<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>，注意是自函子 <b>范畴</b> 上的幺半群，就代表的是函子范畴而不是函子实例是幺半群，所以以 Maybe 为例，就需要符合：
+</p>
+
+<pre class="example">
+(Maybe.Maybe).Maybe = Maybe.(Maybe.Maybe)
+</pre>
+
+<p>
+能找到一个二元操作使得上式成立？而不是：
+</p>
+
+<pre class="example">
+(Just.of(1).append(Just.of(2))).append(Just.of(3)) = Just.of(1).append(Just.of(2).append(Just.of(3)))
+</pre>
+
+<p>
+这个二元操作就是我们刚实现的 Just Monad 的 flat。我们很容易可以把 flat 代入到式子变换成以下格式，
+</p>
+<pre class="example">
+flat(flat(Maybe.Maybe).Maybe) = flat(Maybe.flat(Maybe.Maybe))
+</pre>
+
+<p>
+其中的 <code>.</code> 是两个类型组合在一起。如同函数的组合是 <code>f.g x= f(g(x))</code> ，在函子范畴上的组合就是 Maybe 类型的值，在一个 Maybe 类型的容器中：
+</p>
+
+<pre class="example">
+Maybe.Maybe = Maybe[Maybe]
+</pre>
+
+<p>
+再代入一遍，就非常清晰结合律的等式是成立的了：
+</p>
+
+<pre class="example">
+flat(flat(Maybe[Maybe])[Maybe]) = flat(Maybe[flat(Maybe[Maybe])])
+</pre>
+
+<p>
+大声念出来应该就是：
+flat 一个容器为 <code>flat(Maybe[Maybe])</code> 类型，其值类型为 <code>Maybe</code> 得到的类型等于，
+ flat 一个 Maybe 类型，其内值类型为 <code>flat(Maybe[Maybe])</code>  所得到的类型。
+</p>
+
+<p>
+听起来比较像绕口令，仔细看看等式就能理解了。另外一个 monoid 的法则是需要有一个幺元，满足：
+</p>
+
+<pre class="example">
+?.Maybe = Maybe = Maybe.?
+</pre>
+
+<p>
+我们很容易能猜到把 Maybe 代入就是我的解，因此任何 Maybe 类型都是幺元：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">flat(M[M]) = M = flat(M[M])
+</pre>
+</div>
+
+<p>
+<b>所以，flat 就像 moniod 里的 append 一样，但是它并不连接值或是容器，而是连接函子组合，让函子在不同范畴间变换</b>
+</p>
+
+
+
+<figure>
+<p><img src="./images/monad.png" alt="monad.png">
+</p>
+<figcaption><span class="figure-number">Figure 4:</span> Monad 是 Functor 类型的 Monoid</figcaption>
+</figure>
+
+<p>
+到这里，我可以告诉你现在的 Just 就是 Monad 了， 它是 Functor 的加强，把 fmap 的结果铺平（flat）。同时又是 Applicative 的加强， Applicative 让我们可以用一般函数作用到在容器中的值，而 Monad 让我们可以把一个容器中的值传入一个接收值的函数中，并返回同样的容器。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline13" class="outline-3">
+<h3 id="orgheadline13"><span class="section-number-3">1.3</span> 走钢丝</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+如果用简单的 Monad 来表示薛定谔猫就再简单不过了，比如往盒子在加放射性原子,如果猫活着,就是绿巨猫,
+如果猫是死的,那就是绿巨死猫。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">Box.of(cat).flatmap(cat=&gt;{
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">hulkcat</span> = radioactive(cat)
+<span style="color: #00008b;">if</span>(hulkcat==<span style="color: #8b0000;">'dead'</span>)
+  <span style="color: #00008b;">return</span> BloodyBox.of(hulkcat)
+<span style="color: #00008b;">return</span> Box.of(hulkcat)
+}
+</pre>
+</div>
+
+<p>
+所以可以说我们最终得到的若不是（either）含有绿巨猫，就是含有一只绿巨死猫的血淋淋的盒子。这个例子过于简单，我们来一个更实际的例子。
+</p>
+</div>
+
+<div id="outline-container-orgheadline12" class="outline-4">
+<h4 id="orgheadline12"><span class="section-number-4">1.3.1</span> 皮尔斯走钢丝</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+皮尔斯决定要辞掉他的工作改行试着走钢丝。他对走钢丝还挺在行的。不过仍有个小问题，就是鸟会停在他拿的平衡竿上。他们会飞过来停一小会儿，然后再飞走。这样的情况在两边的鸟的数量一样时并不是个太大的问题。但有时候，所有的鸟都会想要停在同一边，皮尔斯就失去了平衡，就会让他从钢丝上掉下去。
+</p>
+
+<p>
+我们假设两边的鸟差异在三个之内的时候，皮尔斯仍能保持平衡。
+</p>
+</div>
+
+
+<div id="outline-container-orgheadline10" class="outline-5">
+<h5 id="orgheadline10">一般解法</h5>
+<div class="outline-text-5" id="text-orgheadline10">
+<p>
+首先看看不用 Monad 怎么解：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">landLeft</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">n</span>, <span style="color: #b8860b;">pole</span>){
+    <span style="color: #00008b;">return</span> [pole[0]+n, pole[1]];
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">landRight</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">n</span>, <span style="color: #b8860b;">pole</span>){
+    <span style="color: #00008b;">return</span> m.reverse(landLeft(n, m.reverse(pole)));
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">result</span> = m.pipeline([0,0],
+                  m.partial(landLeft, 1),
+                  m.partial(landRight,1),
+                  m.partial(landLeft, 2));
+console.log(result);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [3 1]</span>
+</pre>
+</div>
+
+<p>
+对了，还差一个判断皮尔斯是否掉下来的操作.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">landLeft</span> = eweda.curry(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">n</span>, <span style="color: #b8860b;">pole</span>){
+    <span style="color: #00008b;">if</span>(pole==<span style="color: #8b0000;">'dead'</span>) <span style="color: #00008b;">return</span> pole;
+    <span style="color: #00008b;">if</span>(Math.abs(pole[0]-pole[1]) &gt; 3)
+      <span style="color: #00008b;">return</span> <span style="color: #8b0000;">'dead'</span>;
+    <span style="color: #00008b;">return</span> [pole[0]+n, pole[1]];
+});
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">landRight</span> = eweda.curry(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">n</span>, <span style="color: #b8860b;">pole</span>){
+    <span style="color: #00008b;">if</span>(pole==<span style="color: #8b0000;">'dead'</span>) <span style="color: #00008b;">return</span> pole;
+    <span style="color: #00008b;">return</span> landLeft(n, eweda.reverse(pole));
+});
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">result</span> = eweda.pipe(landLeft(10), landRight(1), landRight(8))([0,0]);
+console.log(result);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; dead</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-5">
+<h5 id="orgheadline11">现在来试试用 Either</h5>
+<div class="outline-text-5" id="text-orgheadline11">
+<p>
+我们先把皮尔斯放进 Either 容器里让他走钢丝，这样皮尔斯的状态只有打开 Either 容器
+才能看见。假设 Right 是装着活着的皮尔斯的容器，Left 是装死了得皮尔斯的容器。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">land</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">lr</span>, <span style="color: #b8860b;">n</span>, <span style="color: #b8860b;">pole</span>){
+    pole[lr] = pole[lr] + n;
+    <span style="color: #00008b;">if</span>(Math.abs(pole[0]-pole[1]) &gt; 3) {
+      <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">Left</span>(<span style="color: #8b0000;">"dead when land "</span> + n + <span style="color: #8b0000;">" became "</span> + pole);
+    }
+    <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">Right</span>(pole);
+}
+
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">landLeft</span> = n=&gt;m.partial(land,0,n); 
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">landRight</span> = n=&gt;m.partial(land,1,n);
+</pre>
+</div>
+
+<p>
+现在落鸟后会返回一个 Either，Right 或者 Left。
+</p>
+
+<p>
+偷看容器内东西的函数可以是这样的，类似于 fmap，但是这里可以分别对 Either 左右值应用不同的函数：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">stillAlive</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){
+    console.log(x)
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">dead</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){
+    console.log(<span style="color: #8b0000;">'&#30382;&#23572;&#26031; '</span> + x);
+}
+either(dead, stillAlive, landLeft(2, [0,0]))
+</pre>
+</div>
+
+<p>
+好像越来越接近了，但是这里只落了一次鸟，如果我要落好几次呢。这就需要实现 Either 的 flatmap 方法，让小鸟不停的落到皮尔斯的杆子上：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Left.<span style="color: #6b8e23;">prototype</span>.flatmap = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">fn</span>){<span style="color: #00008b;">return</span> <span style="color: #6b8e23;">this</span>;};
+Right.<span style="color: #6b8e23;">prototype</span>.flatmap = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">fn</span>){
+      <span style="color: #00008b;">return</span> fn(<span style="color: #6b8e23;">this</span>.value)
+    }
+</pre>
+</div>
+
+<p>
+当然，应用左右函数的 either 函数实现起来也非常简单：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">either = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">left</span>, <span style="color: #b8860b;">right</span>, <span style="color: #b8860b;">Either</span>){
+    <span style="color: #00008b;">if</span>(Either.constructor.name == <span style="color: #8b0000;">'Right'</span>)
+        <span style="color: #00008b;">return</span> Either.fmap(right)
+    <span style="color: #00008b;">else</span>
+        <span style="color: #00008b;">return</span> Either.fmap(left)
+}
+</pre>
+</div>
+
+
+<p>
+我们来试试工作不工作：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">walkInLine</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Right</span>([0,0]);
+eitherDeadOrNot = walkInLine.flatmap(landLeft(2))
+    .flatmap(landRight(5))
+either(dead, stillAlive, eitherDeadOrNot)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [2,5]   &lt;1&gt;</span>
+eitherDeadOrNot = walkInLine.flatmap(landLeft(2))
+  .flatmap(landRight(5))
+  .flatmap(landLeft(3))
+  .flatmap(landLeft(10)
+  .flatmap(landRight(10)))
+
+either(dead, stillAlive, eitherDeadOrNot)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "&#30382;&#23572;&#26031;dead when land 10 became 15,5" &lt;2&gt;</span>
+</pre>
+</div>
+<p>
+果然跟预期的一样：
+</p>
+<ol class="org-ol">
+<li>在所有小鸟的差值不大于三时，我们可以偷看到皮尔斯还是或者的</li>
+<li>但是如果一旦大于 3，皮尔斯的就已经死掉，不管之后再怎么落鸟，死的皮尔斯状态不会再变化。</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline18" class="outline-3">
+<h3 id="orgheadline18"><span class="section-number-3">1.4</span> Monad 在 JavaScript 中的应用</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+你知道 ES6 有个新的 类型
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#Browser_compatibility">Promise</a>
+吗, 如果不知道, 想必也听过 jQuery 的 <code>$.ajax</code> 吧, 但如果你没听过 promise,
+说明你没有认真看过他的返回值:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">aPromise</span> = $.ajax({
+    url: <span style="color: #8b0000;">"https://api.github.com/users/jcouyang/gists"</span>
+    dataType: <span style="color: #8b0000;">'jsonp'</span>
+    })
+aPromise <span style="color: #8c8c8c; font-style: italic;">/***</span>
+<span style="color: #8c8c8c; font-style: italic;">=&gt; Object { state: .Deferred/r.state(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    always: .Deferred/r.always(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    then: .Deferred/r.then(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    promise: .Deferred/r.promise(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    pipe: .Deferred/r.then(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    done: b.Callbacks/p.add(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    fail: b.Callbacks/p.add(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    progress: b.Callbacks/p.add() }</span>
+<span style="color: #8c8c8c; font-style: italic;">***/</span>
+</pre>
+</div>
+
+
+<p>
+我们看到返回了好多 <code>Deferred</code> 类型的玩意, 我们来试试这玩意有什么用
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">anotherPromise = aPromise.then(_ =&gt; _.data.forEach(y=&gt; console.log(y.description)))
+<span style="color: #8c8c8c; font-style: italic;">/* </span><span style="color: #8c8c8c; font-style: italic;">=&gt;</span>
+<span style="color: #8c8c8c; font-style: italic;">Object { state: .Deferred/r.state(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    always: .Deferred/r.always(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    then: .Deferred/r.then(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    promise: .Deferred/r.promise(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    pipe: .Deferred/r.then(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    done: b.Callbacks/p.add(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    fail: b.Callbacks/p.add(),</span>
+<span style="color: #8c8c8c; font-style: italic;">    progress: b.Callbacks/p.add() }</span>
+
+<span style="color: #8c8c8c; font-style: italic;">"connect cisco anyconnect in terminal"</span>
+<span style="color: #8c8c8c; font-style: italic;">"&#20026;&#20160;&#20040;&#35201;&#26607;&#37324;&#21270;&#65288;curry&#65289;"</span>
+<span style="color: #8c8c8c; font-style: italic;">"&#25209;&#37327;&#33719;&#21462;&#20154;&#20154;&#24433;&#35270;&#19979;&#36733;&#38142;&#25509;"</span>
+<span style="color: #8c8c8c; font-style: italic;">......</span>
+<span style="color: #8c8c8c; font-style: italic;">*/</span>
+</pre>
+</div>
+
+<p>
+看见没有，它又返回了同样一个东西，而且传给 then
+的函数可以操作这个对象里面的值。这个对象其实就是 Promise 了。
+为什么说这是 Monad 呢？来试试再实现一次“走钢丝”。
+</p>
+</div>
+
+<div id="outline-container-orgheadline14" class="outline-4">
+<h4 id="orgheadline14"><span class="section-number-4">1.4.1</span> Promise 版本的走钢丝</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<p>
+下面我们开始使用 ES6 标准的 Promise。
+同样的，我们需要一个接受普通值返回容器的落鸟函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">land</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">lr</span>, <span style="color: #b8860b;">n</span>, <span style="color: #b8860b;">pole</span>){
+    pole[lr] = pole[lr] + n;
+    <span style="color: #00008b;">if</span>(Math.abs(pole[0]-pole[1]) &gt; 3) {
+      <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">Promise</span>((resovle,reject)=&gt;reject(<span style="color: #8b0000;">"dead when land "</span> + n + <span style="color: #8b0000;">" became "</span> + pole));
+    }
+    <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">Promise</span>((resolve,reject)=&gt;resolve(pole));
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">landLeft</span> = n=&gt;m.partial(land,0,n)
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">landRight</span> = n=&gt;m.partial(land,1,n)
+</pre>
+</div>
+
+<p>
+然后就可以开始往皮尔斯的杆子上落鸟了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">Promise.all([0,0])
+.then(landLeft(2)) 
+.then(landRight(3)) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; Array [ 2, 3 ]</span>
+.then(landLeft(10))
+.then(landRight(10))
+.then(_=&gt;console.log(_),_=&gt;console.log(_))
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "dead when land 10 became 12,3"</span>
+</pre>
+</div>
+
+<p>
+最后一个 then 相当于 either 函数，之前的每一个 then 相当于 flatmap，
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline17" class="outline-4">
+<h4 id="orgheadline17"><span class="section-number-4">1.4.2</span> When</h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+虽然已经是 ES6 的标准，但是 Promise 只提供非常基本的支持，通常我们可以使用更实用的库入 <a href="https://github.com/cujojs/when">when</a> 或者 <a href="https://documentup.com/kriskowal/q/">q</a>。 这里我简单的介绍一下更为丰富的 when。
+</p>
+</div>
+
+<div id="outline-container-orgheadline15" class="outline-5">
+<h5 id="orgheadline15">lift</h5>
+<div class="outline-text-5" id="text-orgheadline15">
+<p>
+还记得之前讲 Applicative 时提到的 lift，可以把一个函数装到容器中，而 when.lift 就是把一般函数提升（lift）成一个含有函数的 Pormise。既然变成一个 lifted 的函数，当然，就像 Applicative 一样，可以应用到一个含有值的容器上，也就是类似  <code>when.lift(f).ap(aPromise)</code> 。更方便的，直接调用就等同于调用 ap 方法：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">readFile</span> = <span style="color: #00008b;">function</span>(){
+   <span style="color: #00008b;">return</span> when.promise(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">resolve</span>){
+   setTimeout(_=&gt;resolve(<span style="color: #8b0000;">"i am a file"</span>), 3000);
+})
+}
+
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">print</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">text</span>){
+    console.log(text);
+    <span style="color: #00008b;">return</span> <span style="color: #8b0000;">"printed"</span>;
+}
+when.lift(print)(readFile())
+ .then(_=&gt;console.log(_))
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#19977;&#31186;&#21518; =&gt; "i am a file"</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; printed</span>
+</pre>
+</div>
+
+<p>
+跟 Applicative 一样，当吧函数也提升到容器层面，那么含有函数的容器应用到一个含有值的容器，返回的当然是一个包含结果的容器。所以这里会看到应用函数 print 到 readFile() 会打印出 readFile()  Promise 内的值，也就是三秒后 resolve 的 “i am a file”，同时，print 的返回值 “printed” 会被包在容器 Promise 中，从而还可以通过 then 打印出 print Promise 的值。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline16" class="outline-5">
+<h5 id="orgheadline16">when.map</h5>
+<div class="outline-text-5" id="text-orgheadline16">
+<p>
+这又是另一个特别方便的方法，在我们可以 lift 函数来操作 Promise 的时候，如果需要操作多个 Promise 的时候，很容易想到只要 map 这个 lift 的函数到 Promise 数组就好了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">[readFile(),readFile()].map(when.lift(print))
+</pre>
+</div>
+
+<p>
+when 提供更便捷的方式来 map 一个普通函数到 Promise 数组，那就是 when.map：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">when.map([readFile(),readFile()], print)
+</pre>
+</div>
+
+<p>
+跟之前的代码效果完全相同，只是 when.map 自动的把函数 lift 起来再 map 到数组中的 Promise 上。
+</p>
+
+<p>
+当然 when 还有非常多强大的方法这里就不一一介绍了，我的目的是通过比较有用的一些库中的 Monad 应用，说明 Monad 并非只是晦涩难懂的范畴论中的概念，而在实际应用中其实是非常常用而且功能强大的。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline24" class="outline-3">
+<h3 id="orgheadline24"><span class="section-number-3">1.5</span> Reactive 编程</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+上节提到了提供 Promise 的库 when，还有一些丰富的方法，当然 Promise 只能算是一种 Monad，在 JavaScript 的世界中还有非常多的 Monad，而我特别想要介绍跟 when 同样出自 cujojs 的 <a href="https://github.com/cujojs/most">most</a>。
+</p>
+
+<p>
+most 的 github 页面写得非常清楚，只有三个词——Monadic reactive streams，还是老习惯，如果看不懂这三个词，请先看完例子我再解释。
+</p>
+</div>
+
+<div id="outline-container-orgheadline19" class="outline-4">
+<h4 id="orgheadline19"><span class="section-number-4">1.5.1</span> 流（stream）</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<p>
+如果说数组是空间维度，那么流则是时间维度版本的数组。比如我们有一个数组，需要 reduce 一下再打印出结果，是非常容易做到的：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">[1,2,3,4].reduce((acc,x)=&gt;acc+x)
+</pre>
+</div>
+
+<p>
+那么问题是，我们操作在一个空间上已经存在的数组，是非常容易的，但是如果我们的输入是随着时间变化的，该如何处理？
+</p>
+
+<p>
+而在前端世界，这种情况非常常见，比如一个简单的用户输入框 input，同样的，我想得到输的总和，似乎是有些棘手的一件事情，只是，对于函数式编程来说，对于状态的保存就非常头疼。当然如果不考虑函数式，弄一个全局变量来保存 acc 也是最直接的思路了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">acc</span> = 0;
+$(<span style="color: #8b0000;">'input'</span>).onChange(_=&gt;acc+=_)
+</pre>
+</div>
+
+<p>
+这样每次在 input 中修改数字，都会加入到 acc 中。
+</p>
+
+<p>
+而不可变的函数式应该如何解决这种问题呢？
+</p>
+
+<p>
+下面开始用 most：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">most.fromEvent(<span style="color: #8b0000;">'input'</span>, document.querySelector(<span style="color: #8b0000;">'input'</span>))
+.reduce((acc,x)=&gt;acc+x)
+.then(_=&gt;console.log(_))
+</pre>
+</div>
+
+<p>
+而这样的一组随时间变化的输入，就变成了输入流，使用 reactive programming 的技巧，我们可以像操作空间上的数组一样操作流，这就是 reactive programming，另外如果还符合 monad 的一些公理，就会变成 monadic reactive programming。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline20" class="outline-4">
+<h4 id="orgheadline20"><span class="section-number-4">1.5.2</span> Functor</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<p>
+每个 most 的流都是一个 functor，因此我们可以 map 一个函数到流上。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">most.from([1,2,3,4]) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">&lt;1&gt;</span>
+    .map(_=&gt;_*2)
+    .observe(_=&gt;console.log(_)); <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">&lt;2&gt;</span>
+    <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">-2-4-6-8-&gt;</span>
+</pre>
+</div>
+
+<p>
+这段代码会依次输出  <code>2 4 6 8</code> 。
+&lt;1&gt; most.from 会从一个数组生成一个 most 流，跟之前的 most.fromEvent  生成一个输入流一样。
+&lt;2&gt; observe 用于观察流内的数据，每次流的数据变化，都会触发 obse 上的回调。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline21" class="outline-4">
+<h4 id="orgheadline21"><span class="section-number-4">1.5.3</span> Applicative</h4>
+<div class="outline-text-4" id="text-1-5-3">
+<p>
+不仅如此，most 还是 Applicative Functor，希望之前的概念还记得，Applicative 可以把含有函数的容器应用到另一个含有值的容器上，所以上例可以用 Applicative 这样做：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">most.of(_=&gt;_*2)
+  .ap(most.from([1,2,3,4]))
+  .observe(_=&gt;console.log(_))
+</pre>
+</div>
+
+<p>
+除了使用 Applicative 之外，我们还可以把函数 lift 起来，这样在使用上跟一般的函数就没有什么区别了，只是现在 lifted 的函数可以操作 most 流。<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">multiple2</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> x*2};
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">lifedMultiple2</span> = most.lift(multiple2);
+lifedMultiple2(most.of(3))
+  .observe(_=&gt;console.log(_))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline22" class="outline-4">
+<h4 id="orgheadline22"><span class="section-number-4">1.5.4</span> Monad</h4>
+<div class="outline-text-4" id="text-1-5-4">
+<p>
+当然，most 的流同时也是 Monad，因此可以方便的 flatmap 一个返回 stream 的函数。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">most.from([1, 2])
+    .flatMap(x=&gt;most.periodic(x * 1000).take(5).constant(x))
+    .observe(_=&gt;console.log(_));
+</pre>
+</div>
+
+<p>
+思考一下如果是一个数组  <code>[1,2]</code> ，比如 flatMap  <code>x=&gt;[x*2]</code>  会得到一个展开的数组  <code>[2,4]</code> ，而不是 <code>[[2],[4]]</code> 。 同样的，flatMap 一个流，得到应该是 flat 过的流，那么这里产生的两个流， <code>1-1-1-1-1</code> ，和  <code>2---2---2---2---2</code> ，想象一下要把两个流展开放到一个流里，空间的元素放到数组中是可以按空间排列，那么元素放到流中则是应该按照时间排列，我们做一个简单的对齐：
+</p>
+
+<pre class="example">
+1-1-1-1-1
+2- -2- -2--2--2
+
+1   1   1
+2-1-2-1-2--2--2
+</pre>
+
+<p>
+其中每一个  <code>-</code>  代表一秒，所以输出会是  <code>12-1-12-1-12--2--2</code> 。数字之间没有  <code>-</code>  代表会同时打印，因此有可能会出现 2 在 1 前的可能，其实应该是同时的。
+</p>
+
+<p>
+正是因为流可以是 Monadic 的，又可以响应式的在流的内容变化时做出相应动作，因此叫做 Monadic Reactive Stream。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline23" class="outline-4">
+<h4 id="orgheadline23"><span class="section-number-4">1.5.5</span> Object.observe</h4>
+<div class="outline-text-4" id="text-1-5-5">
+<p>
+ES7 的标准草案中给 Object 添加了一个新的方法（但是又被撤回了），可以监控一个对象的变化，从而做出对应的相应。 这一标准目前只在 Chrome 36 以上版本实现。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">obj</span> = {foo: <span style="color: #8b0000;">'bar'</span>};
+Object.observe(obj, console.log.bind(console));
+obj.foo = <span style="color: #8b0000;">'bear;'</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; {name: "foo", object: [Object], oldValue: "bar", type: "update"}</span>
+</pre>
+</div>
+
+<p>
+可以看到当我修改 obj 的时候，所产生的变化会被答应到控制台，给出了比较有用的新值和旧值。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+具体的并发模型会在第8章详细介绍。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+基本上我们说的函子都是自函子，自函子是 map 到自己范畴上的函子。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+虽然不知道为什么官网并没有推荐（deprecated） 使用 lift，反倒我觉得是用 lift 更适合函数的重用。
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p>Author: Jichao Ouyang <a aria-label="Follow @jcouyang on GitHub" data-count-aria-label="# followers on GitHub" data-count-api="/users/jcouyang#followers" data-count-href="/jcouyang/followers" href="https://github.com/jcouyang" class="github-button">Follow @jcouyang</a>
+</p>
+<p>Modified: 2016-02-11 Thu 22:47</p>
+<p>Generated by: <a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.2)</p>
+<p>&lt;Publish&gt; with _(:з」∠)_ by <a href="https://github.com/jcouyang/orgpress">OrgPress</a></p>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
+<div class="github-fork-ribbon-wrapper right-bottom"><div class="github-fork-ribbon"><a href="https://github.com/jcouyang/clojure-flavored-javascript">Fork me on GitHub</a></div></div>
+
+
+<script>
+ (function(){
+   document.getElementById('edit-in-github').addEventListener("click",function(){
+     var pathname = window.location.pathname;
+     window.location.href = "https://github.com/jcouyang/clojure-flavored-javascript/edit/master/book/"+pathname.replace(".html",".org");
+   })
+ })()
+</script>
+<!-- Google Analystics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-32314154-10', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+ var disqus_shortname = 'orgblog';
+ var href = window.location.href;
+ href.replace(/^https/, 'http');
+ var disqus_url = href;
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</body>
+</html>

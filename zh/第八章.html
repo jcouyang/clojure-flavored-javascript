@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 2016-02-11 Thu 22:50 -->
+<meta  charset="utf-8">
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Jichao Ouyang">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style/pixyll.css"/>
+<link rel="stylesheet" href="style/gh-fork-ribbon.css" />
+<!--[if lt IE 9]>
+     <link rel="stylesheet" href="/style/gh-fork-ribbon.ie.css" />
+     <![endif]-->
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<nav id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline15">1. 并发编程</a>
+<ul>
+<li><a href="#orgheadline3">1.1. 什么是并发</a>
+<ul>
+<li><a href="#orgheadline1">1.1.1. 异步与多线程</a></li>
+<li><a href="#orgheadline2">1.1.2. JavaScript 的并发模型</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline4">1.2. 通信顺序进程（CSP）</a></li>
+<li><a href="#orgheadline11">1.3. 使用 generator 实现 CSP </a>
+<ul>
+<li><a href="#orgheadline5">1.3.1. Generator</a></li>
+<li><a href="#orgheadline6">1.3.2. Go Block</a></li>
+<li><a href="#orgheadline7">1.3.3. timeout</a></li>
+<li><a href="#orgheadline8">1.3.4. take &lt;!</a></li>
+<li><a href="#orgheadline9">1.3.5. put &gt;!</a></li>
+<li><a href="#orgheadline10">1.3.6. JavaScript CSP 版本的例子</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline14">1.4. 在前端实践中使用  CSP</a>
+<ul>
+<li><a href="#orgheadline12">1.4.1. 使用移植的 core.async</a></li>
+<li><a href="#orgheadline13">1.4.2. 使用 ES7 中的异步函数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+<div id="outline-container-orgheadline15" class="outline-2">
+<h2 id="orgheadline15"><span class="section-number-2">1</span> 并发编程</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+并发编程一直是令人头疼的编程方式，直到 Clojure 和 Go 的出现，彻底改变了我们并发编程的方式。而对于单线程的 JavaScript，基于事件循环的 并发模型也一直困扰着我们，到底能从 Clojure 学些什么，可以使我们的前端 并发编程之路更顺畅一些呢？本章将带你熟悉：
+</p>
+
+<ol class="org-ol">
+<li>什么是并发？</li>
+<li>JavaScript 的并发模型。</li>
+<li>CSP 并发模型。</li>
+<li>前端实践中如何使用 CSP。</li>
+</ol>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3"><span class="section-number-3">1.1</span> 什么是并发</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+在介绍 CSP 之前首先有两个概念需要强调一下，那就是并发与并行。 为了便于理解，我会结合现实生活举一个例子。
+</p>
+
+<p>
+假设我正在上班写代码，老板过来拍着肩膀说明天要发布，加个班吧。于是我发个短信给老婆说晚点回，发完以后继续敲代码。那么请问，发短信和敲代码两个任务是 <b>并发</b> 还是并行 ？
+</p>
+
+<p>
+但如果我还特别喜欢音乐，所以我边听音乐边敲代码，那么写代码和听音乐两个任务是并发还是 <b>并行</b> ？
+</p>
+
+<p>
+为了不侮辱读者的智商，我就不公布答案了。所以说：
+</p>
+<ul class="org-ul">
+<li>并发是为了解决如何管理需要同时运行的多个任务。就例子来说就是我要决定的是到底先发短信，还是先写代码，还是写两行代码，发两个字短信呢？对于计算机来说，也就是线程管理。</li>
+<li>并行是要解决如何让多个任务同时运行。例子中的我享受音乐与写代码所用到的大脑区域可能并不冲突，因此可以让它们同时运行。对于计算机来说，就需要多个 CPU（核）或者集群来实现并行计算。</li>
+</ul>
+
+<p>
+并行与并发的最大区别就是后者任务之间是互相阻塞的，任务不能同时进行，因此在执行一个任务时就得阻塞另外一个任务。
+</p>
+</div>
+
+<div id="outline-container-orgheadline1" class="outline-4">
+<h4 id="orgheadline1"><span class="section-number-4">1.1.1</span> 异步与多线程</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+所以说到并发，如果不是系统编程，我们大多关心的只是多线程并发编程。因为进程调度是需要操作系统更关心的事情。
+</p>
+
+<p>
+继续敲代码这个例子，假如我现在能 fork 出来一只手发来短信，但是我还是只有一个脑袋，在发短信的时候我的脑子还是只能集中在
+如何编一个理由向老婆请假，而另外两只手只能放在键盘上什么也干不了，直到短信发出去，才能继续写代码。
+</p>
+
+<p>
+所以多线程开销大至需要长出（fork）一只手，结束后缩回去（join），但是这  些代价并没有带来时间上的好处，发短信时其它两只手其实是闲置(阻塞)着的。
+</p>
+
+
+<figure>
+<p><img src="images/multithread.png" alt="multithread.png">
+</p>
+<figcaption><span class="figure-number">&#22270;1&nbsp;</span> 线程任务到达 CPU 的不确定顺序</figcaption>
+</figure>
+
+<p>
+因此，另外一种更省资源的处理并发的方式就出现了——异步编程，或者叫 <i>事件驱动模型</i> 。对的，就是我们在 JavaScript 代码里经常发的 Ajax 那个异步。
+</p>
+
+<p>
+比如我还是两只手，我发完短信继续就敲代码了，这时，老婆给我回了一条短信，那我放下手中的活，拿起手机看看，老牌居然说了“同意”，于是就安心的放下手机继续敲代码了。
+</p>
+
+<p>
+注意这段动作与之前多线程的区别，相对于多线程的场景下 fork 了第三只手在敲代码时一直呆呆的握着手机，异步编程并不需要增加胳膊，资源利用率更高一些。
+</p>
+
+<p>
+那么你就要问了，你是怎么知道手机响的，还不是要开一个线程让耳朵监听着。对的，但是异步只需要很少的有限个线程就好了。比如我有十个手机
+要发给十个老婆，我还是两个线程，相比如果是多线程的话我要 fork 出来十只手，却是会省了不少的资源的<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。 
+</p>
+
+<p>
+所以 JavaScript 的并发模型就是这么实现的，有一个专门
+的事件循环（<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/EventLoop">event loop</a>）线程，就如同我们的耳朵，不停的检查消息队列中是否还有待执行的任务。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-4">
+<h4 id="orgheadline2"><span class="section-number-4">1.1.2</span> JavaScript 的并发模型</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+JavaScript 的并发模型主要基于事件循环，运行 JavaScript 代码其实就是从 event loop 里面取任务，队列中任务的来源为函数调用栈与事件绑定。
+</p>
+<ul class="org-ul">
+<li>每写一个函数 <code>f()</code> ，都会被加到消息队列中，运行该任务直到调用栈全部弹空。</li>
+<li>而像 <code>setTimeout(somefunction,0)</code> 其实是 注册一个事件句柄（event handler）， timer 会在“0毫秒”后“立刻”往队列加入 <code>somefunction</code> (如果不是 0，则是 n 长时间后加入队列)</li>
+</ul>
+
+
+<figure>
+<p><img src="images/event-loop-model.png" alt="event-loop-model.png">
+</p>
+<figcaption><span class="figure-number">&#22270;2&nbsp;</span> callback 会加到消息队列末尾</figcaption>
+</figure>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">a</span>(){
+  console.log(<span style="color: #8b0000;">'a'</span>);
+}
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">b</span>(){
+  console.log(<span style="color: #8b0000;">'b'</span>);
+}
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">timeout</span>(){
+  console.log(<span style="color: #8b0000;">'timeout'</span>);
+}
+setTimeout(timeout,0);
+a();
+b();
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "a"</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "b"</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "timeout"</span>
+</pre>
+</div>
+
+<p>
+这个例子中的 <code>timeout</code> 函数并没有在 <code>a</code> 或 <code>b</code> 之前被调用，因为当时的消息队列应该是这样的(处理顺序从左至右)
+</p>
+
+
+<figure>
+<p><img src="images/message-queue.png" alt="message-queue.png">
+</p>
+</figure>
+
+<p>
+现在，我们可以用的并发模型来再实现一下我们最开始的加班写代码的例子：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript">  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">keepDoing</span> = (something, interval) =&gt; {
+    <span style="color: #00008b;">return</span> setInterval(()=&gt;console.log(something), interval);
+  };
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">notify</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">read</span>, <span style="color: #b8860b;">callback</span>, <span style="color: #b8860b;">yesno</span>){
+    console.log(<span style="color: #8b0000;">'dinglingling'</span>)
+    setTimeout(read.bind(callback), 2000)
+
+  };
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">meSendingText</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">callback</span>) {
+    console.log(<span style="color: #8b0000;">'Me sending text'</span>);
+    notify(wifeReadingText, callback)
+  }
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">wifeReadingText</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">callback</span>){
+    console.log(<span style="color: #8b0000;">'my wife sending text'</span>);
+    notify(callback, <span style="color: #6b8e23;">null</span>, <span style="color: #8b0000;">'yes'</span>)
+  };
+
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">working</span> = keepDoing(<span style="color: #8b0000;">'typing'</span>,1000);
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">meReadingText</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">msg</span>) {
+    <span style="color: #00008b;">if</span>(msg!=<span style="color: #8b0000;">'ok'</span>) clearInterval(work);
+    console.log(<span style="color: #8b0000;">'I\'m reading text'</span>);
+  }
+
+  meSendingText((msg)=&gt;{
+<span style="color: #00008b;">if</span>(msg!=<span style="color: #8b0000;">'ok'</span>) clearInterval(work);
+<span style="color: #00008b;">else</span>
+    console.log(<span style="color: #8b0000;">'continue working'</span>);
+});
+</pre>
+</div>
+
+
+<p>
+其中 <code>notify</code> 负责往事件循环上放一个任务，当老婆读了短信，并 <code>notify</code> 我读回信之后，两秒后短信发到了我的手机上，手机（包含快来阅读短信句柄）的铃声通过我的耳朵传到我的脑回路中，触发我开始读短信。
+</p>
+
+<p>
+使用事件循环回调的形式看起来还挺高效的，而且 JavaScript 编程中我们也一直也是这么用的。但是当异步调用多了之后，就会出现 <i>回调地狱</i> （Callback Hell）的现象，为什么说是 <b>地狱</b> 呢, 可以想象一下前面例子中如果我有十个老婆，要向 五个老婆发短信申请加班，而且都同意后才能继续工作，该是如何实现呢？
+#+INDEX 回调地狱
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">meSendingText(wife1Reading, (msg)=&gt;{
+    <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+        metSendingText(wife2Reading, (msg)=&gt;{
+            <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                metSendingText(wife3Reading, (msg)=&gt;{
+                    <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                        metSendingText(wife4Reading, (msg)=&gt;{
+                            <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                                metSendingText(wife5Reading, (msg)=&gt;{
+                                    <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                                        console.log(<span style="color: #8b0000;">'continue working'</span>)
+                                })
+                        })
+                })  
+        })
+})
+</pre>
+</div>
+
+<p>
+只要有一个异步函数要回调，那么所有依赖于这个异步函数结束的函数都得放到该函数的回调内。这是个比地狱还要深的回调地狱。
+于是前段时间特别火的 Promise，似乎能够缓解一下回调地狱的窘境。但是，Promise 并不是专门用来消除回调地狱的，Promise 更有意义的应该是在于 Monadic 编程。对于回调地狱，Promise 能做的也只是把这些回调平铺开而已。
+</p>
+<blockquote>
+<p>
+从乘坐手扶电梯下回调地狱，变成了乘坐直梯下回调地狱。
+</p>
+</blockquote>
+
+<div class="org-src-container">
+
+<pre class="src src-js">meSendingText(wife1Reading)
+    .then(()=&gt;meSendingText(wife2Reading))
+    .then(()=&gt;meSendingText(wife3Reading))
+    .then(()=&gt;meSendingText(wife4Reading))
+    .then(()=&gt;meSendingText(wife5Reading))
+</pre>
+</div>
+
+<p>
+当然，如果是使用 Monadic 编程方式来解决这种问题的话，其实也可以变得非常优雅而且函数式，读者可以尝试用 <code>when</code> 实现一下（请回到第七章，如果你忘了 <code>when</code> 是什么）。
+</p>
+
+<p>
+但是本章，我要强调的是一种更有意思的异步编程方式 CSP。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4"><span class="section-number-3">1.2</span> 通信顺序进程（CSP）</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+通信顺序进程（Communicating Sequential Processes）， 是计算机科学中用于一种描述并发系统中交互的形式语言，简称 CSP，来源于C.A.R Hoare 1978年的论文。没错了，Hoare就是发明（让我们熟悉的大学算法课纠结得快要挂科的） 快排算法的那位计算机科学家了。
+</p>
+
+<p>
+CSP 由于最近 Go 语言的兴起突然复活，<a href="http://talks.golang.org/2012/concurrency.slide#1">Go</a> 给自己的 CSP 实现起名叫 <i>goroutines and channels</i> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>，由于实在是太好用了，Clojure 也加入了
+CSP 的阵营，弄了一个包叫做 <i>core.async</i> 。
+</p>
+
+<p>
+CSP 的概念非常简单, 想象一下事件循环，类似的：
+</p>
+
+<ol class="org-ol">
+<li>CSP 把这个事件循环的消息队列转换成一个数据队列，并且把这个队列叫做 <i>channel</i></li>
+<li>任务等待队列中的数据</li>
+</ol>
+
+
+<figure>
+<p><img src="images/csp.png" alt="csp.png">
+</p>
+<figcaption><span class="figure-number">&#22270;4&nbsp;</span> CSP 中的 Channel</figcaption>
+</figure>
+
+
+<p>
+这样就成功的把任务和异步数据成功从回调地狱中分离开来。还是刚才发短信的例子，我们来用 CSP 实现一遍：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">working</span> (chan))
+(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">texting</span> (chan))
+
+(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">boss-yelling</span> []
+  (go-loop [no 1]
+    (&lt;! (timeout 1000))
+    (&gt;! working (str <span style="color: #8b0000;">"bose say: work "</span> no))
+    (<span style="color: #00008b;">recur</span> (+ no 1))))
+
+<span id="coderef-wife" class="coderef-off">(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">wife-texting</span> []</span>
+  (go-loop []
+    (&lt;! (timeout 4000))
+    (&gt;! texting <span style="color: #8b0000;">"wife say: come home!"</span>)
+    (<span style="color: #00008b;">recur</span>)))
+
+<span id="coderef-reading" class="coderef-off">(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">reading-text</span> []</span>
+  (go-loop []
+    (println (&lt;! texting) <span style="color: #8b0000;">"me: ignore"</span>)
+    (<span style="color: #00008b;">recur</span>)))
+
+(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">work</span> []
+  (go-loop []
+    (println (&lt;! working) <span style="color: #8b0000;">" me: working"</span>)
+    (<span style="color: #00008b;">recur</span>)))
+
+(boss-yelling)
+(wife-texting)
+(work)
+(reading-text)
+</pre>
+</div>
+<a class="jsbin-embed" href="http://jsbin.com/muliva/2/embed?console">JS Bin</a><script src="http://static.jsbin.com/js/embed.js"></script>
+
+<ul class="org-ul">
+<li>可以看出 boss yelling，wife texting，me working 和 reading text 四个任务是 <b>并发</b> 进行的</li>
+<li>所有任务都相互没有依赖，之间完全没有 callback，没有哪个任务是另一个任务的 callback。 而且他们都只依赖于 <code>working</code> 和 <code>texting</code> 这两个channel</li>
+<li>其中的 <code>go-loop</code> 神奇的地方是，它循环获取channel中的数据，当队列空时，它的状态会变成 parking，并没有阻塞线程，而是保存当前状态，继续去试另一个 <code>go</code> 语句。</li>
+<li>拿 <code>work</code> 来说， <code>(&lt;! texting)</code> 就是从 channel texting 中取数据，如果 texting 为空，则parking</li>
+<li>而对于任务 <code>wife-texting</code> ， <code>(&gt;! texting "wife say: come home!")</code> 是往 channel texting 中加数据，如果 channel 已满，则也切到 parking 状态。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-3">
+<h3 id="orgheadline11"><span class="section-number-3">1.3</span> 使用 generator 实现 CSP <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup></h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+在看明白了 Clojure 是如何使用 channel 来解耦我的问题后，再回过头来看 JavaScript 如何实现类似的 CSP 编程呢？
+</p>
+
+<p>
+先理一下我们都要实现些什么：
+</p>
+<ul class="org-ul">
+<li>go block：当然是需要这样的个block，只有在这个 block 内我们可以自如的切换状态。</li>
+<li>channel：用来存放消息</li>
+<li>timeout：一个特殊的 channel，在规定时间内关闭</li>
+<li>take (&lt;!)：尝试 take channel 的一条消息的动作会决定下一个状态会是什么。</li>
+<li>put (&gt;!)：同样的，往 channe 中发消息，也会决定下一个状态是什么。</li>
+</ul>
+
+<p>
+当然，首先要实现的当然是最重要的 go block，但是在这之前，让我们看看实现 go block 的前提 ES6 的一个的新标准—— <i>generator</i> 。
+</p>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5"><span class="section-number-4">1.3.1</span> Generator</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+<a href="http://blog.dev/javascript/essential-ecmascript6.html#sec-9">ES6 终于支持了Generator</a>，目前Firefox与Chrome都已经实现。<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup> Generator 在每次被调用时返回 <code>yield</code> 后边表达式的值，并保存状态，下次调用时继续运行。 
+</p>
+
+<p>
+这种功能听起来刚好符合上例中神奇的 parking 的行为，于是，我们可以试试用 generator 来实现刚刚 Clojure 的 CSP 版本。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">1.3.2</span> Go Block</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+go block 其实就是一个状态机，generator 为状态机的输入，根据不同的输入使得状态机状态转移。所以实现 go block 其实就是：
+</p>
+<ul class="org-ul">
+<li>一个函数</li>
+<li>可以接受一个 <a href="#coderef-generator"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-generator');" onmouseout="CodeHighlightOff(this, 'coderef-generator');">generator</a></li>
+<li>如果 generator 没有下一步，则结束</li>
+<li>如果该步的返回值状态为 park，<a href="#coderef-parking"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-parking');" onmouseout="CodeHighlightOff(this, 'coderef-parking');">那么就是什么也不做, 过一会继续尝试新的输入</a></li>
+<li>如果为 continue，<a href="#coderef-continue"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-continue');" onmouseout="CodeHighlightOff(this, 'coderef-continue');">就接着去 generator</a> 取下一输入</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">go_</span>(<span style="color: #b8860b;">machine</span>, <span style="color: #b8860b;">step</span>) {
+  <span style="color: #00008b;">while</span>(!step.done) {
+    <span style="color: #00008b;">var</span> <span style="color: #b8860b;">arr</span>   = step.value(),
+        state = arr[0],
+        value = arr[1];
+    <span style="color: #00008b;">switch</span> (state) {
+      <span style="color: #00008b;">case</span> <span style="color: #8b0000;">"park"</span>:
+<span id="coderef-parking" class="coderef-off">        setTimeout(<span style="color: #00008b;">function</span>() { go_(machine, step); },0);</span>
+        <span style="color: #00008b;">return</span>;
+      <span style="color: #00008b;">case</span> <span style="color: #8b0000;">"continue"</span>:
+<span id="coderef-continue" class="coderef-off">        step = machine.next(value);</span>
+        <span style="color: #00008b;">break</span>;
+    }
+  }
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">go</span>(<span style="color: #b8860b;">machine</span>) {
+<span id="coderef-generator" class="coderef-off">  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">gen</span> = machine();</span>
+  go_(gen, gen.next());
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7"><span class="section-number-4">1.3.3</span> timeout</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+timeout 是一个类似于 thread sleep 的功能，想让任务能等待个一段时间再执行，
+只需要在 <code>go_</code> 中加入一个 timeout 的 <code>case</code> 就好了。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-javascript">...
+  <span style="color: #00008b;">case</span> <span style="color: #8b0000;">'timeout'</span>:
+    setTimeout(<span style="color: #00008b;">function</span>(){ go_(machine, machine.next());}, value);
+    <span style="color: #00008b;">return</span>;
+...
+</pre>
+</div>
+
+<p>
+如果状态是 timeout，那么等待 <code>value</code> 那么长的时间再继续运行 generator。
+</p>
+
+<p>
+另外，当然还需要一个返回 timeout channel 的函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">timeout</span>(<span style="color: #b8860b;">interval</span>){
+  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">chan</span> = [interval];
+  chan.name = <span style="color: #8b0000;">'timeout'</span>;
+  <span style="color: #00008b;">return</span> chan;
+}
+</pre>
+</div>
+
+<p>
+每次使用 timeout 都会生成一个新的 channel，但是 channel 内只有一个消息，就是 timeout 的 毫秒数。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-4">
+<h4 id="orgheadline8"><span class="section-number-4">1.3.4</span> take &lt;!</h4>
+<div class="outline-text-4" id="text-1-3-4">
+<p>
+当 generator 从 channel 中 take 数据时的状态转移如下：
+</p>
+<ul class="org-ul">
+<li>如果 channel 空，状态变为 park</li>
+<li>如果 channel 非空，获得数据, 状态改成 continue</li>
+<li>如果是 timeout channel，状态置成 timeout</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">take</span>(<span style="color: #b8860b;">chan</span>) {
+  <span style="color: #00008b;">return</span> <span style="color: #00008b;">function</span>() {
+    <span style="color: #00008b;">if</span>(chan.name === <span style="color: #8b0000;">'timeout'</span>){
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">'timeout'</span>, chan.pop()];
+    }<span style="color: #00008b;">else</span> <span style="color: #00008b;">if</span>(chan.length === 0) {
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"park"</span>, <span style="color: #6b8e23;">null</span>];
+    } <span style="color: #00008b;">else</span> {
+      <span style="color: #00008b;">var</span> <span style="color: #b8860b;">val</span> = chan.pop();
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"continue"</span>, val];
+    }
+  };
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline9" class="outline-4">
+<h4 id="orgheadline9"><span class="section-number-4">1.3.5</span> put &gt;!</h4>
+<div class="outline-text-4" id="text-1-3-5">
+<p>
+当 generator 往 channel 中 put 消息
+</p>
+<ul class="org-ul">
+<li>如果 channel 空，则将消息放入，状态变为 continue</li>
+<li>如果 channel 非空，则进入 parking 状态</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">put</span>(<span style="color: #b8860b;">chan</span>, <span style="color: #b8860b;">val</span>) {
+  <span style="color: #00008b;">return</span> <span style="color: #00008b;">function</span>() {
+    <span style="color: #00008b;">if</span>(chan.length === 0) {
+      chan.unshift(val);
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"continue"</span>, <span style="color: #6b8e23;">null</span>];
+    } <span style="color: #00008b;">else</span> {
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"park"</span>, <span style="color: #6b8e23;">null</span>];
+    }
+  };
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline10" class="outline-4">
+<h4 id="orgheadline10"><span class="section-number-4">1.3.6</span> JavaScript CSP 版本的例子</h4>
+<div class="outline-text-4" id="text-1-3-6">
+<p>
+有了 go block 这个状态机以及使他状态转移表之后，终于可以原原本本的将之前的 clojure 的例子翻译成 JavaScript 了。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">boss_yelling</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span>=0;;i++){
+      <span style="color: #00008b;">yield</span> take(timeout(1000));
+      <span style="color: #00008b;">yield</span> put(work, <span style="color: #8b0000;">"boss say: work "</span>+i);
+    }
+  });
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">wife_texting</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(;;){
+      <span style="color: #00008b;">yield</span> take(timeout(4000));
+      <span style="color: #00008b;">yield</span> put(text, <span style="color: #8b0000;">"wife say: come home"</span>);
+    }
+  });
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">working</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(;;){
+      <span style="color: #00008b;">var</span> <span style="color: #b8860b;">task</span> = <span style="color: #00008b;">yield</span> take(work);
+      console.log(task, <span style="color: #8b0000;">"me working"</span>);
+    }
+  });
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">texting</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(;;){
+      <span style="color: #00008b;">var</span> <span style="color: #b8860b;">read</span> = <span style="color: #00008b;">yield</span> take(text);
+      console.log(read, <span style="color: #8b0000;">"me ignoring"</span>);
+    }
+  });
+}
+boss_yelling();
+wife_texting();
+working();
+texting();
+</pre>
+</div>
+
+<p>
+是不是决定跟 Clojure 的例子非常相似呢？注意每一次 yield 都是操作 go block 这个状态机，因此就这个例子来说，我们可以跟踪一下它的状态转移过程，这样可能会对这个简单的 go block 状态机有更深得理解。
+</p>
+
+<ol class="org-ol">
+<li>首先看 <code>boss_yelling</code> 这个 go 状态机，当操作为 <code>take(timeout(1000))</code> 时，状态会切换到  <code>timeout</code> 这样状态机会停一个 1000 毫秒。</li>
+<li>其他的状态机会继续运行，接下来应该就到 <code>wife_texting</code> ，同样的这个状态机也会停 4000秒</li>
+<li>现在轮到 <code>working</code> ，但是 work channel 中并没有任何的消息，所以也进入 parking 状态。</li>
+<li>同样 <code>texting</code>  状态机也进入 parking 状态。</li>
+</ol>
+
+<p>
+直到 1000 毫秒后， <code>boss_yelling</code> timeout
+</p>
+
+<ol class="org-ol">
+<li><code>bose_yelling</code> 状态机继续运行，往 work channel 中放了一条消息。</li>
+<li><code>working</code> 状态机得以继续运行，打印消息。</li>
+</ol>
+
+<p>
+此时没有别的状态机的状态可以变化，又过了 1000 毫秒， <code>working</code> 还会继续打印，直到第 4000 毫秒， <code>wife_texting</code> timeout，状态机继续运行，往 text channel 添加了一条消息。这时状态机 <code>texting</code> 的状态才从 parking 切到 continue，开始打印消息。
+</p>
+
+<p>
+以此类推，就会得到这样的结果：
+</p>
+<pre class="example">
+"boss say: work 0"
+"me working"
+"boss say: work 1"
+"me working"
+"boss say: work 2"
+"me working"
+"boss say: work 3"
+"me working"
+"boss say: work 4"
+"me working"
+"wife say: come home"
+"me ignoring"
+"boss say: work 5"
+"me working"
+...
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline14" class="outline-3">
+<h3 id="orgheadline14"><span class="section-number-3">1.4</span> 在前端实践中使用  CSP</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+之前的实验性的代码只是为了说明 CSP 的原理和实现思路之一，更切合实际的，我们可以通过一些库来使用到 Clojure 的 core.async。这里我简单的介绍一下我从 ClojureScript 的 core.async 移植过来的 conjs<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>。
+</p>
+</div>
+
+<div id="outline-container-orgheadline12" class="outline-4">
+<h4 id="orgheadline12"><span class="section-number-4">1.4.1</span> 使用移植的 core.async</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<p>
+由于 go block 在 Clojure 中是用 macro 生成状态机来实现的，要移植过来困难不小，因此这里我只将 core.async 的 channel 移植了过来，但是是以接受回调函数的方式。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">const</span> <span style="color: #b8860b;">_</span> = require(<span style="color: #8b0000;">'con.js'</span>);
+<span style="color: #00008b;">const</span> {async} = _;
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">c1</span> = async.chan()
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">c2</span> = async.chan()
+
+async.doAlts(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">v</span>) {
+  console.log(v.get(0)); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; c1</span>
+  console.log(_.equals(c1, v.get(1))) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; true</span>
+},[c1,c2]);
+
+async.put$(c1, <span style="color: #8b0000;">'c1'</span>);
+async.put$(c2, <span style="color: #8b0000;">'c2'</span>);
+</pre>
+</div>
+
+<p>
+有意思的是，我顺带实现了 Promise 版本的 core.async，会比回调要稍微更方便一些。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">async.alts([c1,c2])
+  .then((v) =&gt; {
+console.log(v.get(0)); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; c1</span>
+  console.log(_.equals(c1, v.get(1))) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; true</span>
+  })
+async.put(c1, <span style="color: #8b0000;">'c1'</span>).then(_=&gt;{console.log(<span style="color: #8b0000;">'put c1 into c1'</span>)})
+async.put(c2, <span style="color: #8b0000;">'c2'</span>).then(_=&gt;{console.log(<span style="color: #8b0000;">'put c2 into c2'</span>)})
+</pre>
+</div>
+
+<p>
+虽然把 channel 能移植过来，但是缺少 macro 原生支持的 JavaScript 似乎对 go block 也无能为力，除非能有 generator 的支持。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline13" class="outline-4">
+<h4 id="orgheadline13"><span class="section-number-4">1.4.2</span> 使用 ES7 中的异步函数</h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+由于在实践中我们经常会使用到 babel 来将 ES6 规范的代码编译成 ES5 的代码。所以顺便可以将 ES7 的开关打开，这样我们就可以使用 ES7 规范中的一个新特性—— async 函数。 使用 async 函数实现我们之前的例子估计代码并不会有大的变化，让我们使用 async 函数和 channel 实现一下 go 经典的乒乓球小例子。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr"> 1: </span><span style="color: #00008b;">let</span> <span style="color: #b8860b;">_</span> = require(<span style="color: #8b0000;">'con.js'</span>);
+<span class="linenr"> 2: </span><span style="color: #00008b;">let</span> {async} = _;
+<span class="linenr"> 3: </span>
+<span class="linenr"> 4: </span>async <span style="color: #00008b;">function</span> player(<span style="color: #b8860b;">name</span>, <span style="color: #b8860b;">table</span>) {
+<span class="linenr"> 5: </span>  <span style="color: #00008b;">while</span> (<span style="color: #6b8e23;">true</span>) {
+<span id="coderef-take" class="coderef-off"><span class="linenr"> 6: </span>    <span style="color: #00008b;">var</span> <span style="color: #b8860b;">ball</span> = await table.take();</span>
+<span class="linenr"> 7: </span>    ball.hits += 1;
+<span class="linenr"> 8: </span>    console.log(name + <span style="color: #8b0000;">" "</span> + ball.hits);
+<span class="linenr"> 9: </span>    await async.timeout(100).take();
+<span class="linenr">10: </span>    table.put(ball);
+<span class="linenr">11: </span>  }
+<span class="linenr">12: </span>}
+<span class="linenr">13: </span>
+<span class="linenr">14: </span>(async <span style="color: #00008b;">function</span> () {
+<span class="linenr">15: </span>  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">table</span> = async.chan();
+<span class="linenr">16: </span>
+<span class="linenr">17: </span>  player(<span style="color: #8b0000;">"ping"</span>, table);
+<span class="linenr">18: </span>  player(<span style="color: #8b0000;">"pong"</span>, table);
+<span class="linenr">19: </span>
+<span class="linenr">20: </span>  await table.put({hits: 0});
+<span class="linenr">21: </span>  await async.timeout(1000).take();
+<span class="linenr">22: </span>  table.close();
+<span class="linenr">23: </span>})();
+</pre>
+</div>
+<p>
+当把球 <code>{hist:0}</code>  放到 <code>table</code> channel 上的时候，阻塞在第<a href="#coderef-take"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-take');" onmouseout="CodeHighlightOff(this, 'coderef-take');">6</a>行 <code>take</code> 的 player ping 会先接到球，player ping 击完球 100ms 之后，球又回到了 <code>table</code> channel。之后 player pong 之间来回击球知道 table 在 1000ms 后被关闭。
+</p>
+
+<p>
+所以我们运行代码后看到的间断性的 100ms 的打印出：
+</p>
+<pre class="example">
+pong 1
+ping 2
+pong 3
+ping 4
+pong 5
+ping 6
+pong 7
+ping 8
+pong 9
+ping 10
+pong 11
+ping 12
+</pre>
+
+<p>
+通过 async/await，结合 conjs 的 channel， 真正让我们写出了 Clojure core.async 风格的代码。利用 CSP 异步编程的方式，我们可以用同步的思路，去编写实际运行时异步的代码。这样做不仅让我们的代码更好推理，更符合简单的命令式思维方式，也更容易 debug 和做异常处理。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+这里的多线程是相对用户而言，也就是这个例子中的我，而用手机发短信（这种 I/O 操作）是如何给基站发送消息的，占用了多少线程来做我们并不关心。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<i>goroutine</i>  名字取自 <i>coroutine</i> (协程)，由于是 go 的实现，所以叫 goroutine 了。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+里面的go的实现来自 <a href="http://swannodette.github.io/2013/08/24/es6-generators-and-csp/">http://swannodette.github.io/2013/08/24/es6-generators-and-csp/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+Chrome有一个 feature toggle 可以打开部分 es6 功能.  打开 <code>chrome://flags/#enable-javascript-harmony</code> 设置为 <code>true</code>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+源代码在 <a href="http://github.com/jcouyang/conjs%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%AE%80%E5%8D%95%E7%9A%84%E9%80%9A%E8%BF%87">http://github.com/jcouyang/conjs%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%AE%80%E5%8D%95%E7%9A%84%E9%80%9A%E8%BF%87</a> <code>npm install con.js</code> 安装。
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p>Author: Jichao Ouyang <a aria-label="Follow @jcouyang on GitHub" data-count-aria-label="# followers on GitHub" data-count-api="/users/jcouyang#followers" data-count-href="/jcouyang/followers" href="https://github.com/jcouyang" class="github-button">Follow @jcouyang</a>
+</p>
+<p>Modified: 2016-02-11 Thu 22:47</p>
+<p>Generated by: <a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.2)</p>
+<p>&lt;Publish&gt; with _(:з」∠)_ by <a href="https://github.com/jcouyang/orgpress">OrgPress</a></p>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
+<div class="github-fork-ribbon-wrapper right-bottom"><div class="github-fork-ribbon"><a href="https://github.com/jcouyang/clojure-flavored-javascript">Fork me on GitHub</a></div></div>
+
+
+<script>
+ (function(){
+   document.getElementById('edit-in-github').addEventListener("click",function(){
+     var pathname = window.location.pathname;
+     window.location.href = "https://github.com/jcouyang/clojure-flavored-javascript/edit/master/book/"+pathname.replace(".html",".org");
+   })
+ })()
+</script>
+<!-- Google Analystics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-32314154-10', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+ var disqus_shortname = 'orgblog';
+ var href = window.location.href;
+ href.replace(/^https/, 'http');
+ var disqus_url = href;
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</body>
+</html>

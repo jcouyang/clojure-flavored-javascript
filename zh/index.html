@@ -1,0 +1,3218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 2016-02-11 Thu 22:51 -->
+<meta  charset="utf-8">
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<title>Clojure Flavored JavaScript</title>
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Jichao Ouyang">
+<meta  name="keywords" content="clojure, javascript, functional, mori, clojurescript">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style/pixyll.css"/>
+<link rel="stylesheet" href="style/gh-fork-ribbon.css" />
+<!--[if lt IE 9]>
+     <link rel="stylesheet" href="/style/gh-fork-ribbon.ie.css" />
+     <![endif]-->
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<header>
+<h1 class="title">Clojure Flavored JavaScript</h1>
+</header><nav id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline1">1. 前言</a></li>
+<li><a href="#orgheadline42">2. 函数式javascript</a>
+<ul>
+<li><a href="#orgheadline14">2.1. 最好在看本书之前</a>
+<ul>
+<li><a href="#orgheadline2">2.1.1. 能看懂JavaScript代码</a></li>
+<li><a href="#orgheadline6">2.1.2. 你可能买错书了，如果你是</a>
+<ul>
+<li><a href="#orgheadline3">想学 JavaScript</a></li>
+<li><a href="#orgheadline4">想学 Clojure</a></li>
+<li><a href="#orgheadline5">函数式编程的专家</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline13">2.1.3. 准备环境</a>
+<ul>
+<li><a href="#orgheadline7">JavaScript</a>
+<ul>
+<li><a href="#orgheadline8">安装 Node/iojs</a></li>
+<li><a href="#orgheadline9">安装 sweet.js</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline10">Clojure</a>
+<ul>
+<li><a href="#orgheadline11">安装 leiningen</a></li>
+<li><a href="#orgheadline12">编辑器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline32">2.2. JavaScript 也是函数式语言?</a>
+<ul>
+<li><a href="#orgheadline19">2.2.1. 编程范式</a>
+<ul>
+<li><a href="#orgheadline15">命令式</a></li>
+<li><a href="#orgheadline16">面向对象</a></li>
+<li><a href="#orgheadline17">函数式</a></li>
+<li><a href="#orgheadline18">逻辑式编程</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline31">2.2.2. JavaScript对函数式的原生支持</a>
+<ul>
+<li><a href="#orgheadline20">函数作为参数</a></li>
+<li><a href="#orgheadline21">函数作为返回值</a>
+<ul>
+<li><a href="#orgheadline22">柯里化</a></li>
+<li><a href="#orgheadline23">thunk</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline24">越来越函数式的ES6</a></li>
+<li><a href="#orgheadline25">箭头函数</a>
+<ul>
+<li><a href="#orgheadline26">声明一个箭头函数</a></li>
+<li><a href="#orgheadline27">为什么要用箭头函数</a></li>
+<li><a href="#orgheadline28">词法绑定</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline29">尾递归优化</a></li>
+<li><a href="#orgheadline30">Destructure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline37">2.3. 作为函数式语言 JavaScript 还差些什么</a>
+<ul>
+<li><a href="#orgheadline33">2.3.1. 不可变数据结构</a></li>
+<li><a href="#orgheadline34">2.3.2. 惰性求值</a></li>
+<li><a href="#orgheadline35">2.3.3. 函数组合</a></li>
+<li><a href="#orgheadline36">2.3.4. 尾递归优化</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline41">2.4. Underscore 你错了</a>
+<ul>
+<li><a href="#orgheadline38">2.4.1. 跟大家都不一样的 map 函数</a></li>
+<li><a href="#orgheadline39">2.4.2. ClojureScript</a></li>
+<li><a href="#orgheadline40">2.4.3. Mori</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline72">3. 集合</a>
+<ul>
+<li><a href="#orgheadline51">3.1. 集合的使用</a>
+<ul>
+<li><a href="#orgheadline49">3.1.1. 向量（vector）</a>
+<ul>
+<li><a href="#orgheadline43">创建向量</a></li>
+<li><a href="#orgheadline44">获取向量中的元素</a></li>
+<li><a href="#orgheadline45">添加元素</a></li>
+<li><a href="#orgheadline46">弹出元素</a></li>
+<li><a href="#orgheadline47">首个元素及剩余元素</a></li>
+<li><a href="#orgheadline48">获取子向量（subvec）</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline50">3.1.2. Map</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline58">3.2. 函数组合子</a>
+<ul>
+<li><a href="#orgheadline52">3.2.1. map</a></li>
+<li><a href="#orgheadline53">3.2.2. filter</a></li>
+<li><a href="#orgheadline54">3.2.3. reduce</a></li>
+<li><a href="#orgheadline55">3.2.4. flattern</a></li>
+<li><a href="#orgheadline56">3.2.5. take</a></li>
+<li><a href="#orgheadline57">3.2.6. groupBy</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline63">3.3. 持久性数据结构</a>
+<ul>
+<li><a href="#orgheadline59">3.3.1. 向量的持久性数据结构</a></li>
+<li><a href="#orgheadline60">3.3.2. 最后一片叶子不完整</a></li>
+<li><a href="#orgheadline61">3.3.3. 所有叶子完整且叶子个数不大于完全树的叶子个数</a></li>
+<li><a href="#orgheadline62">3.3.4. 所有叶子完整且叶子个数大于完全树的叶子个数</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline67">3.4. 不可变性</a>
+<ul>
+<li><a href="#orgheadline64">3.4.1. 致命魔术</a></li>
+<li><a href="#orgheadline65">3.4.2. 推理（reason about）</a></li>
+<li><a href="#orgheadline66">3.4.3. 线程不安全</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline71">3.5. 惰性序列</a>
+<ul>
+<li><a href="#orgheadline68">3.5.1. 改良吃奥利奥法</a></li>
+<li><a href="#orgheadline69">3.5.2. 惰性求值 VS 及早求值</a></li>
+<li><a href="#orgheadline70">3.5.3. 惰性求值的实现</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline87">4. 并发编程</a>
+<ul>
+<li><a href="#orgheadline75">4.1. 什么是并发</a>
+<ul>
+<li><a href="#orgheadline73">4.1.1. 异步与多线程</a></li>
+<li><a href="#orgheadline74">4.1.2. JavaScript 的并发模型</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline76">4.2. 通信顺序进程（CSP）</a></li>
+<li><a href="#orgheadline83">4.3. 使用 generator 实现 CSP </a>
+<ul>
+<li><a href="#orgheadline77">4.3.1. Generator</a></li>
+<li><a href="#orgheadline78">4.3.2. Go Block</a></li>
+<li><a href="#orgheadline79">4.3.3. timeout</a></li>
+<li><a href="#orgheadline80">4.3.4. take &lt;!</a></li>
+<li><a href="#orgheadline81">4.3.5. put &gt;!</a></li>
+<li><a href="#orgheadline82">4.3.6. JavaScript CSP 版本的例子</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline86">4.4. 在前端实践中使用  CSP</a>
+<ul>
+<li><a href="#orgheadline84">4.4.1. 使用移植的 core.async</a></li>
+<li><a href="#orgheadline85">4.4.2. 使用 ES7 中的异步函数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"><span class="section-number-2">1</span> 前言</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+函数式编程可以说是非常古老的编程范式，
+但是近年来函数式编程越来越受到关注。不管是 Google 力推的 Go, 学术派的 Scala 与 Haskell，还是 lisp 跑在 JVM 上的新方言 Clojure，这些新的函数式编程语言也都越来越受到关注。
+</p>
+
+<p>
+当然不仅是后端函数式语言层出不穷，前端也不甘示弱。
+即便前端浏览器只支持一门语言——JavaScript，但是
+能支持函数式编程的 JavaScript 库越来越多，比如 Functional
+JavaScript<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，Underscore, lodash&#x2026;不仅如此，
+还有一些能编译成 JavaScript 的语言，能让前端的函数式编程发挥到极致,
+Haskell 的 PureScript, Scala 的 scalajs, Clojure 的 ClojureScript。
+</p>
+
+<p>
+我两次都以 Clojure 结尾，是因为我喜欢把重点的留到最后。
+Clojure 独特于其他的语言，它即是一门新的语言，
+一门函数式编程范式的语言，同时又流淌着着古老的lisp血液<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+这是我选择用 Clojure 来诠释函数式编程的原因之一。
+</p>
+
+<p>
+那么为什么我要选 JavaScript 作为函数式编程的目标呢。首先，正如 Rich Hickey 所言——“Clojure is Awesome, but JavaScript reaches”。Michael Fogus
+用二百多页向大家展示了不一样的《Functional JavaScript》编程方式，
+可惜 Fogus 作为 ClojureScript 编译器的贡献者，
+竟然选择了 Underscore 作为函数式库，
+直接导致并不能完全展示 JavaScript 所能达到的函数式编程能力。有趣的是，
+ClojureScript 的作者把 ClojureScript 的不可变（Immutable）数据结构移植到了 JavaScript,
+这下彻底将 JavaScript 的函数式编程提升到了用其他库都完成不了的新高度（虽然 facebook 也尝试实现自己的一个不可变数据结构 Immutable.js）。
+不仅如此, Mozilla 的 Sweet.js（<a href="https://github.com/mozilla/sweet.js">https://github.com/mozilla/sweet.js</a>）
+更是完成了另一个突破 —— JavaScript 的 macro，
+虽然不能算是函数式的概念，但也算是 lisp 语言的一项独门绝技了（虽然很多新的语言都在
+尝试实现 macro，比如 scala, rust 和 julia，但是由于语法过于复杂）。
+</p>
+
+<p>
+这一切的一切，都让我忍不住要帮 Fogus 出一本续集，用 JavaScript 实现其他函数式编程语言如 Clojure 甚至是 Haskell（就当是bonus了）的奇淫巧技，
+让大家进一步感受用 JavaScript 这门不完美的语言，
+同样可以编写出优雅的函数式代码，以不一样的方式思考和解决问题。
+于是不管你是想转行 JavaScript 的 Clojure 开发者，
+亦或是像了解 Clojure 或函数式编程的 JavaScript 开发者,
+都可以在此找到一些启发。
+但这并不是一本 JavaScript 入门的好书（Douglas 的《JavaScript 语言精粹》 是个不错的选择。另外如果读者的英文好的话，还有一本可以在线免费阅读的<a href="https://leanpub.com/javascriptallongesix/read">《JavaScript Allonge》</a>）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline42" class="outline-2">
+<h2 id="orgheadline42"><span class="section-number-2">2</span> 函数式javascript</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+本章将介绍 JavaScript 的函数式背景：
+</p>
+<ol class="org-ol">
+<li>为什么说 JavaScript 是函数式语言？</li>
+<li>我们为什么要关心函数式编程？</li>
+<li>为什么不用Underscore？</li>
+<li>要作为完整的函数式语言，JavaScript 还缺些什么？</li>
+</ol>
+</div>
+
+<div id="outline-container-orgheadline14" class="outline-3">
+<h3 id="orgheadline14"><span class="section-number-3">2.1</span> 最好在看本书之前</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-orgheadline2" class="outline-4">
+<h4 id="orgheadline2"><span class="section-number-4">2.1.1</span> 能看懂JavaScript代码</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+这既不是一本介绍 Clojure 也不是介绍 JavaScript 的书，这是一本介绍如何用 JavaScript 函数式编程的书。其中一些函数式的思想和表现形式都借用了 Clojure，因此叫做 Clojure 风格的函数式 JavaScript，但是并不要求在读本书前会 Clojure<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>，而只需要能阅读 JavaScript 代码，那就足够了。 如果你会 Clojure，可以完全忽略我解释 Clojure 代码的段落，当然 JavaScript 的部分才是重点。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">2.1.2</span> 你可能买错书了，如果你是</h4>
+<div class="outline-text-4" id="text-2-1-2">
+</div><div id="outline-container-orgheadline3" class="outline-5">
+<h5 id="orgheadline3">想学 JavaScript</h5>
+<div class="outline-text-5" id="text-orgheadline3">
+<p>
+这不是一本 JavaScript 的教科书，这里只会介绍如何用 JavaScript 进行函数式编程，所以如果想要系统学习 JavaScript 的话，我猜看一看《JavaScript 语言精粹》已经足够了。另外如果读者的英文好的话，还有一本可以在线免费阅读的<a href="https://leanpub.com/javascriptallongesix/read">《JavaScript Allonge》</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-5">
+<h5 id="orgheadline4">想学 Clojure</h5>
+<div class="outline-text-5" id="text-orgheadline4">
+<p>
+同样的，这也不是 Clojure 的教科书，这里只含有一些用于阐述函数式编程思想的 Clojure 代码。作为副作用，你确实可以学到一些 Clojure 编程的知识，但很可能是非常零碎不完整的知识。如果是想要系统的了解和学习 Clojure 的话，非常推荐《The Joy of Clojure》<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>，另外，如果读者英文比较好，还有一本可以免费在线阅读的<a href="http://braveclojure.com/">《CLOJURE for the BRAVE and TRUE》</a> 也非常的不错。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-5">
+<h5 id="orgheadline5">函数式编程的专家</h5>
+<div class="outline-text-5" id="text-orgheadline5">
+<p>
+如果你已经在日常工作或学习中使用 Scala，Clojure 或者 Haskell 等函数式语言编程的话，那么本书对你在函数式编程上的帮助不会太大。 <b>不过</b> ：这本书对解你从函数式语言迁移到 JavaScript 编程的不适应该是非常有效的，当然，这也正是本书的目的之一。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline13" class="outline-4">
+<h4 id="orgheadline13"><span class="section-number-4">2.1.3</span> 准备环境</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+在开始阅读本书之前，如果你希望能运行书中的代码的话，可能需要一些环境的配置。而且书中的所有源码和运行方式都可以在本书的 Github 仓库<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>中找到。当然如果你使用 emacs（同时还配置了 org babel 的话） 阅读本书的源码的话，对于大部分代码只需要光标放在在代码处按 <code>c-c c-c</code> 即可。
+</p>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-5">
+<h5 id="orgheadline7">JavaScript</h5>
+<div class="outline-text-5" id="text-orgheadline7">
+<p>
+原生的 JavaScript 没有什么好准备的，可以通过 Node 或者 Firefox（推荐）的 Console 运行代码。当然第五章会有一些使用 sweet.js 写的 macro，则需要安装 sweet.js。
+</p>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-6">
+<h6 id="orgheadline8">安装 Node/iojs</h6>
+<div class="outline-text-6" id="text-orgheadline8">
+<ol class="org-ol">
+<li>下载<a href="https://nodejs.org/"> nodejs</a></li>
+
+<li>如果使用 mac，可以直接用 brew 安装</li>
+</ol>
+<div class="org-src-container">
+
+<pre class="src src-sh">brew install node 
+<span style="color: #8c8c8c; font-style: italic;"># </span><span style="color: #8c8c8c; font-style: italic;">&#25110;&#32773;</span>
+brew install iojs
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline9" class="outline-6">
+<h6 id="orgheadline9">安装 sweet.js</h6>
+<div class="outline-text-6" id="text-orgheadline9">
+<p>
+在安装完 node 之后命令行输入：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">npm install -g sweet.js
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline10" class="outline-5">
+<h5 id="orgheadline10">Clojure</h5>
+<div class="outline-text-5" id="text-orgheadline10">
+<p>
+书中的 Clojure 代码大多都用来描述函数式编程的概念，当然如果想要运行书中的 Clojure 代码，首先需要安装 <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">JVM 或者 JDK</a>，至少需要1.6，推荐安装1.8。
+</p>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-6">
+<h6 id="orgheadline11">安装 leiningen</h6>
+<div class="outline-text-6" id="text-orgheadline11">
+<p>
+leiningen 是 clojure 的包管理工具，类似于 node 的 npm，ruby 的 bundle，python 的 pip。 另外 leinigen 还提供脚手架的功能。可以通过<a href="http://leiningen.org/">官网</a>的脚本安装。 mac 用户可以简单的使用 <code>brew install leiningen</code> 安装。
+</p>
+
+<p>
+安装完之后，就可以运行 <code>lein repl</code>  打开 repl，试试输入下列 clojure 代码，你将会立马看见结果。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(+ 1 1)
+<span style="color: #8c8c8c; font-style: italic;">;</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 2</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline12" class="outline-6">
+<h6 id="orgheadline12">编辑器</h6>
+<div class="outline-text-6" id="text-orgheadline12">
+<p>
+如果更喜欢使用编辑器用来编辑更长一段的代码，我推荐非 emacs 用户使用 <a href="http://lighttable.com/">Light Table</a>, intellij 用户对使用 <a href="https://cursive-ide.com/">cursive</a>。当然如果读者已经在使用 Emacs，那就更完美了，emacs <a href="https://github.com/clojure-emacs/cider">cider mode</a> 是 Clojure 编程不错的选择。
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline32" class="outline-3">
+<h3 id="orgheadline32"><span class="section-number-3">2.2</span> JavaScript 也是函数式语言?</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+说到 JavaScript 可能第一反应会是一门面向对象的语言。事实上，JavaScript 是基于原型（prototype-based）的 <b>多范式</b> 编程语言。也就是说面向对象只是 JavaScript 支持的其中一种范式而已，由于 JavaScript 的函数是一等公民，它也支持函数式编程范式。
+</p>
+</div>
+
+<div id="outline-container-orgheadline19" class="outline-4">
+<h4 id="orgheadline19"><span class="section-number-4">2.2.1</span> 编程范式</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+常见的编程范式有三种，命令式，面向对象以及函数式，事实上还有第四种，逻辑式编程。 如我们在大学时学过的C语言，就是标准的命令式语言。而如果你在大学自学过Java打过黑工的话，那么你对面向对象也再熟悉不过了吧。而可能大部分人（以为）接触函数式的机会比较少，因为它是更接近于数学和代数的一种编程范式。
+</p>
+</div>
+
+<div id="outline-container-orgheadline15" class="outline-5">
+<h5 id="orgheadline15">命令式</h5>
+<div class="outline-text-5" id="text-orgheadline15">
+<p>
+这恐怕是我们最熟悉的编程范式了(大部分计算机课程都会是C)，命令式顾名思义就是以一条条命令的方式编程，告诉计算机我需要先做这个任务，然后另一个任务。还有一些控制命令执行过程的流控制，比如我们熟悉的循环语句：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span>=0;i&lt;10;i++){
+  console.log(<span style="color: #8b0000;">'&#21629;&#20196;'</span>,i)
+}
+</pre>
+</div>
+
+<p>
+当然还有分支语句，switch等等，都是用来控制命令的执行 <i>过程</i> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline16" class="outline-5">
+<h5 id="orgheadline16">面向对象</h5>
+<div class="outline-text-5" id="text-orgheadline16">
+<p>
+这恐怕是目前最常见的编程范式了（绝大部分的工程项目的语言都会是面向对象语言）。而面向对象的思想则更接近于现实世界，封装好的对象之间通过消息互相传递信息。面向对象有一些我们熟悉的概念比如封装，继承，多态等等。而面向对象的思维主要是通过抽象成包含状态和一些方法的对象来解决问题，可以通过继承关系复用一些方法和行为。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline17" class="outline-5">
+<h5 id="orgheadline17">函数式</h5>
+<div class="outline-text-5" id="text-orgheadline17">
+<p>
+函数式则更接近于数学，简单来说就是对表达式求值。跟面向对象有所不同的是函数式对问题的抽象方式是抽象成 带有动作的函数。其思维更像是我们小时候解应用题时需要套用各种公式来求解的感觉。当然函数式跟面向对象一样还包含了很多的概念，比如高阶函数，不可变性，惰性求值等等。
+</p>
+
+
+<figure>
+<p><img src="./images/paradigm.png" alt="paradigm.png">
+</p>
+<figcaption><span class="figure-number">&#22270;1&nbsp;</span> 主要的编程范式</figcaption>
+</figure>
+</div>
+</div>
+
+<div id="outline-container-orgheadline18" class="outline-5">
+<h5 id="orgheadline18">逻辑式编程</h5>
+<div class="outline-text-5" id="text-orgheadline18">
+<p>
+可能这个名词听的比较少，但是我们经常在用而却可呢过没有意识到的 SQL 的 query 语句就是逻辑式编程。所谓逻辑式，就是通过提问找到答案的编程方式。比如：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sql"><span style="color: #00008b;">select</span> lastname <span style="color: #00008b;">from</span> someTable <span style="color: #00008b;">where</span> sex=<span style="color: #8b0000;">'&#22899;'</span> <span style="color: #00008b;">and</span> firstname <span style="color: #00008b;">in</span> (<span style="color: #8b0000;">'&#36830;&#39034;'</span>,<span style="color: #8b0000;">'&#22899;&#31070;'</span>)
+</pre>
+</div>
+
+<p>
+这里问了两个问题：
+</p>
+
+<ol class="org-ol">
+<li>性别是女？</li>
+<li>名字必须是“连顺”或者“女神”？</li>
+</ol>
+
+<p>
+那么得到的答案就是符合问题描述的结果集了。
+</p>
+
+<p>
+除了最常见的 SQL，Clojure 也提供了 <code>core.logic</code> 的库方便进行逻辑式编程。<sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline31" class="outline-4">
+<h4 id="orgheadline31"><span class="section-number-4">2.2.2</span> JavaScript对函数式的原生支持</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+说了这么多种编程范式，JavaScript 对函数式的支持到底如何呢？
+</p>
+
+<p>
+首先如果语言中的函数不是一等的，那么也就跟函数式编程也就基本划清界限了。比如 Java 8 之前的版本，值和对象才是一等公民，要写一个高阶函数可能还需要把函数包在对象中才行。<sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>
+</p>
+
+<p>
+幸好 JavaScript 中的函数是一等函数，所谓一等，就是说跟值一样都是一等公民，所有值能到的地方，都可以替换成函数。例如，可以跟值一样作为别的函数的参数，可以被别的函数想值一样返回，而这个“别的函数”叫做 <i>高阶函数</i> 。
+</p>
+</div>
+
+<div id="outline-container-orgheadline20" class="outline-5">
+<h5 id="orgheadline20">函数作为参数</h5>
+<div class="outline-text-5" id="text-orgheadline20">
+<p>
+函数作为参数最典型的应用要数 map 了，想必如果没有使用过 Underscore，也或多或少会用过 ECMAScript 5 中 Array 的 map 方法吧。map 简单将一个数组转换为另一个数组。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">[1, 2, 3, 4].map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>) {
+  <span style="color: #00008b;">return</span> ++x;
+});
+</pre>
+</div>
+
+<p>
+可以看到函数 <code>function(x){return x++}</code> 是作为参数被传入 Array 的 <code>map</code> 方法中。map 是函数式编程最常见的标志性函数，想想在 ECMAScript 5 出来之前应该怎么做类似的事情：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">array</span> = [1, 2, 3, 4];
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">result</span> = [];
+<span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span> <span style="color: #00008b;">in</span> array){
+  result.push(++i);
+}
+</pre>
+</div>
+
+<p>
+这段命令式的代码跟利用 map 的函数式代码解决问题的方式和角度是完全不同的。命令式需要操心所有的过程，如何遍历以及如何组织结果数据。而 map 由于将遍历，操作以及结果数据的组织的过程封装至 Array 中，从而参数化了最核心过程。而这里的核心过程就是 map 的参数里的匿名函数中的过程，也是我们真正关心的主要逻辑。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline21" class="outline-5">
+<h5 id="orgheadline21">函数作为返回值</h5>
+<div class="outline-text-5" id="text-orgheadline21">
+<p>
+函数作为返回值的用法可能在 JavaScript 中会更为常见。而且在不同场景下被返回的函数又有着不同的名字。
+</p>
+</div>
+
+<div id="outline-container-orgheadline22" class="outline-6">
+<h6 id="orgheadline22">柯里化</h6>
+<div class="outline-text-6" id="text-orgheadline22">
+<p>
+我们把一个多参的函数变成一次只能接受一个参数的函数的过程叫做柯里化。如：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">curriedSum</span> = curry(sum)
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">sum5</span> = curriedSum(5)
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">sum5and4</span> = sum5(4) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 9</span>
+sum5and4(3) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 12</span>
+</pre>
+</div>
+
+<p>
+当然柯里化这样做的目的非常简单，可以部分的配置函数，然后可以继续使用这些配置过的函数。当然，我会在第四章函数组合那里更详细的解释为什么要柯里化，在这之前闲不住的读者可以先猜猜为什么要把柯里化放函数组合那一章。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline23" class="outline-6">
+<h6 id="orgheadline23">thunk</h6>
+<div class="outline-text-6" id="text-orgheadline23">
+<p>
+thunk（槽）<sup><a id="fnr.8" class="footref" href="#fn.8">8</a></sup> 是指有一些操作不被立即执行，也就是说准备好一个函数，但是不执行，默默等待着合适的时候被合适的人调用。我实在想不出能比下图这个玩意更能解释 thunk 的了。 在下一章，你会见到如何用 thunk 实现惰性序列。
+</p>
+
+
+<figure>
+<p><img src="./images/thunk.png" alt="thunk.png">
+</p>
+<figcaption><span class="figure-number">&#22270;2&nbsp;</span> thunk 像是一个封装好待执行的容器</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline24" class="outline-5">
+<h5 id="orgheadline24">越来越函数式的ES6</h5>
+<div class="outline-text-5" id="text-orgheadline24">
+<p>
+ECMAScript 6（也被叫做 ECMAScript 2015，本书中会简称为 ES6）终于正式发布了，新的规范有非常的新特性，其中不少借鉴自其他函数式语言的特性，给 JavaScript 语言添加了不少函数式的新特性。
+</p>
+
+<blockquote>
+<p>
+虽然浏览器厂商都还没有完全实现 ES6 的所有规范，但是其实我们是可以通过一些中间编译器使用大部分的 ES6 的新特性，如
+</p>
+
+<p>
+<b>Babel</b>
+</p>
+
+<p>
+这是目前支持 ES6 实现最多的编译器了，没有之一。 主要是 Facebook 在维护，因此也可以编译 Facebook 的 React。这也是目前能实现尾递归优化的唯一编译器。不过关于尾递归只能优化尾子递归，相互递归的优化还没有实现。
+</p>
+
+<p>
+<b>Traceur</b>
+</p>
+
+<p>
+Google 出的比较早得一个老牌编译器，支持的 ES6 也不少了。但是从 github 上来看似乎已经没有 babel 活跃了。
+</p>
+
+<p>
+当然，除了这些也可以直接使用 FireFox。作为 ES6 规范的主要制定者之一的 Mozilla 出的 Firefox 当然也是浏览器中实现 ES6 标准最多的。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgheadline25" class="outline-5">
+<h5 id="orgheadline25">箭头函数</h5>
+<div class="outline-text-5" id="text-orgheadline25">
+<p>
+这是 ES6 发布的一个新特性，虽然 Firefox 支持已久了，不算什么新东西，但是标准化之后还是比较令人激动的。 <i>箭头函数</i> 也被叫做 <i>肥箭头</i> （fat arrow）<sup><a id="fnr.9" class="footref" href="#fn.9">9</a></sup>，大致是借鉴自 CoffeeScript 或者 Scala 语言。箭头函数是提供词法作用域的匿名函数。
+</p>
+</div>
+
+<div id="outline-container-orgheadline26" class="outline-6">
+<h6 id="orgheadline26">声明一个箭头函数</h6>
+<div class="outline-text-6" id="text-orgheadline26">
+<p>
+你可以通过两种方式定义一个箭头函数：
+</p>
+<pre class="example">
+([param] [, param]) =&gt; {
+   statement
+}
+// 或者
+param =&gt; expression
+</pre>
+
+<p>
+表达式可以省略块（block）括号，而多行语句则需要用块括号括起来。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline27" class="outline-6">
+<h6 id="orgheadline27">为什么要用箭头函数</h6>
+<div class="outline-text-6" id="text-orgheadline27">
+<p>
+虽然看上去跟以前的匿名函数没有什么区别，我们可以对比旧的匿名函数是如何写一个使数组中数字都乘 2 的函数.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = [1, 2, 3, 4,5];
+a.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){ <span style="color: #00008b;">return</span> x*2 });
+</pre>
+</div>
+
+<p>
+而使用箭头函数会变成：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">a.map(x =&gt; x*2);
+</pre>
+</div>
+
+<p>
+使用箭头函数可以少写 function 和 return 以及块括号，从而让我们其实更关心的转换关系变得更明显。略去没用的长的匿名函数定义其实可以让代码更简洁更可读。特别是在传入高阶函数作为参数的时候， <code>map(x=&gt;x*2)</code> 更形象和突出的表达了变换的逻辑。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline28" class="outline-6">
+<h6 id="orgheadline28">词法绑定</h6>
+<div class="outline-text-6" id="text-orgheadline28">
+<p>
+如果你觉得这种简化的语法糖还不足以说服你改变匿名函数的写法，那么想想以前写匿名函数中的经常需要 <code>var self=this</code> 的苦恼吧。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr"> 1: </span><span style="color: #00008b;">var</span> <span style="color: #b8860b;">Multipler</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">inc</span>){
+<span class="linenr"> 2: </span>  <span style="color: #6b8e23;">this</span>.inc = inc;
+<span class="linenr"> 3: </span>}
+<span class="linenr"> 4: </span>Multipler.<span style="color: #6b8e23;">prototype</span>.multiple = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">numbers</span>){
+<span id="coderef-selfthis" class="coderef-off"><span class="linenr"> 5: </span>  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">self</span> = <span style="color: #6b8e23;">this</span>; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;=</span></span>
+<span class="linenr"> 6: </span>  <span style="color: #00008b;">return</span> numbers.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">number</span>){
+<span id="coderef-self" class="coderef-off"><span class="linenr"> 7: </span>    <span style="color: #00008b;">return</span> self.inc * number; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;=</span></span>
+<span class="linenr"> 8: </span>  })
+<span class="linenr"> 9: </span>}
+<span class="linenr">10: </span><span style="color: #00008b;">new</span> <span style="color: #36648b;">Multipler</span>(2).multiple([1,2,3,4]) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [ 2, 4, 6, 8 ]</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="#coderef-selfthis"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-selfthis');" onmouseout="CodeHighlightOff(this, 'coderef-selfthis');">第5行</a>保持 Multipler 的 this 引用的缓存</li>
+<li><a href="#coderef-self"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-self');" onmouseout="CodeHighlightOff(this, 'coderef-self');">第7行</a>使用 self 引用 Multipler 的实例而不是 this</li>
+</ul>
+
+<p>
+这样做很怪不是吗，因此经常出现在各种面试题中，让你猜猜 this 到底是谁。或者让你去修正 this 绑定，方法如此之多，但是不管是使用 EcmaScript 5 的 bind，还是 map 的第三个参数来保证 this 的绑定不会出错，都逃脱不了要手动修正 this 绑定的命运。
+</p>
+
+<p>
+那么如果用箭头函数就不会存在这种问题：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">Multipler.<span style="color: #6b8e23;">prototype</span>.multiple = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">numbers</span>){
+  <span style="color: #00008b;">return</span> numbers.map(number =&gt; number*<span style="color: #6b8e23;">this</span>.inc);
+};
+
+<span style="color: #00008b;">new</span> <span style="color: #36648b;">Multipler</span>(2).multiple([1,2,3,4]);<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [ 2, 4, 6, 8 ]</span>
+</pre>
+</div>
+
+<p>
+现在，箭头函数里面的 this 绑定的是外层函数的 this 值，不会受到运行时上下文的影响。<sup><a id="fnr.10" class="footref" href="#fn.10">10</a></sup>而是从词法上就能轻松确定 this 的绑定。不需要 <code>var self=this</code> 了是不是确实方便了许多，不仅不会再被各种怪异的面试题坑了，还让代码更容易推理。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline29" class="outline-5">
+<h5 id="orgheadline29">尾递归优化</h5>
+<div class="outline-text-5" id="text-orgheadline29">
+<p>
+Clojure 能够通过 <code>recur</code> 函数对 <i>尾递归</i> 进行优化，但是 ES5 的 JavaScript 实现是不会对尾递归进行任何优化，很容易出现 <i>爆栈</i> 的现象。但是 ES6 的标准已经发布了对尾递归优化的支持，下来我们能做的只是等各大浏览器厂商的实现了。
+</p>
+
+<p>
+不过在干等原生实现的同时，我们也可以通过一些中间编译器如 Babel，把 ES6 的代码编译成 ES5 标准 JavaScript，而在 Babel 编译的过程就可以把尾递归优化成循环。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline30" class="outline-5">
+<h5 id="orgheadline30">Destructure</h5>
+<div class="outline-text-5" id="text-orgheadline30">
+<p>
+在解释 Destructure<sup><a id="fnr.11" class="footref" href="#fn.11">11</a></sup>之前，先举个生动的例子，比如吃在奥利奥的是时候，我的吃法是这样的：
+</p>
+
+<ol class="org-ol">
+<li>掰成两片，一片是不带馅的，一份是带馅的</li>
+<li>带馅的一半沾一下牛奶</li>
+<li>舔掉馅</li>
+<li>合起来吃掉</li>
+</ol>
+
+<p>
+如果写成代码，大致应该是这样的：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">orea</span> = [<span style="color: #8b0000;">"top"</span>,<span style="color: #8b0000;">"middle"</span>,<span style="color: #8b0000;">"bottom"</span>]
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">top</span> = orea.shift(),<span style="color: #b8860b;">middleAndButton</span>=orea <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;1&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetMiddleAndButton</span> = dipMilk(middleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;2&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">button</span> = lip(wetMiddleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;3&gt;</span>
+eat([top,button]) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;4&gt;</span>
+</pre>
+</div>
+
+<p>
+注意那个诡异的 <code>shift</code> ，如果用 destructure 会写得稍微优雅一些：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> [top, ...middleAndButton] = [<span style="color: #8b0000;">"top"</span>,<span style="color: #8b0000;">"middle"</span>,<span style="color: #8b0000;">"bottom"</span>] <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;1&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetMiddleAndButton</span> = dipMilk(middleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;2&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">button</span> = lip(wetMiddleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;3&gt;</span>
+eat([top,button]) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;4&gt;</span>
+</pre>
+</div>
+
+<p>
+有没有觉得我掰奥利奥的姿势变酷了许多？这就是 destructure，给定一个特定的模式 <code>[top, ...middleAndButton]</code> ，让数据 <code>["top","middle","bottom"]</code> 按照该模式匹配进来。同样的，我将会专门在第6章介绍模式匹配这个概念，虽然它不是 Clojure 的重要概念，但是确实 Scala 或 Haskell 的核心所在。不过可以放心的是，你也不必在此之前先学习 Scala 和 Haskell，我还是会用最流行的 JavaScript 来介绍模式匹配。
+</p>
+
+
+<figure>
+<p><img src="./images/patten-matching.jpg" alt="patten-matching.jpg">
+</p>
+<figcaption><span class="figure-number">&#22270;3&nbsp;</span> 我觉得这个玩具可以特别形象的解释模式匹配这个概念</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline37" class="outline-3">
+<h3 id="orgheadline37"><span class="section-number-3">2.3</span> 作为函数式语言 JavaScript 还差些什么</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+作为多编程范式的语言，原型链支持的当然是面相对象编程，然而却同时支持一等函数的 JavaScript 也给函数式编程带来了无限的可能。之所以说可能是因为 JavaScript 本身对于函数式的支持还是非常局限的，为了让 JavaScript 全面支持函数式编程还需要非常多的第三方库的支持。下面我们来列一列到底 JavaScript 比起纯函数式语言，到底还差些什么？
+</p>
+</div>
+
+<div id="outline-container-orgheadline33" class="outline-4">
+<h4 id="orgheadline33"><span class="section-number-4">2.3.1</span> 不可变数据结构</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+首先需要支持的当然是不可变（immutable）数据结构，意味着任何操作都不会改变该数据结构的内容。JavaScript 中除了原始类型其他都是可变的（mutable）。相反，Clojure 的所有数据结构都是不可变的。
+</p>
+
+<blockquote>
+<p>
+JavaScript 一共有6种原始类型（ES6 新加了 Symbol 类型），它们分别是 Boolean，Null，Undefined，Number String 和 Symbol。 除了这些原始类型，其他的都是 Object，而 Object 都是可变的。
+</p>
+</blockquote>
+
+<p>
+比如 JavaScript 的 Array 是可变的：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = [1,2,3]
+a.push(4)
+</pre>
+</div>
+
+<p>
+<code>a</code> 的引用虽然没有变，但是内容确发生了变化。
+</p>
+
+<p>
+而 Clojure 的 Vector 类型则行为刚好相反：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">a</span> [1 2 3])
+(conj a 4) <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3 4]</span>
+a <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3]</span>
+</pre>
+</div>
+
+<p>
+对 <code>a</code> 的操作并没有改变 <code>a</code> 的内容，而是 <code>conj</code> 操作返回 的改变后的新列表。在接下来的第二章你将会看到 Clojure 是如何实现不可变数据结构的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline34" class="outline-4">
+<h4 id="orgheadline34"><span class="section-number-4">2.3.2</span> 惰性求值</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+惰性（lazy）指求值的过程并不会立刻发生。比如一些数学题（特别是求极限的）我们可能不需要把所有表达式求值才能得到最终结果，以防在算过程中一些表达式能被消掉。所以惰性求值是相对于及早求值（eager evaluation）的。
+</p>
+
+<p>
+比如大部分语言中，参数中的表达式都会被先求值，这也称为 <i>应用序</i> 语言。比如来看下这样个 JavaScript 的函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">wholeNameOf(getFirstName(), getLastName())
+</pre>
+</div>
+<p>
+<code>getFirstName</code> 与 <code>getLastName</code> 会依次执行，返回值作为 <code>wholeNameOf</code> 函数的参数， <code>wholeNameOf</code> 最后被调用。
+</p>
+
+<p>
+另外，对于数组操作时，大部分语言也同样采用的是应用序。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> ++x}, [1,2,3,4])
+</pre>
+</div>
+
+<p>
+所以，这个表达式立刻会返回结果 <code>[1,2,3,4]</code> 。
+</p>
+
+<p>
+当然这并不是说 Javascript 语言使用应用序有问题，但是没有提供惰性序列的支持就是 JavaScript 的不对了。如果 map 后发现其实我们只需要前 10 个元素时，去计算所有元素就显得是多余的了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline35" class="outline-4">
+<h4 id="orgheadline35"><span class="section-number-4">2.3.3</span> 函数组合</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+面向对象通常被比喻为名词，而函数式编程是动词。面向对象抽象的是对象，对于对象的的描述自然是名词。面向对象把所有操作和数据都封装在对象内，通过接受消息做相应的操作。比如，对象 Kitty 和 Pussy，它们可以接受“打招呼”的消息，然后做相应的动作。而函数式的抽象方式刚好相反，是把动作抽象出来，比如就是一个函数“打招呼”，而参数，则是作为数据传入的 Kitty 或者 Pussy，是完全透明的。比如 Kitty 进入函数“打招呼”时，出来的应该是一只 <i>Hello Kitty</i> 。
+</p>
+
+<p>
+面向对象可以通过继承和组合在对象之间分享一些行为或者说属性，函数式的思路就是通过 <b>组合</b> 已有函数形成一个新的函数。JavaScript 语言虽然支持高阶函数，但是并没有一个原生的利于组合函数产生新函数的方式。关于函数组合的技巧，会在第四章作详细的解释，而这些强大的函数组合方式却往往被类似 underscore 库的光芒掩盖掉。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline36" class="outline-4">
+<h4 id="orgheadline36"><span class="section-number-4">2.3.4</span> 尾递归优化</h4>
+<div class="outline-text-4" id="text-2-3-4">
+<p>
+Clojure 的数据结构都是不可变的，除了使用数据结果本身的方法进行遍历，另外的循环手段自然只能是递归了。但是在没尾递归优化的 JavaScript 中就不会那么愉快了。
+</p>
+
+<p>
+在 JavaScript 中可能会经常看到这样的代码：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = [1,2,3,4]
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">b</span> = [4,3,2,1]
+<span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span>=0;i&lt;10;i++)
+ a[i]+=b[i]
+console.log(a);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [5,5,5,5]</span>
+</pre>
+</div>
+
+<p>
+如果使用 Clojure 硬要做类似的事情通常只能使用 reduce 解决，代码会变成这样：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">loop</span> [a [1 2 3 4] 
+       b [4 3 2 1]
+       i (dec (len a))]
+  (<span style="color: #00008b;">recur</span> (assoc a i (get b i) b (dec i))))
+</pre>
+</div>
+
+<p>
+recur 看起来跟 for 循环非常类似，其实它是尾递归，如果把 loop 写成一个函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">  (<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">zipping-add</span> [a b i]
+    (<span style="color: #00008b;">recur</span> (assoc a i (get b i) b (dec i))))
+(zipping-add [1 2 3 4] [4 3 2 1] (dec (len a)))
+</pre>
+</div>
+
+<p>
+事实上效果是一样的，但是如果把 <code>recur</code> 想象成是 <code>zipping-add</code> ，明显能看出 <code>zipping-add</code> 是一个尾递归函数。
+</p>
+
+<p>
+因此反过来看，若是要把尾递归换成循环是多么容易的一件事情，关键的是需要让解释器识别出来尾递归。
+</p>
+
+<p>
+但是这不是 Clojure 的风格，亦不是函数式的风格。递归应该被认为是比较低级别的操作，像这种高级别的操作还是应该优先使用 map，reduce 来解决。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(map #(+ <span style="color: #b8860b;">%1</span> <span style="color: #b8860b;">%2</span>) [1 2 3 4] [4 3 2 1])
+</pre>
+</div>
+
+<p>
+Clojure 的 map 是个神奇的函数，若是给多个向量，他做的事情会相当于先 zip 成一个向量，再把向量的元素 apply 到组合子上。这样完全不需要循环和变量，得到了一段不需要循环和变量的简洁的代码。
+但是，在写低级别的一些代码的时候，递归还是强有力的武器，而且尾递归优化能带来更好的性能，在第五章我会更详细的介绍不可变数据结构以及递归。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline41" class="outline-3">
+<h3 id="orgheadline41"><span class="section-number-3">2.4</span> Underscore 你错了</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+如果提到 JavaScript 的函数式库，可能会联想到 Underscore<sup><a id="fnr.12" class="footref" href="#fn.12">12</a></sup>。Underscore  的官网解释是这样的：
+</p>
+<blockquote>
+<p>
+Underscore 提供了100多个函数，不仅有常见的函数式小助手: map，filter，invoke，还有更多的一些额外的好处……
+</p>
+</blockquote>
+
+<p>
+我就懒得翻译完了，重点是这句话里面的“函数式小助手”，这点我实在不是很同意。
+</p>
+</div>
+
+<div id="outline-container-orgheadline38" class="outline-4">
+<h4 id="orgheadline38"><span class="section-number-4">2.4.1</span> 跟大家都不一样的 map 函数</h4>
+<div class="outline-text-4" id="text-2-4-1">
+<p>
+比如 map 这个函数式编程中比较常见的函数，我们来看看看 <b>函数式语言</b> 中都是怎么做 map 的：
+</p>
+
+<p>
+<b>Clojure：</b>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(map inc [1 2 3])
+</pre>
+</div>
+
+<p>
+其中 <code>inc</code> 是一个给数字加一的函数。
+<b>Haskell：</b>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell">map (1+) [1,2,3]
+</pre>
+</div>
+
+<p>
+同样 <code>(1+)</code> 是一个函数，可以给数字进行加一操作。
+</p>
+
+<p>
+这是非常简单的 map 操作，应用函数 <code>inc</code>, <code>(1+)</code> 到数组 中的每一个元素。同样的事情我们试试用 Underscore 来实现一下：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">_.map([1,2,3], <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> x+1})
+</pre>
+</div>
+
+<p>
+感觉到有什么变化了吗？有没有发现参数的顺序完全不同了？好吧，你可能要说这并不是什么问题啊？不就是 map 的 api 设计得不太一样么？也没有必要保持所有的语言的 map 都是一样的吧？
+</p>
+
+<p>
+在回答这个问题之前，我想再举几个例子，因为除了 Underscore，JavaScript 的函数式库还有很多很多：
+</p>
+
+<p>
+<a href="http://ramdajs.com/"><b>ramdajs</b></a>：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">R.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> x+1}, [1,2,3])
+</pre>
+</div>
+
+<p>
+<a href="http://functionaljs.com/"><b>functionaljs：</b></a>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">fjs.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> x+1}, [1,2,3])
+</pre>
+</div>
+
+<p>
+应该不需要再多的例子了，不管怎么样看，underscore 的 map 是否都略显另类了呢？跟别的语言不一样就算了，跟其他 JavaScript 的函数式库都不一样的话，是不是有些说不过去了。 我猜 underscore 同学估计现在有种高考出来跟同学对答案，发现自己的答案跟别人的完全不一样的心情。
+</p>
+
+<p>
+好吧，Underscore 先别急着认错，大家都这么做，肯定不是偶然。但是原因就说来话长了，我将会在第四章详细解释其他函数式语言/库为什么都跟 Underscore 不一样。<sup><a id="fnr.13" class="footref" href="#fn.13">13</a></sup>
+</p>
+
+<p>
+当然我可不会选一个“另类”的库来阐述函数式编程。<sup><a id="fnr.14" class="footref" href="#fn.14">14</a></sup>我将像编程世界中最好的书《计算机程序的构造与解释》一样，我选择用 lisp 语言来阐述函数式编程概念，而用目前最流行的语言 —— JavaScript <sup><a id="fnr.15" class="footref" href="#fn.15">15</a></sup>来实践函数式。当然我也不会真的用老掉牙的 scheme，因为所有前端开发者都应该知道，前端最唾弃的就是使用久的东西<sup><a id="fnr.16" class="footref" href="#fn.16">16</a></sup>，这样一来 Clojure 这门全新的现代 lisp 方言显然是最好的选择。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline39" class="outline-4">
+<h4 id="orgheadline39"><span class="section-number-4">2.4.2</span> ClojureScript</h4>
+<div class="outline-text-4" id="text-2-4-2">
+<p>
+Clojure 是跑着 JVM 上的lisp 方言，而 ClojureScript 是能编译成 JavaScript 的 Clojure。但是请不要把 ClojureScript  与 CoffeeScript，LiveScript，TypeScript做比较，就像每一行 Clojure 代码不能一一对应到 Java 代码一样，你可能很难像 CoffeeScript 对应 JavaScript 一样能找到 ClojureScript 与其编译出来的 JavaScript 的对应关系。
+</p>
+
+
+<figure>
+<p><img src="./images/everyscript.png" alt="everyscript.png">
+</p>
+<figcaption><span class="figure-number">&#22270;4&nbsp;</span> 各种编译成 JavaScript 的函数式语言</figcaption>
+</figure>
+
+<p>
+不管怎么样，ClojureScript 把 Clojure 带到了前端确实是非常令人激动的一件事情。就跟前端程序员能在后端写 JavaScript 一样，Clojure 程序员终于能在前端也能找到自己熟悉的编程姿势。但是如同 Clojure 于 Java 的交互一样（或者更坏）， ClojureScript 与 JavaScript 及JavaScript 的库的交互并不是那么容易，或者可以说，不那么优雅。而且前端开发者可能并不能很快的适应 lisp 语言，项目（特别是开源项目）的维护不能只靠懂 clojure 的少数开发者，所以如果能用最受欢迎的 JavaScript，又还能使用到 Clojure 的所有好处，那将再好不过了。幸运的是，Clojure 的持久性数据结构被 David Nolen<sup><a id="fnr.17" class="footref" href="#fn.17">17</a></sup>移植到了原生 JavaScript —— <a href="https://github.com/swannodette/mori">mori</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline40" class="outline-4">
+<h4 id="orgheadline40"><span class="section-number-4">2.4.3</span> Mori</h4>
+<div class="outline-text-4" id="text-2-4-3">
+<p>
+由于是移植的，所有的数据结构以及操作数据结构的函数都是 ClojureScript 保持一致，而且是作为 JavaScript 库，可以在原生 JavaScript 的代码中使用。显然 mori 是最适合用于前端函数式实践的库，当然也是本书为什么说是 Clojure 风格的函数式 JavaScript 的原因了。
+</p>
+
+<p>
+选择 mori 的另一原因是因为它特别区别于其他的函数式库的地方——它使用 ClojureScript 的数据结构。也就是说从根本上消除了 JavaScript 可变的数据结构模型，更利于我们的进行函数式编程。
+</p>
+
+<blockquote>
+<p>
+为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro —— <a href="http://ru-lang.org/">ru-lang</a>。更多的关于 macro 的讨论我会放到第五章。
+</p>
+</blockquote>
+
+<p>
+当然，选择 mori 并不说明它是工程的上函数式类库的最佳选择，facebook 活跃维护的 Immutable.js 也是不错的选择。但是在这里，mori 确实是能将 Clojure 编程思想蔓延到 JavaScript 中的最好桥梁。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline72" class="outline-2">
+<h2 id="orgheadline72"><span class="section-number-2">3</span> 集合</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+本章主要介绍 Clojure 的集合数据结构。这是个无聊但是又很重要的章节, 可以说函数式编程最基本最重要的就是集合操作。本章会介绍：
+</p>
+<ol class="org-ol">
+<li>一些集合类型</li>
+<li>如何操作集合</li>
+<li>什么是以及为什么要惰性求值</li>
+<li>如何在 JavaScript 中使用 Clojure 的数据结构</li>
+</ol>
+
+<p>
+当然，已经熟悉 Clojure 的读者自然可以略过本章。
+</p>
+
+<p>
+上一章大致提到了 JavaScript 的数据结构都是可变的数据结构。也就是说一些操作会改变数据结构中的数据内容。当然 JavaScript 原生的 Number 和 String 本身就是不可变的，而且不会有太多的操作，所以本章主要是介绍 <b>集合</b> 数据结构。而且，集合也是函数式编程中最常使用的数据结构。
+</p>
+
+<blockquote>
+<p>
+本章开始会使用 mori，想在本机使用 mori 非常简单，如果使用 node，只需要 <code>npm install mori</code> 然后 <code>var mori = require('mori')</code> 引入即可。如果使用浏览器，可以使用 <a href="https://cdnjs.cloudflare.com/ajax/libs/mori/0.3.2/mori.js">cdnjs</a>。
+</p>
+</blockquote>
+</div>
+<div id="outline-container-orgheadline51" class="outline-3">
+<h3 id="orgheadline51"><span class="section-number-3">3.1</span> 集合的使用</h3>
+<div class="outline-text-3" id="text-3-1">
+</div><div id="outline-container-orgheadline49" class="outline-4">
+<h4 id="orgheadline49"><span class="section-number-4">3.1.1</span> 向量（vector）</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+向量是带有索引（index）的一组数据。跟 JavaScript 的 Array 非常像，但是区别在于
+</p>
+
+<ul class="org-ul">
+<li>向量是不可变（immutable）数据结构</li>
+<li>向量是持久性（persistent）数据结构</li>
+</ul>
+
+<p>
+这里两个概念听起来很相似，但是其实有一点点区别。
+</p>
+
+<p>
+<i>不可变</i> 指的是一旦被创建，就再也不能改变。比如我创建一个向量 Alice，那么不管发生什么，判等 Alice 的话只需要简单的等号，因为 Alice 的内容不可能被改变，所以完全不需要深入判等。
+</p>
+
+<p>
+而 <i>持久性</i> 是“改变”不可变数据结构的一种方式，每当尝试去修改一个不可变数据结构的时候，其实是建立在旧的数据结构的基础上，做对应的“修改”。本节只会涉及不可变性，下一节会通过介绍向量的持久性数据结构，加深对持久性的认识。
+</p>
+
+<p>
+下面我将介绍如何使用向量数据结构，当然，我不是深入细节，只是为了显示不可变数据结构与 JavaScript 原生可变数据结构的区别。
+</p>
+</div>
+
+<div id="outline-container-orgheadline43" class="outline-5">
+<h5 id="orgheadline43">创建向量</h5>
+<div class="outline-text-5" id="text-orgheadline43">
+<p>
+使用 Clojure 可以字面的（lieral）创建一个向量，或者用 vector 函数，效果都是一样的。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">[1 2 3 4]
+(vector 1 2 3 4)
+</pre>
+</div>
+
+
+<p>
+其中，方括号用于字面创建向量，而圆括号表示调用了 <code>vector</code> 函数，参数列表为 <code>1 2 3 4</code> 。
+</p>
+
+<p>
+使用 mori 创建向量也非常的类似：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">console.log(1+1)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-js">mori.vector(1,2,3,4)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3 4]</span>
+</pre>
+</div>
+
+<blockquote>
+<p>
+从 JavaScript 或其他语言转换 clojure 或 lisp 的语法非常简单，只需要将括号 <code>(</code>  向左移一个函数名，逗号去掉即可。因此，mori 的 api 则正是这个过程的反转。
+</p>
+</blockquote>
+
+<p>
+如果是在 node 的 repl 中就可以看见类似 Clojure 字面定义 vector 的输出 <code>[1 2 3 4]</code> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline44" class="outline-5">
+<h5 id="orgheadline44">获取向量中的元素</h5>
+<div class="outline-text-5" id="text-orgheadline44">
+<p>
+通常在 JavaScript Array 中我们获取元素通常会通过 <code>somearray[0]</code> 直接用索引获取，当然使用 vector 也非常类似，只不过需要使用 get 方法：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">vec</span> = mori.vector(1,2,3,4)
+mori.get(vec, 0)
+</pre>
+</div>
+
+<p>
+当然，为了更符合 JavaScript 的习惯，我们还可以使用 vector 的成员变量 get 获取元素：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">vec.get(0)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline45" class="outline-5">
+<h5 id="orgheadline45">添加元素</h5>
+<div class="outline-text-5" id="text-orgheadline45">
+<p>
+Clojure 中所有集合的添加操作都可以通过 conj 函数，conj全称 conjoin。对于不同数据结构的 conj 操作可能添加的方向是不一样的，但不管怎么样，conj 都会选择最容易的添加(即复杂度最低)的方向添加数据。而在向量数据结构中，conj 的方向是往尾部添加元素：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">mori.conj(vec, 5) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3 4 5]</span>
+vec <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3 4]</span>
+</pre>
+</div>
+
+<p>
+这很像 JavaScript Array 的 push 方法，但是值得注意的是，push （以及其他数组操作）是一个可变操作（mutation operation），也就是说，push 会改变 Array 中的数据。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">array</span> = [1,2,3,4]
+array.push(5) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 5</span>
+array <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1,2,3,4,5]</span>
+</pre>
+</div>
+
+<p>
+注意看 push 的返回值是添加的数据，而 push 之后的 array 变化成添加过的数据的数组了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline46" class="outline-5">
+<h5 id="orgheadline46">弹出元素</h5>
+<div class="outline-text-5" id="text-orgheadline46">
+<p>
+弹出元素跟 Array 一样都是使用 pop，当然，由于几乎所有的 clojure 的数据结构都是不可变的，弹出也不例外。所以弹出会返回一个新的“删除”尾部元素的向量，而原来的向量保持不变：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">mori.pop(vec) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3]</span>
+vec <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3 4]</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline47" class="outline-5">
+<h5 id="orgheadline47">首个元素及剩余元素</h5>
+<div class="outline-text-5" id="text-orgheadline47">
+<p>
+另外在函数式编程中，特别是递归的时候，经常会把列表分为首元素，和剩余（rest）元素集合。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">mori.first(vec) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 1</span>
+mori.rest(vec) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; (2 3 4)</span>
+</pre>
+</div>
+
+<p>
+注意看 rest 返回的是圆括号，为什么变成圆括号了呢？我会在最后一节做详细的解释。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline48" class="outline-5">
+<h5 id="orgheadline48">获取子向量（subvec）</h5>
+<div class="outline-text-5" id="text-orgheadline48">
+<p>
+subvec 操作返回一个持久性的子向量，比如：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">mori.subvec(vec, 1) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [2 3 4]</span>
+mori.subvec(vec, 1, 2) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; [2]</span>
+vec <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">[1 2 3 4]</span>
+</pre>
+</div>
+
+<blockquote>
+<p>
+看到这里，可能细心的读者会发现向量的所有操作都是不可变的，不管如何操作该向量，用于会返回一个新的向量而不是修改原有向量。这样每次都返回一个新的数据结构，听起来像是又拷贝了一份再做操作，效率不是会很低吗？这个问题会在下节解释持久性数据结构的时候得到解答。
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline50" class="outline-4">
+<h4 id="orgheadline50"><span class="section-number-4">3.1.2</span> Map</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+虽然想只介绍 vector 就好了，但是 ES6 的把 Map 纳入了标准，这里顺便介绍一下 Map 对应的 Clojure 的数据结构好了。在 Map 还没有被所有浏览器厂商实现之前，绝大多数情况下我们在写 JavaScript 时会使用 Object 来当做 Map 使用。当然，到底是使用 Map 还是 Object 并不是本书的重点，不管是 Map 还是 Object，重点是他们仍然是可变的。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">map</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Map</span>();
+map.set(0, <span style="color: #8b0000;">"&#38646;"</span>); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; {0:"&#38646;"}</span>
+map.set(1, <span style="color: #8b0000;">"&#22777;"</span>); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; {0:"&#38646;",1:"&#22777;"}</span>
+</pre>
+</div>
+
+<p>
+map 实例的内容在不同的地方值有可能发生改变。同样的，Clojure 提供不可变的 Map 数据结构，hash-map。同样的，我们都可以通过 mori 在 JavaScript 中使用到 Clojure 的 hash-map。
+</p>
+
+<p>
+我们可以简单的使用 mori.hashMap 创建一个 ClojureScript 的 hashmap
+实例，当然，所有操作都不会改变原来的不可变对象。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">m0</span> = mori.hashMap(<span style="color: #8b0000;">"&#38646;"</span>, 0, <span style="color: #8b0000;">"&#22777;"</span>, 1);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; {"&#38646;" 0, "&#22777;" 1}</span>
+
+mori.get(m0, <span style="color: #8b0000;">"&#38646;"</span>); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 0</span>
+
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">m1</span> = mori.assoc(m0, mori.vector(1,2), 2);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">m1 = {"&#38646;" 0, "&#22777;" 1, [1 2] 2}</span>
+m0 <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; {"&#38646;" 0, "&#22777;" 1}</span>
+
+mori.get(m1, m.vector(1,2)); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 2</span>
+</pre>
+</div>
+
+<p>
+m0 永远是 m0。 其中 <code>mori.assoc</code> 是更新操作，有意思的是，assoc 操作也同样可以用在 vector 上。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">mori.assoc(mori.vector(1,2,3),1,8) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 8 3]</span>
+</pre>
+</div>
+
+<p>
+跟 vector 一样，也可以用 conj 操作连接 hash map:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">mori.conj(m0, mori.vector(<span style="color: #8b0000;">"foo"</span>, <span style="color: #8b0000;">"bar"</span>)) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; {"&#38646;" 0, "&#22777;" 1, "foo" "bar"}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline58" class="outline-3">
+<h3 id="orgheadline58"><span class="section-number-3">3.2</span> 函数组合子</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+借用函数组合子这个词来代表集合上的一些通用方法，如 map, filter, reduce。更详细的组合子定义可以在 stackoverflow<sup><a id="fnr.18" class="footref" href="#fn.18">18</a></sup>上找到非常好的解释。先不用去管具体定义，下面我会简单列举一些函数式编程，特别是 Clojure 编程中经常会使用到的一些函数组合子。
+</p>
+</div>
+
+<div id="outline-container-orgheadline52" class="outline-4">
+<h4 id="orgheadline52"><span class="section-number-4">3.2.1</span> map</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+map 把参数中的函数应用到集合中每一个元素上，并返回函数返回的元素组成的新集合。 比如要把一包奥利奥变成馅被舔掉的奥利奥：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">mori.map(lip, oreoPack)
+</pre>
+</div>
+<p>
+这样产生一包里面都是没有馅的奥利奥。
+</p>
+
+<p>
+如果 oreoPack 是一个 JavaScript Array，同样可以直接使用 Array 的 map 组合子：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">oreoPack.map(lip)
+</pre>
+</div>
+
+<p>
+似乎后者更符合我们的阅读习惯，不过我会在下一章解释什么情况更适合哪种情况。 但在本章我会一直使用 Clojure 的组合子使用习惯。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline53" class="outline-4">
+<h4 id="orgheadline53"><span class="section-number-4">3.2.2</span> filter</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+filter 接收一个谓词函数（predicate function），用于判断哪些元素应该保留，哪些应该被剔除掉。谓词函数顾名思义就是用作谓词的函数，谓词自然应该就是“是”，“等于”，“大于”，“属于”之类的词。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">mori.filter(mori.isEven, [1,2,3,4,5]);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; (2 4)</span>
+</pre>
+</div>
+
+<p>
+同样的，Array 也有 filter 方法：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">[1,2,3,4,5].filter(x=&gt;x%2==0);
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline54" class="outline-4">
+<h4 id="orgheadline54"><span class="section-number-4">3.2.3</span> reduce</h4>
+<div class="outline-text-4" id="text-3-2-3">
+<p>
+前面都是集合内容的转换，而使用 reduce 则方便的可以将集合规约成值，比如我们很容易的可以用 reduce 些一个 sum 函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">mori.reduce((a,b)=&gt;a+b, 0, [1,2,3,4,5])
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 15</span>
+</pre>
+</div>
+<p>
+其中，第一个函数描述如何进行规约，第二个函数是规约的初始值，最后是集合。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline55" class="outline-4">
+<h4 id="orgheadline55"><span class="section-number-4">3.2.4</span> flattern</h4>
+<div class="outline-text-4" id="text-3-2-4">
+<p>
+用以把嵌套的集合展平：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">v</span> = mori.toClj([[1, 2], 3, [4], [[5, 6], 7]]);
+mori.flatten(v); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; (1 2 3 4 5 6 7)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline56" class="outline-4">
+<h4 id="orgheadline56"><span class="section-number-4">3.2.5</span> take</h4>
+<div class="outline-text-4" id="text-3-2-5">
+<p>
+take 会经常用于从一个惰性的集合中取出一部分集合，比如：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">s</span> = mori.range(); <span style="color: #8c8c8c; font-style: italic;">//  </span><span style="color: #8c8c8c; font-style: italic;">&#26080;&#38480;&#24207;&#21015;</span>
+
+mori.take(10, s); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; (0 1 2 3 4 5 6 7 8 9)</span>
+</pre>
+</div>
+
+<p>
+注意 s 是从 0 开始的无限整数序列，当使用 take 取出前 10 个是，会得到包含着前10个整数的序列。更多关于惰性的话题会在第5节继续。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline57" class="outline-4">
+<h4 id="orgheadline57"><span class="section-number-4">3.2.6</span> groupBy</h4>
+<div class="outline-text-4" id="text-3-2-6">
+<p>
+groupBy  根据提供的函数的结果来分区，产生相同结果的元素会被分到一个区：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">mori.partitionBy(x=&gt;x%2==0?<span style="color: #8b0000;">'event'</span>:<span style="color: #8b0000;">'odd'</span>, [1,2,3,4,5])
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; {"even" (2 4) "odd" (1 3 5)}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline63" class="outline-3">
+<h3 id="orgheadline63"><span class="section-number-3">3.3</span> 持久性数据结构</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+大概对集合中的向量与 hashMap，以及集合的常用组合子  简单的做了介绍，应该还记得介绍向量时提到的效率问题吗？我们来以向量为例，深入研究一下向量的数据结构到底是怎样的，又是如何做到持久性和不可变性，同时还保证效率的？
+</p>
+
+<p>
+首先在解释向量的数据结构之前，我想再普及一下什么是持久性数据结构和不可变性。
+</p>
+
+<p>
+持久性是指数据结构在被操作的时候永远保持着前一版本，这种保存之前结构的行为就像是持久化。不可变性是说明不管怎么样，在被创建之后就再也不能改变。所以持久性更像是数据结构的实现，而不可变性约束的数据结构的操作。好了，概念的东西就说到这，我们来举个例子，
+</p>
+
+<p>
+还是前面那个例子，假设数组和向量的数据结构都是链表。
+</p>
+
+<p>
+那么，如果我要往中添加一项：
+</p>
+
+
+<figure>
+<p><img src="./images/persistent-conj.png" alt="persistent-conj.png">
+</p>
+<figcaption><span class="figure-number">&#22270;5&nbsp;</span> 持久化数据的增加操作</figcaption>
+</figure>
+
+
+<figure>
+<p><img src="./images/mutable-push.png" alt="mutable-push.png">
+</p>
+<figcaption><span class="figure-number">&#22270;6&nbsp;</span> 非持久化数据的增加</figcaption>
+</figure>
+
+<blockquote>
+<p>
+⚠️前方高能预警，一大波 Clojure 源代码来袭。
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-orgheadline59" class="outline-4">
+<h4 id="orgheadline59"><span class="section-number-4">3.3.1</span> 向量的持久性数据结构</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+当然，Clojure 的向量数据结构并不是简单的链表，而是 Rich Hickey 发明的树形数据结构。官方文档也提到了向量的所有操作的复杂度都是 O(log<sub>32</sub>N)，但为什么是32呢。回忆一下二分查找是多少，log<sub>2</sub>N，而二分查找类似于一颗平衡二叉树，那么猜想 log<sub>32</sub>N 复杂度应该是一个32叉的平衡树才对。
+</p>
+
+<p>
+好吧，偷看了一眼源代码，确实证明这个猜想是对的。<sup><a id="fnr.19" class="footref" href="#fn.19">19</a></sup>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #6a5acd;">Node</span>(<span style="color: #36648b;">AtomicReference</span>&lt;<span style="color: #36648b;">Thread</span>&gt; <span style="color: #b8860b;">edit</span>){
+  <span style="color: #00008b;">this</span>.edit = edit;
+  <span style="color: #00008b;">this</span>.array = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Object</span>[32];
+}
+</pre>
+</div>
+
+<p>
+通过这个结构体明显确定是每一个节点有 32 叉的树型结构。我们继续往下看我们关心的问题：如何持久化的？
+</p>
+
+<p>
+源代码一直往下翻直到 217 行，会看到 cons 方法<sup><a id="fnr.20" class="footref" href="#fn.20">20</a></sup>，而且这是 IPersistentVector 接口里的方法，这应该就是添加元素了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span class="linenr"> 1: </span><span style="color: #00008b;">public</span> <span style="color: #36648b;">PersistentVector</span> <span style="color: #6a5acd;">cons</span>(<span style="color: #36648b;">Object</span> <span style="color: #b8860b;">val</span>){
+<span class="linenr"> 2: </span>        <span style="color: #36648b;">int</span> <span style="color: #b8860b;">i</span> = cnt
+<span id="coderef-tailoff" class="coderef-off"><span class="linenr"> 3: </span>        <span style="color: #00008b;">if</span>(cnt - tailoff() &lt; 32) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 1</span></span>
+<span class="linenr"> 4: </span>                {
+<span class="linenr"> 5: </span>                <span style="color: #36648b;">Object</span>[] <span style="color: #b8860b;">newTail</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Object</span>[tail.length + 1];
+<span class="linenr"> 6: </span>                System.arraycopy(tail, 0, newTail, 0, tail.length);
+<span class="linenr"> 7: </span>                newTail[tail.length] = val;
+<span class="linenr"> 8: </span>                <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">PersistentVector</span>(meta(), cnt + 1, shift, root, newTail);
+<span class="linenr"> 9: </span>                }
+<span class="linenr">10: </span>        <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">full tail, push into tree</span>
+<span class="linenr">11: </span>        <span style="color: #36648b;">Node</span> <span style="color: #b8860b;">newroot</span>;
+<span class="linenr">12: </span>        <span style="color: #36648b;">Node</span> <span style="color: #b8860b;">tailnode</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Node</span>(root.edit,tail);
+<span class="linenr">13: </span>        <span style="color: #36648b;">int</span> <span style="color: #b8860b;">newshift</span> = shift;
+<span class="linenr">14: </span>        <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">overflow root?</span>
+<span id="coderef-overflow" class="coderef-off"><span class="linenr">15: </span>        <span style="color: #00008b;">if</span>((cnt &gt;&gt;&gt; 5) &gt; (1 &lt;&lt; shift)) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 2</span></span>
+<span class="linenr">16: </span>                {
+<span class="linenr">17: </span>                newroot = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Node</span>(root.edit);
+<span class="linenr">18: </span>                newroot.array[0] = root;
+<span class="linenr">19: </span>                newroot.array[1] = newPath(root.edit,shift, tailnode);
+<span class="linenr">20: </span>                newshift += 5;
+<span class="linenr">21: </span>                }
+<span class="linenr">22: </span>        <span style="color: #00008b;">else</span>  <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 3</span>
+<span class="linenr">23: </span>                newroot = pushTail(shift, root, tailnode);
+<span class="linenr">24: </span>        <span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">PersistentVector</span>(meta(), cnt + 1, newshift, newroot, <span style="color: #00008b;">new</span> <span style="color: #36648b;">Object</span>[]{val});
+<span class="linenr">25: </span>}
+</pre>
+</div>
+
+<p>
+很明显这段代码里有三个分支，不要着急，我们一个一个看一下：
+</p>
+<ol class="org-ol">
+<li>可以看到 <a href="#coderef-tailoff"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-tailoff');" onmouseout="CodeHighlightOff(this, 'coderef-tailoff');">第3行</a> 中的 cnt 应该就是当前向量的长度，tailoff 往前找一下会发现是抹掉二进制后五位，也就是除掉最后一片叶子的大小。所以，这个分支是处理当最后一片叶子不完整时的情况。如果是二叉树的话，就是非满二叉树的情况。</li>
+<li>如果不满足 1 自然就是子树的叶子都是满的情况，但是满叶子的情况又分两种，如果是比完全树多一片满的叶子，再加一个叶子就溢出了。</li>
+<li>剩下是没有溢出的情况。</li>
+</ol>
+
+
+<figure>
+<p><img src="images/tail-off.png" alt="tail-off.png">
+</p>
+<figcaption><span class="figure-number">&#22270;7&nbsp;</span> tailoff 的区域</figcaption>
+</figure>
+
+<p>
+下面我们再仔细看看如何处理这三种情况。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline60" class="outline-4">
+<h4 id="orgheadline60"><span class="section-number-4">3.3.2</span> 最后一片叶子不完整</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+这种情况是第一个分支, 一共才 4 行代码，我们不妨仔细读读。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span class="linenr">1: </span><span style="color: #36648b;">Object</span>[] <span style="color: #b8860b;">newTail</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Object</span>[tail.length + 1]; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 1</span>
+<span class="linenr">2: </span>System.arraycopy(tail, 0, newTail, 0, tail.length); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 2</span>
+<span class="linenr">3: </span>newTail[tail.length] = val; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 3</span>
+<span class="linenr">4: </span><span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">PersistentVector</span>(meta(), cnt + 1, shift, root, newTail); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 4</span>
+</pre>
+</div>
+
+<blockquote>
+<p>
+System.arraycopy 的 API 是：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #00008b;">public</span> <span style="color: #00008b;">static</span> <span style="color: #36648b;">void</span> <span style="color: #6a5acd;">arraycopy</span>(<span style="color: #36648b;">Object</span> <span style="color: #b8860b;">src</span>, <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">&#25335;&#36125;&#28304;</span>
+             <span style="color: #36648b;">int</span> <span style="color: #b8860b;">srcPos</span>, <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#25335;&#36125;&#24320;&#22987;&#30340;&#32034;&#24341;</span>
+             <span style="color: #36648b;">Object</span> <span style="color: #b8860b;">dest</span>, <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#25335;&#36125;&#30446;&#26631;&#22320;&#22336;</span>
+             <span style="color: #36648b;">int</span> <span style="color: #b8860b;">destPos</span>, <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#30446;&#26631;&#36215;&#22987;&#32034;&#24341;</span>
+             <span style="color: #36648b;">int</span> <span style="color: #b8860b;">length</span>) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#25335;&#36125;&#38271;&#24230;</span>
+</pre>
+</div>
+</blockquote>
+
+<ol class="org-ol">
+<li>创建一个比尾部多1的对象数组 <code>newTail</code></li>
+<li>拷贝尾叶子数组到新创建的对象数组 <code>newTail</code></li>
+<li>最后一个元素赋值为需要添加的值</li>
+<li>最后一步很重要，创建一个新的 <code>PersistentVector</code> 并把 <code>tail</code> 设置成 <code>newTail</code></li>
+</ol>
+
+<p>
+所以以下列代码为例，我们很容易想象这种情况下添加元素的过程。
+</p>
+
+<blockquote>
+<p>
+注意，由于画32叉树实在是太长了太难看了，因此这里我画成二叉树，只是为了表示如何插入元素的过程。当然读者应该不介意把它“脑补”成32叉的吧。
+</p>
+</blockquote>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">vec</span> = mori.vector(1,2,3,4,5,6,7)
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">vec2</span> = mori.conj(vec, 8)
+</pre>
+</div>
+
+
+<figure>
+<p><img src="images/vec-conj-8.png" alt="vec-conj-8.png">
+</p>
+<figcaption><span class="figure-number">&#22270;8&nbsp;</span> 向 vec 添加新元素 8</figcaption>
+</figure>
+
+<p>
+细心的读者会发现，新的 <code>vec2.root</code> 还是指向旧的 <code>vec.root</code> ，只是 <code>vec2.tail</code> 为 <code>vec1.tail</code> 的拷贝再加上新的元素而已。这个操作应该是 O(1) 才对。没有错，这种情况下添加元素确实效率是 O(1)。但是再想想， <code>vec2</code> 不像是一颗连贯的树啊，tail 指到了一个完全分离的数组拷贝上。
+</p>
+
+<p>
+带着问题我们继续来看如果我再 conj 一个元素会发生什么？
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">vec3</span> = mori.conj(vec2, 9)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline61" class="outline-4">
+<h4 id="orgheadline61"><span class="section-number-4">3.3.3</span> 所有叶子完整且叶子个数不大于完全树的叶子个数</h4>
+<div class="outline-text-4" id="text-3-3-3">
+<p>
+这时就会进入到这个分支了，现在 <code>vec2</code> 的所有叶子都满了，按正常的思路我们需要创建一个新的叶子节点来放我们的新元素 7。我们来看看 Clojure 是怎么做的：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span class="linenr">1: </span><span style="color: #36648b;">Node</span> <span style="color: #b8860b;">newroot</span>;
+<span id="coderef-tailnode" class="coderef-off"><span class="linenr">2: </span>      <span style="color: #36648b;">Node</span> <span style="color: #b8860b;">tailnode</span> = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Node</span>(root.edit,tail); <span style="color: #8c8c8c; font-style: italic;">//</span></span>
+<span id="coderef-newshift" class="coderef-off"><span class="linenr">3: </span>      <span style="color: #36648b;">int</span> <span style="color: #b8860b;">newshift</span> = shift; <span style="color: #8c8c8c; font-style: italic;">//</span></span>
+<span class="linenr">4: </span>      ...
+<span id="coderef-newroot" class="coderef-off"><span class="linenr">5: </span>      newroot = pushTail(shift, root, tailnode); <span style="color: #8c8c8c; font-style: italic;">//</span></span>
+<span id="coderef-vector" class="coderef-off"><span class="linenr">6: </span><span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">PersistentVector</span>(meta(), cnt + 1, newshift, newroot, <span style="color: #00008b;">new</span> <span style="color: #36648b;">Object</span>[]{val}) <span style="color: #8c8c8c; font-style: italic;">//</span></span>
+</pre>
+</div>
+
+<p>
+也只有四行代码，我们来仔细读一下：
+</p>
+<ol class="org-ol">
+<li>第<a href="#coderef-tailnode"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-tailnode');" onmouseout="CodeHighlightOff(this, 'coderef-tailnode');">2</a>行 创建一个节点，节点的数组指向当前的 tail，也就是 vec2.tail</li>
+<li>第<a href="#coderef-newshift"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-newshift');" onmouseout="CodeHighlightOff(this, 'coderef-newshift');">3</a>行 不是很重要，表示二进制移多少位，对应到树里面就是可以判断当前在树的第几层</li>
+<li>第<a href="#coderef-newroot"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-newroot');" onmouseout="CodeHighlightOff(this, 'coderef-newroot');">5</a>行的 pushTail 非常关键，如果你继续看 pushTail 的实现的话，大致意思就是从 vec2.root开始克隆 tail 一侧的节点，直到最后指向 tailnode 节点。</li>
+<li>最后一行没有什么好解释的，vec3.tail 指向只包含7的新数组。</li>
+</ol>
+
+
+<figure>
+<p><img src="images/vec-conj-9.png" alt="vec-conj-9.png">
+</p>
+<figcaption><span class="figure-number">&#22270;9&nbsp;</span> 在满叶子的情况下添加元素9</figcaption>
+</figure>
+
+<p>
+这时候我们再添加 10：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">vec4</span> = mori.conj(vec3, 10)
+</pre>
+</div>
+
+<p>
+应该还是第一种情况，有叶子不满，那么我们再添加 11 会怎么样呢？
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">vec5</span> = mori.conj(vec4, 11)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline62" class="outline-4">
+<h4 id="orgheadline62"><span class="section-number-4">3.3.4</span> 所有叶子完整且叶子个数大于完全树的叶子个数</h4>
+<div class="outline-text-4" id="text-3-3-4">
+<p>
+如果是向量元素总数大于一颗完全树的所有叶子，而且所有叶子是完整的，那再往 vec4中添加元素就是这种情况了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">newroot = <span style="color: #00008b;">new</span> <span style="color: #36648b;">Node</span>(root.edit);
+newroot.array[0] = root; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 1</span>
+newroot.array[1] = newPath(root.edit,shift, tailnode); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 2</span>
+newshift += 5; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 3</span>
+<span style="color: #00008b;">return</span> <span style="color: #00008b;">new</span> <span style="color: #36648b;">PersistentVector</span>(meta(), cnt + 1, newshift, newroot, <span style="color: #00008b;">new</span> <span style="color: #36648b;">Object</span>[]{val}); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 4</span>
+</pre>
+</div>
+
+<p>
+这种情况下代码也不太多，需要看的也就是四行代码：
+</p>
+
+<ol class="org-ol">
+<li>创建一个新的节点，左子树指向 vec4.root</li>
+<li>第二颗子树为新创建的 path，path 直通到 vec4.tail</li>
+<li>树的高度加1</li>
+<li>vec5.tail指向新的对象数组，vec5.root 指向 1 创建的新的节点</li>
+</ol>
+
+
+<figure>
+<p><img src="images/vec-conj-11.png" alt="vec-conj-11.png">
+</p>
+<figcaption><span class="figure-number">&#22270;10&nbsp;</span> 添加11</figcaption>
+</figure>
+
+<p>
+好了，看到这里，我们已经看到了 Clojure 的向量数据结构完整的添加元素的过程。我们可以看到整个过程并没有做全部数据的拷贝，而只是最多 log<sub>32</sub>N次，也就是树的高度次的拷贝。总体来说复杂度应该是非常可观的，因为一个 6 层的 32 叉树已经能存放 10亿（1,073,741,824）个元素了，而10亿个元素的添加操作最多也只是 O(6*32)，效率是非常不错的。
+</p>
+
+<p>
+既然学会了看 Clojure 的源码，下来更新元素和弹出元素的过程可以留给读者研究了。类似的，效率也是O(log<sub>32</sub>N)。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline67" class="outline-3">
+<h3 id="orgheadline67"><span class="section-number-3">3.4</span> 不可变性</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+在函数式世界里，所有东西在被创建出来之后都应该是不可变的，换句话说，如果我泡了一杯茶，那这杯茶会一直在那里，不对变多，也不会变少，也不会变成牛奶。所以这杯茶在任何时候，都应该恒等于它被创建时的状态。
+</p>
+</div>
+
+<div id="outline-container-orgheadline64" class="outline-4">
+<h4 id="orgheadline64"><span class="section-number-4">3.4.1</span> 致命魔术</h4>
+<div class="outline-text-4" id="text-3-4-1">
+<blockquote>
+<p>
+⚠️ 本小节严重剧透，好奇心强的读者请看完电影再回来接着看。
+</p>
+</blockquote>
+
+<p>
+如果你看过克里斯托弗·诺兰的电影《致命魔术》（The Prestige），应该会对里面的安吉尔<sup><a id="fnr.21" class="footref" href="#fn.21">21</a></sup>用特斯拉给的神秘装置复制自己来完成瞬间移动的魔术。虽然安吉尔不停的杀死自己确实做法极端，但是完全又印证了片中开头和结束解释的变魔术的三个步骤：
+</p>
+
+<ol class="org-ol">
+<li>让你看一个小鸟</li>
+<li>让小鸟 <b>“消失”</b></li>
+<li>再把小鸟变 <b>“回来”</b> （这也是最难的步骤）</li>
+</ol>
+
+<p>
+注意到“消失”和“回来”我都加了引号，因为小鸟是真的“消失”，而”回来“的其实是另一只几乎一样的小鸟。
+</p>
+
+
+<figure>
+<p><img src="./images/The-Prestige.png" alt="The-Prestige.png">
+</p>
+<figcaption><span class="figure-number">&#22270;11&nbsp;</span> 电影《致命魔术》海报</figcaption>
+</figure>
+
+<p>
+回到我们的话题上来，那么可变操作就像是让小鸟消失再回来，其实永远都找不回来消失的那只小鸟了。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">magic</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">cage</span>){
+  cage[0] = {name:&#8216;&#32736;&#33457;&#8217;}
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">birdInACage</span> = [{name:&#8217;tweety&#8217;}]
+magic(birdInACage)
+birdInACage<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [{name:&#8216;&#32736;&#33457;&#8217;}]</span>
+</pre>
+</div>
+
+<p>
+可以看到，经过 magic 函数后，tweety 就消失了，笼子里只有翠花，而这只被 magic 变没有的 tweety，不久之后会被 javascript 的 GC(垃圾回收)铲走。
+</p>
+
+<p>
+但是，函数式编程并不喜欢魔术，就像博登在台上把小鸟“变回来”时，台下的小朋友哭着说我要原来那只小鸟一样。函数式编程希望不论何时都可以找回来原来那只小鸟。
+</p>
+
+<p>
+因此，我们需要一种神奇的模式把 twetty 隐藏起来。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">anotherBirdInTheCage</span> = magic(birdInACage)
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">magic</span>(<span style="color: #b8860b;">birdInCage</span>){
+  <span style="color: #00008b;">return</span> birdInCage.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">bird</span>){<span style="color: #00008b;">return</span> bird.name=<span style="color: #8b0000;">'&#32736;&#33457;'</span>})
+}
+anotherBirdInTheCage<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [{name:&#8216;&#32736;&#33457;&#8217;}]</span>
+birdInACage <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [{name:'tweety'}]</span>
+</pre>
+</div>
+
+<p>
+太好了，twetty 没有“消失”，只是多了一只叫做翠花的小鸟。
+</p>
+
+<p>
+虽然可变性 给我们编程带来了一些便利，这可能是因为我们的真实世界的所有东西都是可变的，这非常符合我们真实环境的思维方式。但是，这种可变性也能带来类似现实世界一样不可预测性的问题，有可能在不经意间会给我带来一些困扰，而却很难推理产生这种困扰的原因。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline65" class="outline-4">
+<h4 id="orgheadline65"><span class="section-number-4">3.4.2</span> 推理（reason about）</h4>
+<div class="outline-text-4" id="text-3-4-2">
+<p>
+由于所有的对象都是可变的，就像现实世界一样，对象之间靠消息通信，而通过各种消息发来发去之后谁也不知道在某一时间这些对象的状态都是些什么。然而对象的行为又可能依赖于其他对象的状态。这样依赖，如果想推测一个对象某个时间的行为，可能需要先确定其所有有消息通信相关的对象这时的状态。
+</p>
+
+<p>
+写过前端 JavaScript 的人都应该非常清楚前端代码是非常难推理的，光看一段代码片段很难推测出其行为。通常，自由变量越多，行为越不确定，而前端的 <i>自由变量</i><sup><a id="fnr.22" class="footref" href="#fn.22">22</a></sup> 太多太多：
+</p>
+
+<ol class="org-ol">
+<li>DOM：不管是谁都可以修改</li>
+<li>全局变量：谁都可以该</li>
+<li>Event：事件绑定了一些函数，大部分事件函数一般都是有副作用的</li>
+<li>Persistent Data：比如 localStorage, cookie 之类的，谁都可以修改</li>
+</ol>
+
+<p>
+而通常 JavaScript 或前端一些框架，都或多或少的依赖于这些因素。 
+</p>
+
+<p>
+有意思的是的 ReactJS 就相对更容易推理。因为它使用了单向数据流状态机模型，VirtualDOM 的使用很好的隔离开了 DOM 的状态。React 的成功也充分的诠释了面向对象和函数式编程的完美结合。正常一个 React 控件是这样工作的：
+</p>
+
+
+<figure>
+<p><img src="images/react-flow.png" alt="react-flow.png">
+</p>
+<figcaption><span class="figure-number">&#22270;12&nbsp;</span> React 控件隔离变化</figcaption>
+</figure>
+
+<p>
+所以，React 的模型为更高内聚的模型<sup><a id="fnr.23" class="footref" href="#fn.23">23</a></sup>，只有当自己的属性和状态发生变化时，才会重新的返回该状态和属性下的 <b>全新</b> 控件。注意是全新的，不同于传统的修改 DOM 的可变性模型，React 的任何操作都是返回全新控件的不可变操作，就像操作 vector 一样，不会去修改，而是再建一个新的。而且，React 把所有可变的部分都隔离了，所有的可变的因素如，用户事件，数据变化，其他上下游控件的影响，都隔离在状态和属性之外。这样做使得我们的控件行为更简单，容易推理，也容易测试。就像接受两个参数（状态，属性）的函数，给定这两个参数 ，那么返回的控件一定是一样的。而可变的 DOM，也被 VirtualDOM 隔离了。所以完全可以把所有 React 的控件编写的像纯函数一样。因此，也可以像纯函数一样轻松的把一个组件替换掉，轻松解耦了组件之间的关系。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline66" class="outline-4">
+<h4 id="orgheadline66"><span class="section-number-4">3.4.3</span> 线程不安全</h4>
+<div class="outline-text-4" id="text-3-4-3">
+<p>
+前端 JavaScript 虽然说是单线程的，但是基于事件循环的并发模型一样会遇到多线程的线程安全问题。线程不安全是指一个值会被多个线程中的操作同时修改。带来的问题是你很难预测以及重现这个值在某个时间到底是什么。 解决线程安全通常会用到互斥锁，原子操作等等，这些方式大大的增加编程和测试的难度。
+</p>
+
+<p>
+在前端即使没有多线程同样会遇到一样的问题，比如在期望线程安全的一个事物操作中，某个值突然被修改了：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#20551;&#35774;&#25910;&#38065;&#27604;&#22914;&#20351;&#29992;&#31532;&#19977;&#26041;&#25903;&#20184;&#23453;&#20043;&#31867;&#30340;&#65292; &#36825;&#37324;&#20551;&#35774;100ms&#20043;&#21518;&#30693;&#36947;&#25903;&#20184;&#25104;&#21151;&#65292;&#28982;&#21518;&#35843;&#29992;&#22238;&#35843;&#20989;&#25968;</span>
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">charge</span>(<span style="color: #b8860b;">order</span>,<span style="color: #b8860b;">callback</span>){
+  setTimeout(callback.bind(<span style="color: #6b8e23;">this</span>,order), 100)
+}
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#20551;&#35774;&#29066;&#23401;&#23376;&#21917;&#29275;&#22902;&#21482;&#38656;&#35201;99ms&#65288;&#21487;&#33021;&#29066;&#23401;&#23376;&#26159;&#38378;&#30005;&#20384;&#65289;</span>
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">drinkMilkThenChange</span>(<span style="color: #b8860b;">order</span>){
+  setTimeout(order.push({name:<span style="color: #8b0000;">'R2D2'</span>,price:99999}),
+  99)
+}
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#25171;&#21360;&#21457;&#31080;</span>
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">printReceipt</span>(<span style="color: #b8860b;">order</span>){console.log(order)}
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#29066;&#23401;&#23376;&#20080;&#20102;&#20004;&#20010;&#19996;&#35199;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">order</span> = [{name:<span style="color: #8b0000;">'kindle'</span>,price:99}, {name:<span style="color: #8b0000;">'drone'</span>, price:299}];
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#29066;&#23401;&#23376;&#32467;&#36134;</span>
+charge(order, printReceipt)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#29066;&#23401;&#23376;&#21917;&#20102;&#26479;&#29275;&#22902;&#21518;&#36807;&#26469;&#20462;&#25913;&#35746;&#21333;</span>
+drinkMilkThenChange(order)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#36825;&#26102;&#29066;&#23401;&#23376;&#21457;&#31080;&#19978;&#26377;&#19977;&#20010;&#19996;&#35199;</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">[{name:'kindle',price:99}, {name:'drone', price:299}, {name: 'R2D2', 99999}]</span>
+</pre>
+</div>
+
+<p>
+这里到底发生了什么？单线程也不安全吗？难道要给 order 加锁吗？ 这里的 setTimeout 都是写死的多少秒，如果是真实代码多几个熊孩子而且发 ajax 请求不确定回调时间之类的，你永远猜不到最后打印出来的发票上有些什么。
+</p>
+
+<p>
+首先，让我来解释一下这里到底发生了什么。使用多线程的思路的话，charge 应该是个 io 操作，通常需要 fork 一个线程来做，这样就不阻塞主线程。于是 printReceipt 就是运行在 fork 出来的另一个线程，意味着我在主线程的操作修改到了子线程依赖的值，导致了线程不安全。
+</p>
+
+<p>
+但是 JavaScript 在单线程的运行环境下如何做到线程不安全？单线程，说的是 JavaScript 运行的主线程，但是浏览器可以有若干线程处理这样的 IO 操作，也就是维护传说中的 <i>事件循环</i> 。就拿刚才简单的 setTimeout 为例，其实是另一个线程在100毫秒之后把回调函数放入到事件循环的队列中。
+</p>
+
+<p>
+所以解决方式是加锁吗？ 在每次收钱之前，把订单锁上：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">charge</span>(<span style="color: #b8860b;">order</span>,<span style="color: #b8860b;">callback</span>){
+  Object.freeze(order);
+  setTimeout(callback.bind(<span style="color: #6b8e23;">this</span>,order), 100)
+}
+drinkMilkThenChange(order)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">Uncaught TypeError: Cannot assign to read only property 'length' of [object Array]</span>
+</pre>
+</div>
+
+<p>
+当然加锁可以解决，但是更容易而且无需考虑是多线程的方式则是简单的使用不可变数据结构。简单的把 order 的类型改成 vector 就可以了：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">charge</span>(<span style="color: #b8860b;">order</span>,<span style="color: #b8860b;">callback</span>){
+  setTimeout(callback.bind(<span style="color: #6b8e23;">this</span>,order), 100)
+}
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">drinkMilkThenChange</span>(<span style="color: #b8860b;">order</span>){
+  setTimeout(mori.conj(order,{name:<span style="color: #8b0000;">'R2D2'</span>,price:99999}),
+  99)
+}
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">order</span> = mori.vector({name:<span style="color: #8b0000;">'kindle'</span>,price:99}, {name:<span style="color: #8b0000;">'drone'</span>, price:299})
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">printReceipt</span>(<span style="color: #b8860b;">order</span>){console.log(order.toString())}
+charge(order, printReceipt)
+drinkMilkThenChange(order)
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">[#js {:name "kindle", :price 99} #js {:name "drone", :price 299}]</span>
+</pre>
+</div>
+
+<p>
+不可变性保证了不管是主线程代码还是回调函数，拿到的值都能一直保持不变，所以不再需要关心会出现线程安全问题。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline71" class="outline-3">
+<h3 id="orgheadline71"><span class="section-number-3">3.5</span> 惰性序列</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+还记得介绍向量时这个怪怪的返回吗？
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">mori.rest(vec) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; (2 3 4)</span>
+</pre>
+</div>
+
+<p>
+我明明是取一个向量的尾部，为什么返回的不是方括号的向量，而是圆括号呢？
+</p>
+
+<p>
+这个圆括号代表惰性序列（lazy sequence），当然，我接着要来定义 <i>惰性</i> 和 <i>序列</i> 。
+</p>
+
+<p>
+这一章既介绍了集合 API 又读了 Clojure 源代码，实在是太无聊了，我自己都快写不下去了，所以我们不妨先暂停一下，来一个十分生动的故事稍微提提神。
+</p>
+</div>
+
+<div id="outline-container-orgheadline68" class="outline-4">
+<h4 id="orgheadline68"><span class="section-number-4">3.5.1</span> 改良吃奥利奥法</h4>
+<div class="outline-text-4" id="text-3-5-1">
+<p>
+还是吃奥利奥这件事情，如果你已经忘了，我们来回顾一下之前的吃法：
+</p>
+
+<ol class="org-ol">
+<li>掰成两片，一片是不带馅的，一份是带馅的</li>
+<li>带馅的一半沾一下牛奶</li>
+<li>舔掉馅</li>
+<li>合起来吃掉</li>
+</ol>
+
+<p>
+这是吃一个奥利奥的方法，我要把这个步骤写下来（这个故事的设定是我的记忆力极差，不写下来我会忘了该怎么吃）。既然学过 map 函数，我们试试要怎么将我的吃法 map 到一整包奥利奥上。首先封装一下如何吃一个奥利奥的步骤：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">lipMiddle</span>(<span style="color: #b8860b;">oreo</span>){
+  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetOreo</span> = dipMilk(oreo);
+  <span style="color: #00008b;">var</span> [top, ...middleBottom] = wetOreo;
+  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">bottom</span> = lip(middleBottom);
+  <span style="color: #00008b;">return</span> [top, bottom];
+}
+eat(lipMiddle(oreo));
+</pre>
+</div>
+
+<p>
+然后我们开始吃整包奥利奥（underscore 版吃法）：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">_</span> = require(<span style="color: #8b0000;">'underscore'</span>)
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">oreoPack</span> = _.range(10).map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"top"</span>,<span style="color: #8b0000;">"middle"</span>,<span style="color: #8b0000;">"bottom"</span>]})
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetOreoPack</span> = _.map(oreoPack,lipMiddle);
+_.each(wetOreoPack, eat)
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>按照吃奥利奥步骤，我挨个舔掉一整包奥利奥的馅，然后放回袋子里</li>
+<li>一个一个吃掉舔过的湿湿的奥利奥</li>
+</ol>
+
+<p>
+问题是，我其实并不知道自己能不能吃完整包，但是按照这种吃法的话， 我会打开并且着急的把所有奥利奥都沾了下牛奶，把馅舔掉，又塞回了袋子里。
+</p>
+
+<p>
+假如我吃了两块就发现吃不下去了，我把袋子封好，然后困得不行去睡觉了。过了两天打开袋子发现我的奥利奥全发霉了。于是开始抱怨为什么当初不吃的要手贱去沾一下牛奶，太浪费了不是吗。
+</p>
+
+<p>
+我是个特别抠门的人，于是开始苦思冥想到底吃奥利奥的方式哪里有问题。
+</p>
+
+<p>
+很明显我不应该贪心的先吃掉整包奥利奥的馅，我应该吃多少就舔多少奥利奥的馅。但是问题是，我怎么知道我要吃多少呢？
+</p>
+
+<p>
+又经过一番又一番的苦思冥想，我终于想到了在不知道能吃多少块的情况下怎样完美的吃一包奥利奥（mori 版吃法）：
+</p>
+
+<ol class="org-ol">
+<li>把吃的步骤写成10长小条（假设一包有十块奥利奥）</li>
+<li>把小条依次贴到每块奥利奥上</li>
+<li>待吃的时候每拿出来一个，按照奥利奥上的小条的步骤开始吃</li>
+<li>完美！</li>
+</ol>
+
+<p>
+写成代码该是长这样的：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">oreoPack</span> = mori.repeat([<span style="color: #8b0000;">"top"</span>,<span style="color: #8b0000;">"middle"</span>,<span style="color: #8b0000;">"bottom"</span>]);
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetOreoPack</span> = mori.map(lipMiddle,oreoPack);<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">(ref:)</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#26465;&#37117;&#22622;&#22909;&#20102;&#65292;&#29616;&#22312;&#35813;&#21507;&#20102;&#65292;&#20551;&#35774;&#25105;&#21507;3&#22359;</span>
+mori.each(eat,  mori.take(3, wetOreoPack));<span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">(ref:)</span>
+</pre>
+</div>
+
+<p>
+故事就这么圆满的结束了！于是公主和王子&#x2026;&#x2026;
+</p>
+
+<p>
+等等，这个实现怎么看着跟前面 underscore 的实现没有什么两样，到底是在哪里把小条塞进去的？
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline69" class="outline-4">
+<h4 id="orgheadline69"><span class="section-number-4">3.5.2</span> 惰性求值 VS 及早求值</h4>
+<div class="outline-text-4" id="text-3-5-2">
+<p>
+那么现在我们来看看 mori 是如何把小条塞进去的。在这之前，我们再来看看 underscore 版本的实现，细心的读者会发现我还没有实现 lip 函数，这个函数具体如何去舔奥利奥我们并不是很关心，暂且简单的打印出来点东西好了：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">lip</span>(<span style="color: #b8860b;">oreo</span>){
+  console.log(<span style="color: #8b0000;">"&#33300;&#20102;&#19968;&#19979;"</span>)
+  <span style="color: #00008b;">return</span> oreo
+}
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">dipMilk</span>(<span style="color: #b8860b;">orea</span>){
+  console.log(<span style="color: #8b0000;">"&#27838;&#19968;&#19979;&#29275;&#22902;"</span>)
+  <span style="color: #00008b;">return</span> oreo
+}
+</pre>
+</div>
+
+<p>
+那么， map 我的吃奥利奥方式到整包奥利奥的时候会发生什么呢？
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetOreoPack</span> = _.map(oreoPack,lipMiddle);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; " &#27838;&#19968;&#19979;&#29275;&#22902;" &#8220;&#33300;&#20102;&#19968;&#19979;&#8221; &#36825;&#20004;&#21477;&#35805;&#34987;&#25171;&#21360;10&#27425;</span>
+</pre>
+</div>
+
+<p>
+而同样的 mori 版本的 map 却什么也不会打印出来：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetOreoPack</span> = mori.map(lipMiddle,oreoPack) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&#26080;&#25171;&#21360;&#20449;&#24687;</span>
+</pre>
+</div>
+
+<p>
+为什么会什么都没打印，难道没 map 上吗？当然不是，map 是成功的，但是 mori 的 map 不会真对每一块奥利奥都执行我的吃奥利奥流程 lipMiddle，它只会在奥利奥上贴上一张描述如何吃奥利奥的流程的小条。因此，什么也不会返回，相当于我把整包奥利奥打开，贴上小条，再放回原位，封好袋子。
+</p>
+
+
+<figure>
+<p><img src="./images/lazy-oreo.png" alt="lazy-oreo.png">
+</p>
+<figcaption><span class="figure-number">&#22270;13&nbsp;</span> 惰性吃奥利奥法</figcaption>
+</figure>
+
+<p>
+好了，生动的故事真的要圆满结束了，如果这个故事都听明白了的话，再加上几个学术名词，我想我已经解释完什么是惰性和为什么要使用惰性了。故事中的小条，叫做 <i>thunk</i> （我在第一章提过），而这种贴过条的序列，叫做 <i>惰性序列</i> ，对应的 map 操作方式，叫 <i>惰性求值</i> 。 Underscore 的这种立即执行的 map 方式，叫做 <i>及早求值</i> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline70" class="outline-4">
+<h4 id="orgheadline70"><span class="section-number-4">3.5.3</span> 惰性求值的实现</h4>
+<div class="outline-text-4" id="text-3-5-3">
+<p>
+在了解这一大堆名词之后，我们来进一步研究如何具体实现一个惰性的数据结构。我将继续以吃奥利奥为例子，解释如何实现这个惰性的 map。
+</p>
+
+<p>
+之前见到的 <code>mori.map(lipMiddle,oreoPack)</code> 没有打印出任何信息，按照我的例子的说法是因为“map 只把操作的过程写成小条贴到饼干上”。那么，具体是如何把过程贴到这包奥利奥里的呢？
+</p>
+
+<p>
+只要是涉及到实现，我必然要贴源代码，因为没有什么文档会比代码更真实。首先我们大眼看一下 map 的实现：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span class="linenr"> 1: </span>([f coll]
+<span id="coderef-lazyseq" class="coderef-off"><span class="linenr"> 2: </span>   (lazy-seq  <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 1</span></span>
+<span class="linenr"> 3: </span>    (<span style="color: #00008b;">when-let</span> [s (seq coll)]
+<span id="coderef-chunkseq" class="coderef-off"><span class="linenr"> 4: </span>      (<span style="color: #00008b;">if</span> (chunked-seq? s)  <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 2</span></span>
+<span class="linenr"> 5: </span>        (<span style="color: #00008b;">let</span> [c (chunk-first s)  
+<span class="linenr"> 6: </span>              size (int (count c))
+<span class="linenr"> 7: </span>              b (chunk-buffer size)]
+<span class="linenr"> 8: </span>          (<span style="color: #00008b;">dotimes</span> [i size]
+<span class="linenr"> 9: </span>              (chunk-append b (f (<span style="color: #228b22;">.nth</span> c i))))
+<span class="linenr">10: </span>          (chunk-cons (chunk b) (map f (chunk-rest s))))
+<span id="coderef-cons" class="coderef-off"><span class="linenr">11: </span>        (cons (f (first s)) (map f (rest s))))))) <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">&lt;= 3</span></span>
+</pre>
+</div>
+
+<ol class="org-ol">
+<li><a href="#coderef-lazyseq"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-lazyseq');" onmouseout="CodeHighlightOff(this, 'coderef-lazyseq');">第2行</a>中的 lazy-seq 的 macro，其实就是用来 new 一个新的 LazySeq 实例（源码在往上翻几页，在658行）</li>
+<li>第一个分支处理 chunked-seq 类型的序列，返回一个包含两个元素的序列 <code>(chunk b)</code> 和 <code>(map f (chunk-rest s))</code></li>
+<li>另外一个分支则处理普通序列，可以看出来返回一个包含两个元素的序列 <code>(f (first s))</code> 和 <code>(map f (rest s))</code></li>
+</ol>
+
+<p>
+两种分支其实返回的都差不多，都是两个元素， 而第二个元素都是递归的再次调用 <code>map</code> 。我们先别看第一个分支，看看第二个简单分支。重要的是，所有的过程都放在一个叫 <code>lazy-seq</code> 的 macro 中。如果我们把 <code>(map lipMiddle oreoPack)</code> 代换展开的话会得到：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(lazy-seq (cons (<span style="color: #228b22;">lipMiddle</span> (first <span style="color: #228b22;">oreoPack</span>) (map <span style="color: #228b22;">lipMiddle</span> (rest <span style="color: #228b22;">oreoPack</span>)))))
+</pre>
+</div>
+
+<p>
+其中 <code>lazy-seq</code> 做的事情就是阻止 <code>(cons...)</code> 被求值，把序列从 <i>应用序</i> 变成 <i>正则序</i> 。回到我们的例子，这样一来， <code>map</code> 其实就是创建了一个 <code>lazy-seq</code>  的对象或者容器，容器内的序列其实还没有被求值。所以在 <code>map</code> 之后不会有任何的打印信息，因为所有的东西其实都还没有被求值，也就是我例子中说的，只是给奥利奥贴上了写满过程的小条而已。
+这个例子中，就是在吃奥利奥的时候，我们才真正需要进行这么一个吃奥利奥的过程。所以当我从一包奥利奥中拿一个准备吃的时候，我需要安装条上的过程操作一遍：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(take 1 (map <span style="color: #228b22;">lipMiddle</span> <span style="color: #228b22;">oreoPack</span>))
+</pre>
+</div>
+
+<p>
+那么 lazy-seq 中的序列会被求值，意味着，两个元素都会被求值
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(cons <span style="color: #228b22;">lipedOreo</span> (map <span style="color: #228b22;">lipMiddle</span> (rest <span style="color: #228b22;">oreoPack</span>))))
+</pre>
+</div>
+
+<p>
+<code>(lipMiddle (first oreoPack)</code> 求值得到 <code>lipedOreo</code> 而 <code>(map lipMiddle (rest oreoPack)</code>  求值变成又一个 <code>lazy-seq</code>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(lazy-seq (cons (<span style="color: #228b22;">lipMiddle</span> (first (rest <span style="color: #228b22;">oreoPack</span>))) (map <span style="color: #228b22;">lipMiddle</span> (rest (rest <span style="color: #228b22;">oreoPack</span>)))))
+</pre>
+</div>
+
+<p>
+以此类推，需要吃第二块奥利奥时，同样的再对上式 <code>lazy-seq</code> 容器中的序列求值。
+</p>
+
+<p>
+好了，生动的故事真的要圆满结束了，如果这个故事都听明白了的话，再加上几个学术名词，我想我已经解释完什么是惰性和为什么要使用惰性了。故事中的小条，叫做 <i>thunk</i> （我在第一章提过），而这种贴过条的序列，叫做 <i>惰性序列</i> ，对应的 map 操作方式，叫 <i>惰性求值</i> 。 Underscore 的这种立即执行的 map 方式，叫做 <i>及早求值</i> 。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline87" class="outline-2">
+<h2 id="orgheadline87"><span class="section-number-2">4</span> 并发编程</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+并发编程一直是令人头疼的编程方式，直到 Clojure 和 Go 的出现，彻底改变了我们并发编程的方式。而对于单线程的 JavaScript，基于事件循环的 并发模型也一直困扰着我们，到底能从 Clojure 学些什么，可以使我们的前端 并发编程之路更顺畅一些呢？本章将带你熟悉：
+</p>
+
+<ol class="org-ol">
+<li>什么是并发？</li>
+<li>JavaScript 的并发模型。</li>
+<li>CSP 并发模型。</li>
+<li>前端实践中如何使用 CSP。</li>
+</ol>
+</div>
+
+<div id="outline-container-orgheadline75" class="outline-3">
+<h3 id="orgheadline75"><span class="section-number-3">4.1</span> 什么是并发</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+在介绍 CSP 之前首先有两个概念需要强调一下，那就是并发与并行。 为了便于理解，我会结合现实生活举一个例子。
+</p>
+
+<p>
+假设我正在上班写代码，老板过来拍着肩膀说明天要发布，加个班吧。于是我发个短信给老婆说晚点回，发完以后继续敲代码。那么请问，发短信和敲代码两个任务是 <b>并发</b> 还是并行 ？
+</p>
+
+<p>
+但如果我还特别喜欢音乐，所以我边听音乐边敲代码，那么写代码和听音乐两个任务是并发还是 <b>并行</b> ？
+</p>
+
+<p>
+为了不侮辱读者的智商，我就不公布答案了。所以说：
+</p>
+<ul class="org-ul">
+<li>并发是为了解决如何管理需要同时运行的多个任务。就例子来说就是我要决定的是到底先发短信，还是先写代码，还是写两行代码，发两个字短信呢？对于计算机来说，也就是线程管理。</li>
+<li>并行是要解决如何让多个任务同时运行。例子中的我享受音乐与写代码所用到的大脑区域可能并不冲突，因此可以让它们同时运行。对于计算机来说，就需要多个 CPU（核）或者集群来实现并行计算。</li>
+</ul>
+
+<p>
+并行与并发的最大区别就是后者任务之间是互相阻塞的，任务不能同时进行，因此在执行一个任务时就得阻塞另外一个任务。
+</p>
+</div>
+
+<div id="outline-container-orgheadline73" class="outline-4">
+<h4 id="orgheadline73"><span class="section-number-4">4.1.1</span> 异步与多线程</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+所以说到并发，如果不是系统编程，我们大多关心的只是多线程并发编程。因为进程调度是需要操作系统更关心的事情。
+</p>
+
+<p>
+继续敲代码这个例子，假如我现在能 fork 出来一只手发来短信，但是我还是只有一个脑袋，在发短信的时候我的脑子还是只能集中在
+如何编一个理由向老婆请假，而另外两只手只能放在键盘上什么也干不了，直到短信发出去，才能继续写代码。
+</p>
+
+<p>
+所以多线程开销大至需要长出（fork）一只手，结束后缩回去（join），但是这  些代价并没有带来时间上的好处，发短信时其它两只手其实是闲置(阻塞)着的。
+</p>
+
+
+<figure>
+<p><img src="images/multithread.png" alt="multithread.png">
+</p>
+<figcaption><span class="figure-number">&#22270;14&nbsp;</span> 线程任务到达 CPU 的不确定顺序</figcaption>
+</figure>
+
+<p>
+因此，另外一种更省资源的处理并发的方式就出现了——异步编程，或者叫 <i>事件驱动模型</i> 。对的，就是我们在 JavaScript 代码里经常发的 Ajax 那个异步。
+</p>
+
+<p>
+比如我还是两只手，我发完短信继续就敲代码了，这时，老婆给我回了一条短信，那我放下手中的活，拿起手机看看，老牌居然说了“同意”，于是就安心的放下手机继续敲代码了。
+</p>
+
+<p>
+注意这段动作与之前多线程的区别，相对于多线程的场景下 fork 了第三只手在敲代码时一直呆呆的握着手机，异步编程并不需要增加胳膊，资源利用率更高一些。
+</p>
+
+<p>
+那么你就要问了，你是怎么知道手机响的，还不是要开一个线程让耳朵监听着。对的，但是异步只需要很少的有限个线程就好了。比如我有十个手机
+要发给十个老婆，我还是两个线程，相比如果是多线程的话我要 fork 出来十只手，却是会省了不少的资源的<sup><a id="fnr.24" class="footref" href="#fn.24">24</a></sup>。 
+</p>
+
+<p>
+所以 JavaScript 的并发模型就是这么实现的，有一个专门
+的事件循环（<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/EventLoop">event loop</a>）线程，就如同我们的耳朵，不停的检查消息队列中是否还有待执行的任务。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline74" class="outline-4">
+<h4 id="orgheadline74"><span class="section-number-4">4.1.2</span> JavaScript 的并发模型</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+JavaScript 的并发模型主要基于事件循环，运行 JavaScript 代码其实就是从 event loop 里面取任务，队列中任务的来源为函数调用栈与事件绑定。
+</p>
+<ul class="org-ul">
+<li>每写一个函数 <code>f()</code> ，都会被加到消息队列中，运行该任务直到调用栈全部弹空。</li>
+<li>而像 <code>setTimeout(somefunction,0)</code> 其实是 注册一个事件句柄（event handler）， timer 会在“0毫秒”后“立刻”往队列加入 <code>somefunction</code> (如果不是 0，则是 n 长时间后加入队列)</li>
+</ul>
+
+
+<figure>
+<p><img src="images/event-loop-model.png" alt="event-loop-model.png">
+</p>
+<figcaption><span class="figure-number">&#22270;15&nbsp;</span> callback 会加到消息队列末尾</figcaption>
+</figure>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">a</span>(){
+  console.log(<span style="color: #8b0000;">'a'</span>);
+}
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">b</span>(){
+  console.log(<span style="color: #8b0000;">'b'</span>);
+}
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">timeout</span>(){
+  console.log(<span style="color: #8b0000;">'timeout'</span>);
+}
+setTimeout(timeout,0);
+a();
+b();
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "a"</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "b"</span>
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; "timeout"</span>
+</pre>
+</div>
+
+<p>
+这个例子中的 <code>timeout</code> 函数并没有在 <code>a</code> 或 <code>b</code> 之前被调用，因为当时的消息队列应该是这样的(处理顺序从左至右)
+</p>
+
+
+<figure>
+<p><img src="images/message-queue.png" alt="message-queue.png">
+</p>
+</figure>
+
+<p>
+现在，我们可以用的并发模型来再实现一下我们最开始的加班写代码的例子：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript">  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">keepDoing</span> = (something, interval) =&gt; {
+    <span style="color: #00008b;">return</span> setInterval(()=&gt;console.log(something), interval);
+  };
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">notify</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">read</span>, <span style="color: #b8860b;">callback</span>, <span style="color: #b8860b;">yesno</span>){
+    console.log(<span style="color: #8b0000;">'dinglingling'</span>)
+    setTimeout(read.bind(callback), 2000)
+
+  };
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">meSendingText</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">callback</span>) {
+    console.log(<span style="color: #8b0000;">'Me sending text'</span>);
+    notify(wifeReadingText, callback)
+  }
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">wifeReadingText</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">callback</span>){
+    console.log(<span style="color: #8b0000;">'my wife sending text'</span>);
+    notify(callback, <span style="color: #6b8e23;">null</span>, <span style="color: #8b0000;">'yes'</span>)
+  };
+
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">working</span> = keepDoing(<span style="color: #8b0000;">'typing'</span>,1000);
+  <span style="color: #00008b;">let</span> <span style="color: #b8860b;">meReadingText</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">msg</span>) {
+    <span style="color: #00008b;">if</span>(msg!=<span style="color: #8b0000;">'ok'</span>) clearInterval(work);
+    console.log(<span style="color: #8b0000;">'I\'m reading text'</span>);
+  }
+
+  meSendingText((msg)=&gt;{
+<span style="color: #00008b;">if</span>(msg!=<span style="color: #8b0000;">'ok'</span>) clearInterval(work);
+<span style="color: #00008b;">else</span>
+    console.log(<span style="color: #8b0000;">'continue working'</span>);
+});
+</pre>
+</div>
+
+
+<p>
+其中 <code>notify</code> 负责往事件循环上放一个任务，当老婆读了短信，并 <code>notify</code> 我读回信之后，两秒后短信发到了我的手机上，手机（包含快来阅读短信句柄）的铃声通过我的耳朵传到我的脑回路中，触发我开始读短信。
+</p>
+
+<p>
+使用事件循环回调的形式看起来还挺高效的，而且 JavaScript 编程中我们也一直也是这么用的。但是当异步调用多了之后，就会出现 <i>回调地狱</i> （Callback Hell）的现象，为什么说是 <b>地狱</b> 呢, 可以想象一下前面例子中如果我有十个老婆，要向 五个老婆发短信申请加班，而且都同意后才能继续工作，该是如何实现呢？
+#+INDEX 回调地狱
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">meSendingText(wife1Reading, (msg)=&gt;{
+    <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+        metSendingText(wife2Reading, (msg)=&gt;{
+            <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                metSendingText(wife3Reading, (msg)=&gt;{
+                    <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                        metSendingText(wife4Reading, (msg)=&gt;{
+                            <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                                metSendingText(wife5Reading, (msg)=&gt;{
+                                    <span style="color: #00008b;">if</span>(msg==<span style="color: #8b0000;">'yes'</span>)
+                                        console.log(<span style="color: #8b0000;">'continue working'</span>)
+                                })
+                        })
+                })  
+        })
+})
+</pre>
+</div>
+
+<p>
+只要有一个异步函数要回调，那么所有依赖于这个异步函数结束的函数都得放到该函数的回调内。这是个比地狱还要深的回调地狱。
+于是前段时间特别火的 Promise，似乎能够缓解一下回调地狱的窘境。但是，Promise 并不是专门用来消除回调地狱的，Promise 更有意义的应该是在于 Monadic 编程。对于回调地狱，Promise 能做的也只是把这些回调平铺开而已。
+</p>
+<blockquote>
+<p>
+从乘坐手扶电梯下回调地狱，变成了乘坐直梯下回调地狱。
+</p>
+</blockquote>
+
+<div class="org-src-container">
+
+<pre class="src src-js">meSendingText(wife1Reading)
+    .then(()=&gt;meSendingText(wife2Reading))
+    .then(()=&gt;meSendingText(wife3Reading))
+    .then(()=&gt;meSendingText(wife4Reading))
+    .then(()=&gt;meSendingText(wife5Reading))
+</pre>
+</div>
+
+<p>
+当然，如果是使用 Monadic 编程方式来解决这种问题的话，其实也可以变得非常优雅而且函数式，读者可以尝试用 <code>when</code> 实现一下（请回到第七章，如果你忘了 <code>when</code> 是什么）。
+</p>
+
+<p>
+但是本章，我要强调的是一种更有意思的异步编程方式 CSP。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline76" class="outline-3">
+<h3 id="orgheadline76"><span class="section-number-3">4.2</span> 通信顺序进程（CSP）</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+通信顺序进程（Communicating Sequential Processes）， 是计算机科学中用于一种描述并发系统中交互的形式语言，简称 CSP，来源于C.A.R Hoare 1978年的论文。没错了，Hoare就是发明（让我们熟悉的大学算法课纠结得快要挂科的） 快排算法的那位计算机科学家了。
+</p>
+
+<p>
+CSP 由于最近 Go 语言的兴起突然复活，<a href="http://talks.golang.org/2012/concurrency.slide#1">Go</a> 给自己的 CSP 实现起名叫 <i>goroutines and channels</i> <sup><a id="fnr.25" class="footref" href="#fn.25">25</a></sup>，由于实在是太好用了，Clojure 也加入了
+CSP 的阵营，弄了一个包叫做 <i>core.async</i> 。
+</p>
+
+<p>
+CSP 的概念非常简单, 想象一下事件循环，类似的：
+</p>
+
+<ol class="org-ol">
+<li>CSP 把这个事件循环的消息队列转换成一个数据队列，并且把这个队列叫做 <i>channel</i></li>
+<li>任务等待队列中的数据</li>
+</ol>
+
+
+<figure>
+<p><img src="images/csp.png" alt="csp.png">
+</p>
+<figcaption><span class="figure-number">&#22270;17&nbsp;</span> CSP 中的 Channel</figcaption>
+</figure>
+
+
+<p>
+这样就成功的把任务和异步数据成功从回调地狱中分离开来。还是刚才发短信的例子，我们来用 CSP 实现一遍：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">working</span> (chan))
+(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">texting</span> (chan))
+
+(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">boss-yelling</span> []
+  (go-loop [no 1]
+    (&lt;! (timeout 1000))
+    (&gt;! working (str <span style="color: #8b0000;">"bose say: work "</span> no))
+    (<span style="color: #00008b;">recur</span> (+ no 1))))
+
+<span id="coderef-wife" class="coderef-off">(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">wife-texting</span> []</span>
+  (go-loop []
+    (&lt;! (timeout 4000))
+    (&gt;! texting <span style="color: #8b0000;">"wife say: come home!"</span>)
+    (<span style="color: #00008b;">recur</span>)))
+
+<span id="coderef-reading" class="coderef-off">(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">reading-text</span> []</span>
+  (go-loop []
+    (println (&lt;! texting) <span style="color: #8b0000;">"me: ignore"</span>)
+    (<span style="color: #00008b;">recur</span>)))
+
+(<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">work</span> []
+  (go-loop []
+    (println (&lt;! working) <span style="color: #8b0000;">" me: working"</span>)
+    (<span style="color: #00008b;">recur</span>)))
+
+(boss-yelling)
+(wife-texting)
+(work)
+(reading-text)
+</pre>
+</div>
+<a class="jsbin-embed" href="http://jsbin.com/muliva/2/embed?console">JS Bin</a><script src="http://static.jsbin.com/js/embed.js"></script>
+
+<ul class="org-ul">
+<li>可以看出 boss yelling，wife texting，me working 和 reading text 四个任务是 <b>并发</b> 进行的</li>
+<li>所有任务都相互没有依赖，之间完全没有 callback，没有哪个任务是另一个任务的 callback。 而且他们都只依赖于 <code>working</code> 和 <code>texting</code> 这两个channel</li>
+<li>其中的 <code>go-loop</code> 神奇的地方是，它循环获取channel中的数据，当队列空时，它的状态会变成 parking，并没有阻塞线程，而是保存当前状态，继续去试另一个 <code>go</code> 语句。</li>
+<li>拿 <code>work</code> 来说， <code>(&lt;! texting)</code> 就是从 channel texting 中取数据，如果 texting 为空，则parking</li>
+<li>而对于任务 <code>wife-texting</code> ， <code>(&gt;! texting "wife say: come home!")</code> 是往 channel texting 中加数据，如果 channel 已满，则也切到 parking 状态。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline83" class="outline-3">
+<h3 id="orgheadline83"><span class="section-number-3">4.3</span> 使用 generator 实现 CSP <sup><a id="fnr.26" class="footref" href="#fn.26">26</a></sup></h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+在看明白了 Clojure 是如何使用 channel 来解耦我的问题后，再回过头来看 JavaScript 如何实现类似的 CSP 编程呢？
+</p>
+
+<p>
+先理一下我们都要实现些什么：
+</p>
+<ul class="org-ul">
+<li>go block：当然是需要这样的个block，只有在这个 block 内我们可以自如的切换状态。</li>
+<li>channel：用来存放消息</li>
+<li>timeout：一个特殊的 channel，在规定时间内关闭</li>
+<li>take (&lt;!)：尝试 take channel 的一条消息的动作会决定下一个状态会是什么。</li>
+<li>put (&gt;!)：同样的，往 channe 中发消息，也会决定下一个状态是什么。</li>
+</ul>
+
+<p>
+当然，首先要实现的当然是最重要的 go block，但是在这之前，让我们看看实现 go block 的前提 ES6 的一个的新标准—— <i>generator</i> 。
+</p>
+</div>
+
+<div id="outline-container-orgheadline77" class="outline-4">
+<h4 id="orgheadline77"><span class="section-number-4">4.3.1</span> Generator</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+<a href="http://blog.dev/javascript/essential-ecmascript6.html#sec-9">ES6 终于支持了Generator</a>，目前Firefox与Chrome都已经实现。<sup><a id="fnr.27" class="footref" href="#fn.27">27</a></sup> Generator 在每次被调用时返回 <code>yield</code> 后边表达式的值，并保存状态，下次调用时继续运行。 
+</p>
+
+<p>
+这种功能听起来刚好符合上例中神奇的 parking 的行为，于是，我们可以试试用 generator 来实现刚刚 Clojure 的 CSP 版本。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline78" class="outline-4">
+<h4 id="orgheadline78"><span class="section-number-4">4.3.2</span> Go Block</h4>
+<div class="outline-text-4" id="text-4-3-2">
+<p>
+go block 其实就是一个状态机，generator 为状态机的输入，根据不同的输入使得状态机状态转移。所以实现 go block 其实就是：
+</p>
+<ul class="org-ul">
+<li>一个函数</li>
+<li>可以接受一个 <a href="#coderef-generator"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-generator');" onmouseout="CodeHighlightOff(this, 'coderef-generator');">generator</a></li>
+<li>如果 generator 没有下一步，则结束</li>
+<li>如果该步的返回值状态为 park，<a href="#coderef-parking"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-parking');" onmouseout="CodeHighlightOff(this, 'coderef-parking');">那么就是什么也不做, 过一会继续尝试新的输入</a></li>
+<li>如果为 continue，<a href="#coderef-continue"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-continue');" onmouseout="CodeHighlightOff(this, 'coderef-continue');">就接着去 generator</a> 取下一输入</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">go_</span>(<span style="color: #b8860b;">machine</span>, <span style="color: #b8860b;">step</span>) {
+  <span style="color: #00008b;">while</span>(!step.done) {
+    <span style="color: #00008b;">var</span> <span style="color: #b8860b;">arr</span>   = step.value(),
+        state = arr[0],
+        value = arr[1];
+    <span style="color: #00008b;">switch</span> (state) {
+      <span style="color: #00008b;">case</span> <span style="color: #8b0000;">"park"</span>:
+<span id="coderef-parking" class="coderef-off">        setTimeout(<span style="color: #00008b;">function</span>() { go_(machine, step); },0);</span>
+        <span style="color: #00008b;">return</span>;
+      <span style="color: #00008b;">case</span> <span style="color: #8b0000;">"continue"</span>:
+<span id="coderef-continue" class="coderef-off">        step = machine.next(value);</span>
+        <span style="color: #00008b;">break</span>;
+    }
+  }
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">go</span>(<span style="color: #b8860b;">machine</span>) {
+<span id="coderef-generator" class="coderef-off">  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">gen</span> = machine();</span>
+  go_(gen, gen.next());
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline79" class="outline-4">
+<h4 id="orgheadline79"><span class="section-number-4">4.3.3</span> timeout</h4>
+<div class="outline-text-4" id="text-4-3-3">
+<p>
+timeout 是一个类似于 thread sleep 的功能，想让任务能等待个一段时间再执行，
+只需要在 <code>go_</code> 中加入一个 timeout 的 <code>case</code> 就好了。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-javascript">...
+  <span style="color: #00008b;">case</span> <span style="color: #8b0000;">'timeout'</span>:
+    setTimeout(<span style="color: #00008b;">function</span>(){ go_(machine, machine.next());}, value);
+    <span style="color: #00008b;">return</span>;
+...
+</pre>
+</div>
+
+<p>
+如果状态是 timeout，那么等待 <code>value</code> 那么长的时间再继续运行 generator。
+</p>
+
+<p>
+另外，当然还需要一个返回 timeout channel 的函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">timeout</span>(<span style="color: #b8860b;">interval</span>){
+  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">chan</span> = [interval];
+  chan.name = <span style="color: #8b0000;">'timeout'</span>;
+  <span style="color: #00008b;">return</span> chan;
+}
+</pre>
+</div>
+
+<p>
+每次使用 timeout 都会生成一个新的 channel，但是 channel 内只有一个消息，就是 timeout 的 毫秒数。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline80" class="outline-4">
+<h4 id="orgheadline80"><span class="section-number-4">4.3.4</span> take &lt;!</h4>
+<div class="outline-text-4" id="text-4-3-4">
+<p>
+当 generator 从 channel 中 take 数据时的状态转移如下：
+</p>
+<ul class="org-ul">
+<li>如果 channel 空，状态变为 park</li>
+<li>如果 channel 非空，获得数据, 状态改成 continue</li>
+<li>如果是 timeout channel，状态置成 timeout</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">take</span>(<span style="color: #b8860b;">chan</span>) {
+  <span style="color: #00008b;">return</span> <span style="color: #00008b;">function</span>() {
+    <span style="color: #00008b;">if</span>(chan.name === <span style="color: #8b0000;">'timeout'</span>){
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">'timeout'</span>, chan.pop()];
+    }<span style="color: #00008b;">else</span> <span style="color: #00008b;">if</span>(chan.length === 0) {
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"park"</span>, <span style="color: #6b8e23;">null</span>];
+    } <span style="color: #00008b;">else</span> {
+      <span style="color: #00008b;">var</span> <span style="color: #b8860b;">val</span> = chan.pop();
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"continue"</span>, val];
+    }
+  };
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline81" class="outline-4">
+<h4 id="orgheadline81"><span class="section-number-4">4.3.5</span> put &gt;!</h4>
+<div class="outline-text-4" id="text-4-3-5">
+<p>
+当 generator 往 channel 中 put 消息
+</p>
+<ul class="org-ul">
+<li>如果 channel 空，则将消息放入，状态变为 continue</li>
+<li>如果 channel 非空，则进入 parking 状态</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">put</span>(<span style="color: #b8860b;">chan</span>, <span style="color: #b8860b;">val</span>) {
+  <span style="color: #00008b;">return</span> <span style="color: #00008b;">function</span>() {
+    <span style="color: #00008b;">if</span>(chan.length === 0) {
+      chan.unshift(val);
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"continue"</span>, <span style="color: #6b8e23;">null</span>];
+    } <span style="color: #00008b;">else</span> {
+      <span style="color: #00008b;">return</span> [<span style="color: #8b0000;">"park"</span>, <span style="color: #6b8e23;">null</span>];
+    }
+  };
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline82" class="outline-4">
+<h4 id="orgheadline82"><span class="section-number-4">4.3.6</span> JavaScript CSP 版本的例子</h4>
+<div class="outline-text-4" id="text-4-3-6">
+<p>
+有了 go block 这个状态机以及使他状态转移表之后，终于可以原原本本的将之前的 clojure 的例子翻译成 JavaScript 了。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-javascript"><span style="color: #00008b;">function</span> <span style="color: #6a5acd;">boss_yelling</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span>=0;;i++){
+      <span style="color: #00008b;">yield</span> take(timeout(1000));
+      <span style="color: #00008b;">yield</span> put(work, <span style="color: #8b0000;">"boss say: work "</span>+i);
+    }
+  });
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">wife_texting</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(;;){
+      <span style="color: #00008b;">yield</span> take(timeout(4000));
+      <span style="color: #00008b;">yield</span> put(text, <span style="color: #8b0000;">"wife say: come home"</span>);
+    }
+  });
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">working</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(;;){
+      <span style="color: #00008b;">var</span> <span style="color: #b8860b;">task</span> = <span style="color: #00008b;">yield</span> take(work);
+      console.log(task, <span style="color: #8b0000;">"me working"</span>);
+    }
+  });
+}
+
+<span style="color: #00008b;">function</span> <span style="color: #6a5acd;">texting</span>(){
+  go(<span style="color: #00008b;">function</span>*(){
+    <span style="color: #00008b;">for</span>(;;){
+      <span style="color: #00008b;">var</span> <span style="color: #b8860b;">read</span> = <span style="color: #00008b;">yield</span> take(text);
+      console.log(read, <span style="color: #8b0000;">"me ignoring"</span>);
+    }
+  });
+}
+boss_yelling();
+wife_texting();
+working();
+texting();
+</pre>
+</div>
+
+<p>
+是不是决定跟 Clojure 的例子非常相似呢？注意每一次 yield 都是操作 go block 这个状态机，因此就这个例子来说，我们可以跟踪一下它的状态转移过程，这样可能会对这个简单的 go block 状态机有更深得理解。
+</p>
+
+<ol class="org-ol">
+<li>首先看 <code>boss_yelling</code> 这个 go 状态机，当操作为 <code>take(timeout(1000))</code> 时，状态会切换到  <code>timeout</code> 这样状态机会停一个 1000 毫秒。</li>
+<li>其他的状态机会继续运行，接下来应该就到 <code>wife_texting</code> ，同样的这个状态机也会停 4000秒</li>
+<li>现在轮到 <code>working</code> ，但是 work channel 中并没有任何的消息，所以也进入 parking 状态。</li>
+<li>同样 <code>texting</code>  状态机也进入 parking 状态。</li>
+</ol>
+
+<p>
+直到 1000 毫秒后， <code>boss_yelling</code> timeout
+</p>
+
+<ol class="org-ol">
+<li><code>bose_yelling</code> 状态机继续运行，往 work channel 中放了一条消息。</li>
+<li><code>working</code> 状态机得以继续运行，打印消息。</li>
+</ol>
+
+<p>
+此时没有别的状态机的状态可以变化，又过了 1000 毫秒， <code>working</code> 还会继续打印，直到第 4000 毫秒， <code>wife_texting</code> timeout，状态机继续运行，往 text channel 添加了一条消息。这时状态机 <code>texting</code> 的状态才从 parking 切到 continue，开始打印消息。
+</p>
+
+<p>
+以此类推，就会得到这样的结果：
+</p>
+<pre class="example">
+"boss say: work 0"
+"me working"
+"boss say: work 1"
+"me working"
+"boss say: work 2"
+"me working"
+"boss say: work 3"
+"me working"
+"boss say: work 4"
+"me working"
+"wife say: come home"
+"me ignoring"
+"boss say: work 5"
+"me working"
+...
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline86" class="outline-3">
+<h3 id="orgheadline86"><span class="section-number-3">4.4</span> 在前端实践中使用  CSP</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+之前的实验性的代码只是为了说明 CSP 的原理和实现思路之一，更切合实际的，我们可以通过一些库来使用到 Clojure 的 core.async。这里我简单的介绍一下我从 ClojureScript 的 core.async 移植过来的 conjs<sup><a id="fnr.28" class="footref" href="#fn.28">28</a></sup>。
+</p>
+</div>
+
+<div id="outline-container-orgheadline84" class="outline-4">
+<h4 id="orgheadline84"><span class="section-number-4">4.4.1</span> 使用移植的 core.async</h4>
+<div class="outline-text-4" id="text-4-4-1">
+<p>
+由于 go block 在 Clojure 中是用 macro 生成状态机来实现的，要移植过来困难不小，因此这里我只将 core.async 的 channel 移植了过来，但是是以接受回调函数的方式。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">const</span> <span style="color: #b8860b;">_</span> = require(<span style="color: #8b0000;">'con.js'</span>);
+<span style="color: #00008b;">const</span> {async} = _;
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">c1</span> = async.chan()
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">c2</span> = async.chan()
+
+async.doAlts(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">v</span>) {
+  console.log(v.get(0)); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; c1</span>
+  console.log(_.equals(c1, v.get(1))) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; true</span>
+},[c1,c2]);
+
+async.put$(c1, <span style="color: #8b0000;">'c1'</span>);
+async.put$(c2, <span style="color: #8b0000;">'c2'</span>);
+</pre>
+</div>
+
+<p>
+有意思的是，我顺带实现了 Promise 版本的 core.async，会比回调要稍微更方便一些。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">async.alts([c1,c2])
+  .then((v) =&gt; {
+console.log(v.get(0)); <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; c1</span>
+  console.log(_.equals(c1, v.get(1))) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; true</span>
+  })
+async.put(c1, <span style="color: #8b0000;">'c1'</span>).then(_=&gt;{console.log(<span style="color: #8b0000;">'put c1 into c1'</span>)})
+async.put(c2, <span style="color: #8b0000;">'c2'</span>).then(_=&gt;{console.log(<span style="color: #8b0000;">'put c2 into c2'</span>)})
+</pre>
+</div>
+
+<p>
+虽然把 channel 能移植过来，但是缺少 macro 原生支持的 JavaScript 似乎对 go block 也无能为力，除非能有 generator 的支持。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline85" class="outline-4">
+<h4 id="orgheadline85"><span class="section-number-4">4.4.2</span> 使用 ES7 中的异步函数</h4>
+<div class="outline-text-4" id="text-4-4-2">
+<p>
+由于在实践中我们经常会使用到 babel 来将 ES6 规范的代码编译成 ES5 的代码。所以顺便可以将 ES7 的开关打开，这样我们就可以使用 ES7 规范中的一个新特性—— async 函数。 使用 async 函数实现我们之前的例子估计代码并不会有大的变化，让我们使用 async 函数和 channel 实现一下 go 经典的乒乓球小例子。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr"> 1: </span><span style="color: #00008b;">let</span> <span style="color: #b8860b;">_</span> = require(<span style="color: #8b0000;">'con.js'</span>);
+<span class="linenr"> 2: </span><span style="color: #00008b;">let</span> {async} = _;
+<span class="linenr"> 3: </span>
+<span class="linenr"> 4: </span>async <span style="color: #00008b;">function</span> player(<span style="color: #b8860b;">name</span>, <span style="color: #b8860b;">table</span>) {
+<span class="linenr"> 5: </span>  <span style="color: #00008b;">while</span> (<span style="color: #6b8e23;">true</span>) {
+<span id="coderef-take" class="coderef-off"><span class="linenr"> 6: </span>    <span style="color: #00008b;">var</span> <span style="color: #b8860b;">ball</span> = await table.take();</span>
+<span class="linenr"> 7: </span>    ball.hits += 1;
+<span class="linenr"> 8: </span>    console.log(name + <span style="color: #8b0000;">" "</span> + ball.hits);
+<span class="linenr"> 9: </span>    await async.timeout(100).take();
+<span class="linenr">10: </span>    table.put(ball);
+<span class="linenr">11: </span>  }
+<span class="linenr">12: </span>}
+<span class="linenr">13: </span>
+<span class="linenr">14: </span>(async <span style="color: #00008b;">function</span> () {
+<span class="linenr">15: </span>  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">table</span> = async.chan();
+<span class="linenr">16: </span>
+<span class="linenr">17: </span>  player(<span style="color: #8b0000;">"ping"</span>, table);
+<span class="linenr">18: </span>  player(<span style="color: #8b0000;">"pong"</span>, table);
+<span class="linenr">19: </span>
+<span class="linenr">20: </span>  await table.put({hits: 0});
+<span class="linenr">21: </span>  await async.timeout(1000).take();
+<span class="linenr">22: </span>  table.close();
+<span class="linenr">23: </span>})();
+</pre>
+</div>
+<p>
+当把球 <code>{hist:0}</code>  放到 <code>table</code> channel 上的时候，阻塞在第<a href="#coderef-take"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-take');" onmouseout="CodeHighlightOff(this, 'coderef-take');">6</a>行 <code>take</code> 的 player ping 会先接到球，player ping 击完球 100ms 之后，球又回到了 <code>table</code> channel。之后 player pong 之间来回击球知道 table 在 1000ms 后被关闭。
+</p>
+
+<p>
+所以我们运行代码后看到的间断性的 100ms 的打印出：
+</p>
+<pre class="example">
+pong 1
+ping 2
+pong 3
+ping 4
+pong 5
+ping 6
+pong 7
+ping 8
+pong 9
+ping 10
+pong 11
+ping 12
+</pre>
+
+<p>
+通过 async/await，结合 conjs 的 channel， 真正让我们写出了 Clojure core.async 风格的代码。利用 CSP 异步编程的方式，我们可以用同步的思路，去编写实际运行时异步的代码。这样做不仅让我们的代码更好推理，更符合简单的命令式思维方式，也更容易 debug 和做异常处理。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+作者真的有够懒的，名字都懒得起。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+还记得《计算机程序构造与解释》里面用的怪怪的括号语言 scheme 吗？就是 lisp 的一种方言。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+就像计算机程序构造与解释中说的，lisp 语言基本没有语法，就像学习象棋的规则只用花很少的时间，而如何下好棋，才是学习的关键。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+中文叫 Clojure 编程乐趣，但是只有第一版的，原书已经第二版了。 我刚好有幸翻译了作者 Michael Fogus 另一本《JavaScript 函数式编程》。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://github.com/jcouyang/clojure-flavored-javascript/tree/source">https://github.com/jcouyang/clojure-flavored-javascript/tree/source</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">
+当然逻辑式编程并不是本书的重点，也不会展开深入介绍，如果有兴趣，可以联系出版社让我在写一本。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">
+事实上，JavaScript 或者 Scala 其实也是通过把函数作为一种特殊的对象，来把函数变成一等公民。不过，在使用上基本感觉不到函数是对象。而在 Clojure 中，函数确确实实就是一等公民，因为所有 lisp 语言都一样，代码即是数据。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8">8</a></sup> <div class="footpara"><p class="footpara">
+thunk 的翻译“槽”来自《计算机程序的构造与解释》，但是我个人倾向不做翻译，因为很难从“槽”这一个字中获取到足够多的解释。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9">9</a></sup> <div class="footpara"><p class="footpara">
+相对于廋箭头（thin arrow）。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10">10</a></sup> <div class="footpara"><p class="footpara">
+正如我说的本书不是 JavaScript 的教科书，所以关于动态绑定和词法绑定，这里不会做太多的解释。简单的解释就是词法绑定可以从词法分析（通俗的说就是肉眼直接能看出来）判断出来绑定的值，而相反动态绑定需要根据运行时上下文决定。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11">11</a></sup> <div class="footpara"><p class="footpara">
+同样的，我读的中文技术书太少，倾向于不翻译此类专业名词。翻译错了反而体会不出来原词的意思。这里明显 structure 是构造，前面加 de 词根，就是构造的反过程。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.12" class="footnum" href="#fnr.12">12</a></sup> <div class="footpara"><p class="footpara">
+Underscore在github上的收藏量已经超过一万五了，无疑是JavaScript最流行的库之一。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.13" class="footnum" href="#fnr.13">13</a></sup> <div class="footpara"><p class="footpara">
+当然我并不是第一个发现 Undersocre 奇怪的人，13年一次js大会上就有人提出了这个话题 <a href="https://www.youtube.com/watch?v=m3svKOdZijA">https://www.youtube.com/watch?v=m3svKOdZijA</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.14" class="footnum" href="#fnr.14">14</a></sup> <div class="footpara"><p class="footpara">
+虽然 Michael Fogus 的《函数式 JavaScript 编程》中就是用 Underscore。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.15" class="footnum" href="#fnr.15">15</a></sup> <div class="footpara"><p class="footpara">
+根据 github 的报告 <a href="https://github.com/blog/2047-language-trends-on-github">https://github.com/blog/2047-language-trends-on-github</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.16" class="footnum" href="#fnr.16">16</a></sup> <div class="footpara"><p class="footpara">
+前端社区发展特别奇怪，不管是什么库，过一段时间就有类似的库出来，把前一个的缺点列一遍，大家都开始用新的，而唾弃旧的库。作者很好奇什么时候 React 会开始被唾弃。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.17" class="footnum" href="#fnr.17">17</a></sup> <div class="footpara"><p class="footpara">
+ClojureScript 作者
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.18" class="footnum" href="#fnr.18">18</a></sup> <div class="footpara"><p class="footpara">
+<a href="http://stackoverflow.com/questions/7533837/explanation-of-combinators-for-the-working-man">http://stackoverflow.com/questions/7533837/explanation-of-combinators-for-the-working-man</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.19" class="footnum" href="#fnr.19">19</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://github.com/clojure/clojure/blob/36d665793b43f62cfd22354aced4c6892088abd6/src/jvm/clojure/lang/PersistentVector.java#L34">https://github.com/clojure/clojure/blob/36d665793b43f62cfd22354aced4c6892088abd6/src/jvm/clojure/lang/PersistentVector.java#L34</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.20" class="footnum" href="#fnr.20">20</a></sup> <div class="footpara"><p class="footpara">
+按 lisp 语言的传统来说 cons（construct） 代表的是组成包含一个头(car)和一个尾(cdr)的结构体，主要用于创建序列 list，在 Clojure 中就是 sequence。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.21" class="footnum" href="#fnr.21">21</a></sup> <div class="footpara"><p class="footpara">
+休杰克曼Hugh Jackman饰，大家更熟悉的休杰克曼应该是X战警（X-MEN）里的金刚狼
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.22" class="footnum" href="#fnr.22">22</a></sup> <div class="footpara"><p class="footpara">
+第四章会有专门的章节解释自由变量这个词。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.23" class="footnum" href="#fnr.23">23</a></sup> <div class="footpara"><p class="footpara">
+也有人认为 React 是紧耦合，不妨再仔细看看我画这张图。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.24" class="footnum" href="#fnr.24">24</a></sup> <div class="footpara"><p class="footpara">
+这里的多线程是相对用户而言，也就是这个例子中的我，而用手机发短信（这种 I/O 操作）是如何给基站发送消息的，占用了多少线程来做我们并不关心。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.25" class="footnum" href="#fnr.25">25</a></sup> <div class="footpara"><p class="footpara">
+<i>goroutine</i>  名字取自 <i>coroutine</i> (协程)，由于是 go 的实现，所以叫 goroutine 了。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.26" class="footnum" href="#fnr.26">26</a></sup> <div class="footpara"><p class="footpara">
+里面的go的实现来自 <a href="http://swannodette.github.io/2013/08/24/es6-generators-and-csp/">http://swannodette.github.io/2013/08/24/es6-generators-and-csp/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.27" class="footnum" href="#fnr.27">27</a></sup> <div class="footpara"><p class="footpara">
+Chrome有一个 feature toggle 可以打开部分 es6 功能.  打开 <code>chrome://flags/#enable-javascript-harmony</code> 设置为 <code>true</code>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.28" class="footnum" href="#fnr.28">28</a></sup> <div class="footpara"><p class="footpara">
+源代码在 <a href="http://github.com/jcouyang/conjs%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%AE%80%E5%8D%95%E7%9A%84%E9%80%9A%E8%BF%87">http://github.com/jcouyang/conjs%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%AE%80%E5%8D%95%E7%9A%84%E9%80%9A%E8%BF%87</a> <code>npm install con.js</code> 安装。
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p>Author: Jichao Ouyang <a aria-label="Follow @jcouyang on GitHub" data-count-aria-label="# followers on GitHub" data-count-api="/users/jcouyang#followers" data-count-href="/jcouyang/followers" href="https://github.com/jcouyang" class="github-button">Follow @jcouyang</a>
+</p>
+<p>Modified: 2016-02-11 Thu 22:47</p>
+<p>Generated by: <a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.2)</p>
+<p>&lt;Publish&gt; with _(:з」∠)_ by <a href="https://github.com/jcouyang/orgpress">OrgPress</a></p>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
+<div class="github-fork-ribbon-wrapper right-bottom"><div class="github-fork-ribbon"><a href="https://github.com/jcouyang/clojure-flavored-javascript">Fork me on GitHub</a></div></div>
+
+
+<script>
+ (function(){
+   document.getElementById('edit-in-github').addEventListener("click",function(){
+     var pathname = window.location.pathname;
+     window.location.href = "https://github.com/jcouyang/clojure-flavored-javascript/edit/master/book/"+pathname.replace(".html",".org");
+   })
+ })()
+</script>
+<!-- Google Analystics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-32314154-10', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+ var disqus_shortname = 'orgblog';
+ var href = window.location.href;
+ href.replace(/^https/, 'http');
+ var disqus_url = href;
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</body>
+</html>

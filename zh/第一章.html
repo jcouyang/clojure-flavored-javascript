@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 2016-02-11 Thu 22:50 -->
+<meta  charset="utf-8">
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Jichao Ouyang">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style/pixyll.css"/>
+<link rel="stylesheet" href="style/gh-fork-ribbon.css" />
+<!--[if lt IE 9]>
+     <link rel="stylesheet" href="/style/gh-fork-ribbon.ie.css" />
+     <![endif]-->
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline41">1. 函数式javascript</a>
+<ul>
+<li><a href="#orgheadline13">1.1. 最好在看本书之前</a>
+<ul>
+<li><a href="#orgheadline1">1.1.1. 能看懂JavaScript代码</a></li>
+<li><a href="#orgheadline5">1.1.2. 你可能买错书了，如果你是</a>
+<ul>
+<li><a href="#orgheadline2">想学 JavaScript</a></li>
+<li><a href="#orgheadline3">想学 Clojure</a></li>
+<li><a href="#orgheadline4">函数式编程的专家</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline12">1.1.3. 准备环境</a>
+<ul>
+<li><a href="#orgheadline6">JavaScript</a>
+<ul>
+<li><a href="#orgheadline7">安装 Node/iojs</a></li>
+<li><a href="#orgheadline8">安装 sweet.js</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline9">Clojure</a>
+<ul>
+<li><a href="#orgheadline10">安装 leiningen</a></li>
+<li><a href="#orgheadline11">编辑器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline31">1.2. JavaScript 也是函数式语言?</a>
+<ul>
+<li><a href="#orgheadline18">1.2.1. 编程范式</a>
+<ul>
+<li><a href="#orgheadline14">命令式</a></li>
+<li><a href="#orgheadline15">面向对象</a></li>
+<li><a href="#orgheadline16">函数式</a></li>
+<li><a href="#orgheadline17">逻辑式编程</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline30">1.2.2. JavaScript对函数式的原生支持</a>
+<ul>
+<li><a href="#orgheadline19">函数作为参数</a></li>
+<li><a href="#orgheadline20">函数作为返回值</a>
+<ul>
+<li><a href="#orgheadline21">柯里化</a></li>
+<li><a href="#orgheadline22">thunk</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline23">越来越函数式的ES6</a></li>
+<li><a href="#orgheadline24">箭头函数</a>
+<ul>
+<li><a href="#orgheadline25">声明一个箭头函数</a></li>
+<li><a href="#orgheadline26">为什么要用箭头函数</a></li>
+<li><a href="#orgheadline27">词法绑定</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline28">尾递归优化</a></li>
+<li><a href="#orgheadline29">Destructure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline36">1.3. 作为函数式语言 JavaScript 还差些什么</a>
+<ul>
+<li><a href="#orgheadline32">1.3.1. 不可变数据结构</a></li>
+<li><a href="#orgheadline33">1.3.2. 惰性求值</a></li>
+<li><a href="#orgheadline34">1.3.3. 函数组合</a></li>
+<li><a href="#orgheadline35">1.3.4. 尾递归优化</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline40">1.4. Underscore 你错了</a>
+<ul>
+<li><a href="#orgheadline37">1.4.1. 跟大家都不一样的 map 函数</a></li>
+<li><a href="#orgheadline38">1.4.2. ClojureScript</a></li>
+<li><a href="#orgheadline39">1.4.3. Mori</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+<div id="outline-container-orgheadline41" class="outline-2">
+<h2 id="orgheadline41"><span class="section-number-2">1</span> 函数式javascript</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+本章将介绍 JavaScript 的函数式背景：
+</p>
+<ol class="org-ol">
+<li>为什么说 JavaScript 是函数式语言？</li>
+<li>我们为什么要关心函数式编程？</li>
+<li>为什么不用Underscore？</li>
+<li>要作为完整的函数式语言，JavaScript 还缺些什么？</li>
+</ol>
+</div>
+
+<div id="outline-container-orgheadline13" class="outline-3">
+<h3 id="orgheadline13"><span class="section-number-3">1.1</span> 最好在看本书之前</h3>
+<div class="outline-text-3" id="text-1-1">
+</div><div id="outline-container-orgheadline1" class="outline-4">
+<h4 id="orgheadline1"><span class="section-number-4">1.1.1</span> 能看懂JavaScript代码</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+这既不是一本介绍 Clojure 也不是介绍 JavaScript 的书，这是一本介绍如何用 JavaScript 函数式编程的书。其中一些函数式的思想和表现形式都借用了 Clojure，因此叫做 Clojure 风格的函数式 JavaScript，但是并不要求在读本书前会 Clojure<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>，而只需要能阅读 JavaScript 代码，那就足够了。 如果你会 Clojure，可以完全忽略我解释 Clojure 代码的段落，当然 JavaScript 的部分才是重点。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5"><span class="section-number-4">1.1.2</span> 你可能买错书了，如果你是</h4>
+<div class="outline-text-4" id="text-1-1-2">
+</div><div id="outline-container-orgheadline2" class="outline-5">
+<h5 id="orgheadline2">想学 JavaScript</h5>
+<div class="outline-text-5" id="text-orgheadline2">
+<p>
+这不是一本 JavaScript 的教科书，这里只会介绍如何用 JavaScript 进行函数式编程，所以如果想要系统学习 JavaScript 的话，我猜看一看《JavaScript 语言精粹》已经足够了。另外如果读者的英文好的话，还有一本可以在线免费阅读的<a href="https://leanpub.com/javascriptallongesix/read">《JavaScript Allonge》</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-5">
+<h5 id="orgheadline3">想学 Clojure</h5>
+<div class="outline-text-5" id="text-orgheadline3">
+<p>
+同样的，这也不是 Clojure 的教科书，这里只含有一些用于阐述函数式编程思想的 Clojure 代码。作为副作用，你确实可以学到一些 Clojure 编程的知识，但很可能是非常零碎不完整的知识。如果是想要系统的了解和学习 Clojure 的话，非常推荐《The Joy of Clojure》<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>，另外，如果读者英文比较好，还有一本可以免费在线阅读的<a href="http://braveclojure.com/">《CLOJURE for the BRAVE and TRUE》</a> 也非常的不错。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-5">
+<h5 id="orgheadline4">函数式编程的专家</h5>
+<div class="outline-text-5" id="text-orgheadline4">
+<p>
+如果你已经在日常工作或学习中使用 Scala，Clojure 或者 Haskell 等函数式语言编程的话，那么本书对你在函数式编程上的帮助不会太大。 <b>不过</b> ：这本书对解你从函数式语言迁移到 JavaScript 编程的不适应该是非常有效的，当然，这也正是本书的目的之一。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline12" class="outline-4">
+<h4 id="orgheadline12"><span class="section-number-4">1.1.3</span> 准备环境</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+在开始阅读本书之前，如果你希望能运行书中的代码的话，可能需要一些环境的配置。而且书中的所有源码和运行方式都可以在本书的 Github 仓库<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>中找到。当然如果你使用 emacs（同时还配置了 org babel 的话） 阅读本书的源码的话，对于大部分代码只需要光标放在在代码处按 <code>c-c c-c</code> 即可。
+</p>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-5">
+<h5 id="orgheadline6">JavaScript</h5>
+<div class="outline-text-5" id="text-orgheadline6">
+<p>
+原生的 JavaScript 没有什么好准备的，可以通过 Node 或者 Firefox（推荐）的 Console 运行代码。当然第五章会有一些使用 sweet.js 写的 macro，则需要安装 sweet.js。
+</p>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-6">
+<h6 id="orgheadline7">安装 Node/iojs</h6>
+<div class="outline-text-6" id="text-orgheadline7">
+<ol class="org-ol">
+<li>下载<a href="https://nodejs.org/"> nodejs</a></li>
+
+<li>如果使用 mac，可以直接用 brew 安装</li>
+</ol>
+<div class="org-src-container">
+
+<pre class="src src-sh">brew install node 
+<span style="color: #8c8c8c; font-style: italic;"># </span><span style="color: #8c8c8c; font-style: italic;">&#25110;&#32773;</span>
+brew install iojs
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-6">
+<h6 id="orgheadline8">安装 sweet.js</h6>
+<div class="outline-text-6" id="text-orgheadline8">
+<p>
+在安装完 node 之后命令行输入：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">npm install -g sweet.js
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline9" class="outline-5">
+<h5 id="orgheadline9">Clojure</h5>
+<div class="outline-text-5" id="text-orgheadline9">
+<p>
+书中的 Clojure 代码大多都用来描述函数式编程的概念，当然如果想要运行书中的 Clojure 代码，首先需要安装 <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">JVM 或者 JDK</a>，至少需要1.6，推荐安装1.8。
+</p>
+</div>
+
+<div id="outline-container-orgheadline10" class="outline-6">
+<h6 id="orgheadline10">安装 leiningen</h6>
+<div class="outline-text-6" id="text-orgheadline10">
+<p>
+leiningen 是 clojure 的包管理工具，类似于 node 的 npm，ruby 的 bundle，python 的 pip。 另外 leinigen 还提供脚手架的功能。可以通过<a href="http://leiningen.org/">官网</a>的脚本安装。 mac 用户可以简单的使用 <code>brew install leiningen</code> 安装。
+</p>
+
+<p>
+安装完之后，就可以运行 <code>lein repl</code>  打开 repl，试试输入下列 clojure 代码，你将会立马看见结果。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(+ 1 1)
+<span style="color: #8c8c8c; font-style: italic;">;</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 2</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-6">
+<h6 id="orgheadline11">编辑器</h6>
+<div class="outline-text-6" id="text-orgheadline11">
+<p>
+如果更喜欢使用编辑器用来编辑更长一段的代码，我推荐非 emacs 用户使用 <a href="http://lighttable.com/">Light Table</a>, intellij 用户对使用 <a href="https://cursive-ide.com/">cursive</a>。当然如果读者已经在使用 Emacs，那就更完美了，emacs <a href="https://github.com/clojure-emacs/cider">cider mode</a> 是 Clojure 编程不错的选择。
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline31" class="outline-3">
+<h3 id="orgheadline31"><span class="section-number-3">1.2</span> JavaScript 也是函数式语言?</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+说到 JavaScript 可能第一反应会是一门面向对象的语言。事实上，JavaScript 是基于原型（prototype-based）的 <b>多范式</b> 编程语言。也就是说面向对象只是 JavaScript 支持的其中一种范式而已，由于 JavaScript 的函数是一等公民，它也支持函数式编程范式。
+</p>
+</div>
+
+<div id="outline-container-orgheadline18" class="outline-4">
+<h4 id="orgheadline18"><span class="section-number-4">1.2.1</span> 编程范式</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+常见的编程范式有三种，命令式，面向对象以及函数式，事实上还有第四种，逻辑式编程。 如我们在大学时学过的C语言，就是标准的命令式语言。而如果你在大学自学过Java打过黑工的话，那么你对面向对象也再熟悉不过了吧。而可能大部分人（以为）接触函数式的机会比较少，因为它是更接近于数学和代数的一种编程范式。
+</p>
+</div>
+
+<div id="outline-container-orgheadline14" class="outline-5">
+<h5 id="orgheadline14">命令式</h5>
+<div class="outline-text-5" id="text-orgheadline14">
+<p>
+这恐怕是我们最熟悉的编程范式了(大部分计算机课程都会是C)，命令式顾名思义就是以一条条命令的方式编程，告诉计算机我需要先做这个任务，然后另一个任务。还有一些控制命令执行过程的流控制，比如我们熟悉的循环语句：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span>=0;i&lt;10;i++){
+  console.log(<span style="color: #8b0000;">'&#21629;&#20196;'</span>,i)
+}
+</pre>
+</div>
+
+<p>
+当然还有分支语句，switch等等，都是用来控制命令的执行 <i>过程</i> 。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline15" class="outline-5">
+<h5 id="orgheadline15">面向对象</h5>
+<div class="outline-text-5" id="text-orgheadline15">
+<p>
+这恐怕是目前最常见的编程范式了（绝大部分的工程项目的语言都会是面向对象语言）。而面向对象的思想则更接近于现实世界，封装好的对象之间通过消息互相传递信息。面向对象有一些我们熟悉的概念比如封装，继承，多态等等。而面向对象的思维主要是通过抽象成包含状态和一些方法的对象来解决问题，可以通过继承关系复用一些方法和行为。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline16" class="outline-5">
+<h5 id="orgheadline16">函数式</h5>
+<div class="outline-text-5" id="text-orgheadline16">
+<p>
+函数式则更接近于数学，简单来说就是对表达式求值。跟面向对象有所不同的是函数式对问题的抽象方式是抽象成 带有动作的函数。其思维更像是我们小时候解应用题时需要套用各种公式来求解的感觉。当然函数式跟面向对象一样还包含了很多的概念，比如高阶函数，不可变性，惰性求值等等。
+</p>
+
+
+<figure>
+<p><img src="./images/paradigm.png" alt="paradigm.png">
+</p>
+<figcaption><span class="figure-number">Figure 1:</span> 主要的编程范式</figcaption>
+</figure>
+</div>
+</div>
+
+<div id="outline-container-orgheadline17" class="outline-5">
+<h5 id="orgheadline17">逻辑式编程</h5>
+<div class="outline-text-5" id="text-orgheadline17">
+<p>
+可能这个名词听的比较少，但是我们经常在用而却可呢过没有意识到的 SQL 的 query 语句就是逻辑式编程。所谓逻辑式，就是通过提问找到答案的编程方式。比如：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sql"><span style="color: #00008b;">select</span> lastname <span style="color: #00008b;">from</span> someTable <span style="color: #00008b;">where</span> sex=<span style="color: #8b0000;">'&#22899;'</span> <span style="color: #00008b;">and</span> firstname <span style="color: #00008b;">in</span> (<span style="color: #8b0000;">'&#36830;&#39034;'</span>,<span style="color: #8b0000;">'&#22899;&#31070;'</span>)
+</pre>
+</div>
+
+<p>
+这里问了两个问题：
+</p>
+
+<ol class="org-ol">
+<li>性别是女？</li>
+<li>名字必须是“连顺”或者“女神”？</li>
+</ol>
+
+<p>
+那么得到的答案就是符合问题描述的结果集了。
+</p>
+
+<p>
+除了最常见的 SQL，Clojure 也提供了 <code>core.logic</code> 的库方便进行逻辑式编程。<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline30" class="outline-4">
+<h4 id="orgheadline30"><span class="section-number-4">1.2.2</span> JavaScript对函数式的原生支持</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+说了这么多种编程范式，JavaScript 对函数式的支持到底如何呢？
+</p>
+
+<p>
+首先如果语言中的函数不是一等的，那么也就跟函数式编程也就基本划清界限了。比如 Java 8 之前的版本，值和对象才是一等公民，要写一个高阶函数可能还需要把函数包在对象中才行。<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>
+</p>
+
+<p>
+幸好 JavaScript 中的函数是一等函数，所谓一等，就是说跟值一样都是一等公民，所有值能到的地方，都可以替换成函数。例如，可以跟值一样作为别的函数的参数，可以被别的函数想值一样返回，而这个“别的函数”叫做 <i>高阶函数</i> 。
+</p>
+</div>
+
+<div id="outline-container-orgheadline19" class="outline-5">
+<h5 id="orgheadline19">函数作为参数</h5>
+<div class="outline-text-5" id="text-orgheadline19">
+<p>
+函数作为参数最典型的应用要数 map 了，想必如果没有使用过 Underscore，也或多或少会用过 ECMAScript 5 中 Array 的 map 方法吧。map 简单将一个数组转换为另一个数组。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">[1, 2, 3, 4].map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>) {
+  <span style="color: #00008b;">return</span> ++x;
+});
+</pre>
+</div>
+
+<p>
+可以看到函数 <code>function(x){return x++}</code> 是作为参数被传入 Array 的 <code>map</code> 方法中。map 是函数式编程最常见的标志性函数，想想在 ECMAScript 5 出来之前应该怎么做类似的事情：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">array</span> = [1, 2, 3, 4];
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">result</span> = [];
+<span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span> <span style="color: #00008b;">in</span> array){
+  result.push(++i);
+}
+</pre>
+</div>
+
+<p>
+这段命令式的代码跟利用 map 的函数式代码解决问题的方式和角度是完全不同的。命令式需要操心所有的过程，如何遍历以及如何组织结果数据。而 map 由于将遍历，操作以及结果数据的组织的过程封装至 Array 中，从而参数化了最核心过程。而这里的核心过程就是 map 的参数里的匿名函数中的过程，也是我们真正关心的主要逻辑。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline20" class="outline-5">
+<h5 id="orgheadline20">函数作为返回值</h5>
+<div class="outline-text-5" id="text-orgheadline20">
+<p>
+函数作为返回值的用法可能在 JavaScript 中会更为常见。而且在不同场景下被返回的函数又有着不同的名字。
+</p>
+</div>
+
+<div id="outline-container-orgheadline21" class="outline-6">
+<h6 id="orgheadline21">柯里化</h6>
+<div class="outline-text-6" id="text-orgheadline21">
+<p>
+我们把一个多参的函数变成一次只能接受一个参数的函数的过程叫做柯里化。如：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">curriedSum</span> = curry(sum)
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">sum5</span> = curriedSum(5)
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">sum5and4</span> = sum5(4) <span style="color: #8c8c8c; font-style: italic;">//</span><span style="color: #8c8c8c; font-style: italic;">=&gt; 9</span>
+sum5and4(3) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; 12</span>
+</pre>
+</div>
+
+<p>
+当然柯里化这样做的目的非常简单，可以部分的配置函数，然后可以继续使用这些配置过的函数。当然，我会在第四章函数组合那里更详细的解释为什么要柯里化，在这之前闲不住的读者可以先猜猜为什么要把柯里化放函数组合那一章。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline22" class="outline-6">
+<h6 id="orgheadline22">thunk</h6>
+<div class="outline-text-6" id="text-orgheadline22">
+<p>
+thunk（槽）<sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup> 是指有一些操作不被立即执行，也就是说准备好一个函数，但是不执行，默默等待着合适的时候被合适的人调用。我实在想不出能比下图这个玩意更能解释 thunk 的了。 在下一章，你会见到如何用 thunk 实现惰性序列。
+</p>
+
+
+<figure>
+<p><img src="./images/thunk.png" alt="thunk.png">
+</p>
+<figcaption><span class="figure-number">Figure 2:</span> thunk 像是一个封装好待执行的容器</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline23" class="outline-5">
+<h5 id="orgheadline23">越来越函数式的ES6</h5>
+<div class="outline-text-5" id="text-orgheadline23">
+<p>
+ECMAScript 6（也被叫做 ECMAScript 2015，本书中会简称为 ES6）终于正式发布了，新的规范有非常的新特性，其中不少借鉴自其他函数式语言的特性，给 JavaScript 语言添加了不少函数式的新特性。
+</p>
+
+<blockquote>
+<p>
+虽然浏览器厂商都还没有完全实现 ES6 的所有规范，但是其实我们是可以通过一些中间编译器使用大部分的 ES6 的新特性，如
+</p>
+
+<p>
+<b>Babel</b>
+</p>
+
+<p>
+这是目前支持 ES6 实现最多的编译器了，没有之一。 主要是 Facebook 在维护，因此也可以编译 Facebook 的 React。这也是目前能实现尾递归优化的唯一编译器。不过关于尾递归只能优化尾子递归，相互递归的优化还没有实现。
+</p>
+
+<p>
+<b>Traceur</b>
+</p>
+
+<p>
+Google 出的比较早得一个老牌编译器，支持的 ES6 也不少了。但是从 github 上来看似乎已经没有 babel 活跃了。
+</p>
+
+<p>
+当然，除了这些也可以直接使用 FireFox。作为 ES6 规范的主要制定者之一的 Mozilla 出的 Firefox 当然也是浏览器中实现 ES6 标准最多的。
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgheadline24" class="outline-5">
+<h5 id="orgheadline24">箭头函数</h5>
+<div class="outline-text-5" id="text-orgheadline24">
+<p>
+这是 ES6 发布的一个新特性，虽然 Firefox 支持已久了，不算什么新东西，但是标准化之后还是比较令人激动的。 <i>箭头函数</i> 也被叫做 <i>肥箭头</i> （fat arrow）<sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>，大致是借鉴自 CoffeeScript 或者 Scala 语言。箭头函数是提供词法作用域的匿名函数。
+</p>
+</div>
+
+<div id="outline-container-orgheadline25" class="outline-6">
+<h6 id="orgheadline25">声明一个箭头函数</h6>
+<div class="outline-text-6" id="text-orgheadline25">
+<p>
+你可以通过两种方式定义一个箭头函数：
+</p>
+<pre class="example">
+([param] [, param]) =&gt; {
+   statement
+}
+// 或者
+param =&gt; expression
+</pre>
+
+<p>
+表达式可以省略块（block）括号，而多行语句则需要用块括号括起来。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline26" class="outline-6">
+<h6 id="orgheadline26">为什么要用箭头函数</h6>
+<div class="outline-text-6" id="text-orgheadline26">
+<p>
+虽然看上去跟以前的匿名函数没有什么区别，我们可以对比旧的匿名函数是如何写一个使数组中数字都乘 2 的函数.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = [1, 2, 3, 4,5];
+a.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){ <span style="color: #00008b;">return</span> x*2 });
+</pre>
+</div>
+
+<p>
+而使用箭头函数会变成：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">a.map(x =&gt; x*2);
+</pre>
+</div>
+
+<p>
+使用箭头函数可以少写 function 和 return 以及块括号，从而让我们其实更关心的转换关系变得更明显。略去没用的长的匿名函数定义其实可以让代码更简洁更可读。特别是在传入高阶函数作为参数的时候， <code>map(x=&gt;x*2)</code> 更形象和突出的表达了变换的逻辑。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline27" class="outline-6">
+<h6 id="orgheadline27">词法绑定</h6>
+<div class="outline-text-6" id="text-orgheadline27">
+<p>
+如果你觉得这种简化的语法糖还不足以说服你改变匿名函数的写法，那么想想以前写匿名函数中的经常需要 <code>var self=this</code> 的苦恼吧。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr"> 1: </span><span style="color: #00008b;">var</span> <span style="color: #b8860b;">Multipler</span> = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">inc</span>){
+<span class="linenr"> 2: </span>  <span style="color: #6b8e23;">this</span>.inc = inc;
+<span class="linenr"> 3: </span>}
+<span class="linenr"> 4: </span>Multipler.<span style="color: #6b8e23;">prototype</span>.multiple = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">numbers</span>){
+<span id="coderef-selfthis" class="coderef-off"><span class="linenr"> 5: </span>  <span style="color: #00008b;">var</span> <span style="color: #b8860b;">self</span> = <span style="color: #6b8e23;">this</span>; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;=</span></span>
+<span class="linenr"> 6: </span>  <span style="color: #00008b;">return</span> numbers.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">number</span>){
+<span id="coderef-self" class="coderef-off"><span class="linenr"> 7: </span>    <span style="color: #00008b;">return</span> self.inc * number; <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;=</span></span>
+<span class="linenr"> 8: </span>  })
+<span class="linenr"> 9: </span>}
+<span class="linenr">10: </span><span style="color: #00008b;">new</span> <span style="color: #36648b;">Multipler</span>(2).multiple([1,2,3,4]) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [ 2, 4, 6, 8 ]</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="#coderef-selfthis"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-selfthis');" onmouseout="CodeHighlightOff(this, 'coderef-selfthis');">第5行</a>保持 Multipler 的 this 引用的缓存</li>
+<li><a href="#coderef-self"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-self');" onmouseout="CodeHighlightOff(this, 'coderef-self');">第7行</a>使用 self 引用 Multipler 的实例而不是 this</li>
+</ul>
+
+<p>
+这样做很怪不是吗，因此经常出现在各种面试题中，让你猜猜 this 到底是谁。或者让你去修正 this 绑定，方法如此之多，但是不管是使用 EcmaScript 5 的 bind，还是 map 的第三个参数来保证 this 的绑定不会出错，都逃脱不了要手动修正 this 绑定的命运。
+</p>
+
+<p>
+那么如果用箭头函数就不会存在这种问题：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">Multipler.<span style="color: #6b8e23;">prototype</span>.multiple = <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">numbers</span>){
+  <span style="color: #00008b;">return</span> numbers.map(number =&gt; number*<span style="color: #6b8e23;">this</span>.inc);
+};
+
+<span style="color: #00008b;">new</span> <span style="color: #36648b;">Multipler</span>(2).multiple([1,2,3,4]);<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [ 2, 4, 6, 8 ]</span>
+</pre>
+</div>
+
+<p>
+现在，箭头函数里面的 this 绑定的是外层函数的 this 值，不会受到运行时上下文的影响。<sup><a id="fnr.8" class="footref" href="#fn.8">8</a></sup>而是从词法上就能轻松确定 this 的绑定。不需要 <code>var self=this</code> 了是不是确实方便了许多，不仅不会再被各种怪异的面试题坑了，还让代码更容易推理。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline28" class="outline-5">
+<h5 id="orgheadline28">尾递归优化</h5>
+<div class="outline-text-5" id="text-orgheadline28">
+<p>
+Clojure 能够通过 <code>recur</code> 函数对 <i>尾递归</i> 进行优化，但是 ES5 的 JavaScript 实现是不会对尾递归进行任何优化，很容易出现 <i>爆栈</i> 的现象。但是 ES6 的标准已经发布了对尾递归优化的支持，下来我们能做的只是等各大浏览器厂商的实现了。
+</p>
+
+<p>
+不过在干等原生实现的同时，我们也可以通过一些中间编译器如 Babel，把 ES6 的代码编译成 ES5 标准 JavaScript，而在 Babel 编译的过程就可以把尾递归优化成循环。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline29" class="outline-5">
+<h5 id="orgheadline29">Destructure</h5>
+<div class="outline-text-5" id="text-orgheadline29">
+<p>
+在解释 Destructure<sup><a id="fnr.9" class="footref" href="#fn.9">9</a></sup>之前，先举个生动的例子，比如吃在奥利奥的是时候，我的吃法是这样的：
+</p>
+
+<ol class="org-ol">
+<li>掰成两片，一片是不带馅的，一份是带馅的</li>
+<li>带馅的一半沾一下牛奶</li>
+<li>舔掉馅</li>
+<li>合起来吃掉</li>
+</ol>
+
+<p>
+如果写成代码，大致应该是这样的：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">orea</span> = [<span style="color: #8b0000;">"top"</span>,<span style="color: #8b0000;">"middle"</span>,<span style="color: #8b0000;">"bottom"</span>]
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">top</span> = orea.shift(),<span style="color: #b8860b;">middleAndButton</span>=orea <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;1&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetMiddleAndButton</span> = dipMilk(middleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;2&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">button</span> = lip(wetMiddleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;3&gt;</span>
+eat([top,button]) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;4&gt;</span>
+</pre>
+</div>
+
+<p>
+注意那个诡异的 <code>shift</code> ，如果用 destructure 会写得稍微优雅一些：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> [top, ...middleAndButton] = [<span style="color: #8b0000;">"top"</span>,<span style="color: #8b0000;">"middle"</span>,<span style="color: #8b0000;">"bottom"</span>] <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;1&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">wetMiddleAndButton</span> = dipMilk(middleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;2&gt;</span>
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">button</span> = lip(wetMiddleAndButton) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;3&gt;</span>
+eat([top,button]) <span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">&lt;4&gt;</span>
+</pre>
+</div>
+
+<p>
+有没有觉得我掰奥利奥的姿势变酷了许多？这就是 destructure，给定一个特定的模式 <code>[top, ...middleAndButton]</code> ，让数据 <code>["top","middle","bottom"]</code> 按照该模式匹配进来。同样的，我将会专门在第6章介绍模式匹配这个概念，虽然它不是 Clojure 的重要概念，但是确实 Scala 或 Haskell 的核心所在。不过可以放心的是，你也不必在此之前先学习 Scala 和 Haskell，我还是会用最流行的 JavaScript 来介绍模式匹配。
+</p>
+
+
+<figure>
+<p><img src="./images/patten-matching.jpg" alt="patten-matching.jpg">
+</p>
+<figcaption><span class="figure-number">Figure 3:</span> 我觉得这个玩具可以特别形象的解释模式匹配这个概念</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline36" class="outline-3">
+<h3 id="orgheadline36"><span class="section-number-3">1.3</span> 作为函数式语言 JavaScript 还差些什么</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+作为多编程范式的语言，原型链支持的当然是面相对象编程，然而却同时支持一等函数的 JavaScript 也给函数式编程带来了无限的可能。之所以说可能是因为 JavaScript 本身对于函数式的支持还是非常局限的，为了让 JavaScript 全面支持函数式编程还需要非常多的第三方库的支持。下面我们来列一列到底 JavaScript 比起纯函数式语言，到底还差些什么？
+</p>
+</div>
+
+<div id="outline-container-orgheadline32" class="outline-4">
+<h4 id="orgheadline32"><span class="section-number-4">1.3.1</span> 不可变数据结构</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+首先需要支持的当然是不可变（immutable）数据结构，意味着任何操作都不会改变该数据结构的内容。JavaScript 中除了原始类型其他都是可变的（mutable）。相反，Clojure 的所有数据结构都是不可变的。
+</p>
+
+<blockquote>
+<p>
+JavaScript 一共有6种原始类型（ES6 新加了 Symbol 类型），它们分别是 Boolean，Null，Undefined，Number String 和 Symbol。 除了这些原始类型，其他的都是 Object，而 Object 都是可变的。
+</p>
+</blockquote>
+
+<p>
+比如 JavaScript 的 Array 是可变的：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = [1,2,3]
+a.push(4)
+</pre>
+</div>
+
+<p>
+<code>a</code> 的引用虽然没有变，但是内容确发生了变化。
+</p>
+
+<p>
+而 Clojure 的 Vector 类型则行为刚好相反：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">a</span> [1 2 3])
+(conj a 4) <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3 4]</span>
+a <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3]</span>
+</pre>
+</div>
+
+<p>
+对 <code>a</code> 的操作并没有改变 <code>a</code> 的内容，而是 <code>conj</code> 操作返回 的改变后的新列表。在接下来的第二章你将会看到 Clojure 是如何实现不可变数据结构的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline33" class="outline-4">
+<h4 id="orgheadline33"><span class="section-number-4">1.3.2</span> 惰性求值</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+惰性（lazy）指求值的过程并不会立刻发生。比如一些数学题（特别是求极限的）我们可能不需要把所有表达式求值才能得到最终结果，以防在算过程中一些表达式能被消掉。所以惰性求值是相对于及早求值（eager evaluation）的。
+</p>
+
+<p>
+比如大部分语言中，参数中的表达式都会被先求值，这也称为 <i>应用序</i> 语言。比如来看下这样个 JavaScript 的函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">wholeNameOf(getFirstName(), getLastName())
+</pre>
+</div>
+<p>
+<code>getFirstName</code> 与 <code>getLastName</code> 会依次执行，返回值作为 <code>wholeNameOf</code> 函数的参数， <code>wholeNameOf</code> 最后被调用。
+</p>
+
+<p>
+另外，对于数组操作时，大部分语言也同样采用的是应用序。
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> ++x}, [1,2,3,4])
+</pre>
+</div>
+
+<p>
+所以，这个表达式立刻会返回结果 <code>[1,2,3,4]</code> 。
+</p>
+
+<p>
+当然这并不是说 Javascript 语言使用应用序有问题，但是没有提供惰性序列的支持就是 JavaScript 的不对了。如果 map 后发现其实我们只需要前 10 个元素时，去计算所有元素就显得是多余的了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline34" class="outline-4">
+<h4 id="orgheadline34"><span class="section-number-4">1.3.3</span> 函数组合</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+面向对象通常被比喻为名词，而函数式编程是动词。面向对象抽象的是对象，对于对象的的描述自然是名词。面向对象把所有操作和数据都封装在对象内，通过接受消息做相应的操作。比如，对象 Kitty 和 Pussy，它们可以接受“打招呼”的消息，然后做相应的动作。而函数式的抽象方式刚好相反，是把动作抽象出来，比如就是一个函数“打招呼”，而参数，则是作为数据传入的 Kitty 或者 Pussy，是完全透明的。比如 Kitty 进入函数“打招呼”时，出来的应该是一只 <i>Hello Kitty</i> 。
+</p>
+
+<p>
+面向对象可以通过继承和组合在对象之间分享一些行为或者说属性，函数式的思路就是通过 <b>组合</b> 已有函数形成一个新的函数。JavaScript 语言虽然支持高阶函数，但是并没有一个原生的利于组合函数产生新函数的方式。关于函数组合的技巧，会在第四章作详细的解释，而这些强大的函数组合方式却往往被类似 underscore 库的光芒掩盖掉。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline35" class="outline-4">
+<h4 id="orgheadline35"><span class="section-number-4">1.3.4</span> 尾递归优化</h4>
+<div class="outline-text-4" id="text-1-3-4">
+<p>
+Clojure 的数据结构都是不可变的，除了使用数据结果本身的方法进行遍历，另外的循环手段自然只能是递归了。但是在没尾递归优化的 JavaScript 中就不会那么愉快了。
+</p>
+
+<p>
+在 JavaScript 中可能会经常看到这样的代码：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = [1,2,3,4]
+<span style="color: #00008b;">var</span> <span style="color: #b8860b;">b</span> = [4,3,2,1]
+<span style="color: #00008b;">for</span>(<span style="color: #00008b;">var</span> <span style="color: #b8860b;">i</span>=0;i&lt;10;i++)
+ a[i]+=b[i]
+console.log(a);
+<span style="color: #8c8c8c; font-style: italic;">// </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [5,5,5,5]</span>
+</pre>
+</div>
+
+<p>
+如果使用 Clojure 硬要做类似的事情通常只能使用 reduce 解决，代码会变成这样：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">loop</span> [a [1 2 3 4] 
+       b [4 3 2 1]
+       i (dec (len a))]
+  (<span style="color: #00008b;">recur</span> (assoc a i (get b i) b (dec i))))
+</pre>
+</div>
+
+<p>
+recur 看起来跟 for 循环非常类似，其实它是尾递归，如果把 loop 写成一个函数：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">  (<span style="color: #00008b;">defn</span> <span style="color: #6a5acd;">zipping-add</span> [a b i]
+    (<span style="color: #00008b;">recur</span> (assoc a i (get b i) b (dec i))))
+(zipping-add [1 2 3 4] [4 3 2 1] (dec (len a)))
+</pre>
+</div>
+
+<p>
+事实上效果是一样的，但是如果把 <code>recur</code> 想象成是 <code>zipping-add</code> ，明显能看出 <code>zipping-add</code> 是一个尾递归函数。
+</p>
+
+<p>
+因此反过来看，若是要把尾递归换成循环是多么容易的一件事情，关键的是需要让解释器识别出来尾递归。
+</p>
+
+<p>
+但是这不是 Clojure 的风格，亦不是函数式的风格。递归应该被认为是比较低级别的操作，像这种高级别的操作还是应该优先使用 map，reduce 来解决。
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(map #(+ <span style="color: #b8860b;">%1</span> <span style="color: #b8860b;">%2</span>) [1 2 3 4] [4 3 2 1])
+</pre>
+</div>
+
+<p>
+Clojure 的 map 是个神奇的函数，若是给多个向量，他做的事情会相当于先 zip 成一个向量，再把向量的元素 apply 到组合子上。这样完全不需要循环和变量，得到了一段不需要循环和变量的简洁的代码。
+但是，在写低级别的一些代码的时候，递归还是强有力的武器，而且尾递归优化能带来更好的性能，在第五章我会更详细的介绍不可变数据结构以及递归。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline40" class="outline-3">
+<h3 id="orgheadline40"><span class="section-number-3">1.4</span> Underscore 你错了</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+如果提到 JavaScript 的函数式库，可能会联想到 Underscore<sup><a id="fnr.10" class="footref" href="#fn.10">10</a></sup>。Underscore  的官网解释是这样的：
+</p>
+<blockquote>
+<p>
+Underscore 提供了100多个函数，不仅有常见的函数式小助手: map，filter，invoke，还有更多的一些额外的好处……
+</p>
+</blockquote>
+
+<p>
+我就懒得翻译完了，重点是这句话里面的“函数式小助手”，这点我实在不是很同意。
+</p>
+</div>
+
+<div id="outline-container-orgheadline37" class="outline-4">
+<h4 id="orgheadline37"><span class="section-number-4">1.4.1</span> 跟大家都不一样的 map 函数</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<p>
+比如 map 这个函数式编程中比较常见的函数，我们来看看看 <b>函数式语言</b> 中都是怎么做 map 的：
+</p>
+
+<p>
+<b>Clojure：</b>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(map inc [1 2 3])
+</pre>
+</div>
+
+<p>
+其中 <code>inc</code> 是一个给数字加一的函数。
+<b>Haskell：</b>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell">map (1+) [1,2,3]
+</pre>
+</div>
+
+<p>
+同样 <code>(1+)</code> 是一个函数，可以给数字进行加一操作。
+</p>
+
+<p>
+这是非常简单的 map 操作，应用函数 <code>inc</code>, <code>(1+)</code> 到数组 中的每一个元素。同样的事情我们试试用 Underscore 来实现一下：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">_.map([1,2,3], <span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> x+1})
+</pre>
+</div>
+
+<p>
+感觉到有什么变化了吗？有没有发现参数的顺序完全不同了？好吧，你可能要说这并不是什么问题啊？不就是 map 的 api 设计得不太一样么？也没有必要保持所有的语言的 map 都是一样的吧？
+</p>
+
+<p>
+在回答这个问题之前，我想再举几个例子，因为除了 Underscore，JavaScript 的函数式库还有很多很多：
+</p>
+
+<p>
+<a href="http://ramdajs.com/"><b>ramdajs</b></a>：
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">R.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> x+1}, [1,2,3])
+</pre>
+</div>
+
+<p>
+<a href="http://functionaljs.com/"><b>functionaljs：</b></a>
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">fjs.map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>){<span style="color: #00008b;">return</span> x+1}, [1,2,3])
+</pre>
+</div>
+
+<p>
+应该不需要再多的例子了，不管怎么样看，underscore 的 map 是否都略显另类了呢？跟别的语言不一样就算了，跟其他 JavaScript 的函数式库都不一样的话，是不是有些说不过去了。 我猜 underscore 同学估计现在有种高考出来跟同学对答案，发现自己的答案跟别人的完全不一样的心情。
+</p>
+
+<p>
+好吧，Underscore 先别急着认错，大家都这么做，肯定不是偶然。但是原因就说来话长了，我将会在第四章详细解释其他函数式语言/库为什么都跟 Underscore 不一样。<sup><a id="fnr.11" class="footref" href="#fn.11">11</a></sup>
+</p>
+
+<p>
+当然我可不会选一个“另类”的库来阐述函数式编程。<sup><a id="fnr.12" class="footref" href="#fn.12">12</a></sup>我将像编程世界中最好的书《计算机程序的构造与解释》一样，我选择用 lisp 语言来阐述函数式编程概念，而用目前最流行的语言 —— JavaScript <sup><a id="fnr.13" class="footref" href="#fn.13">13</a></sup>来实践函数式。当然我也不会真的用老掉牙的 scheme，因为所有前端开发者都应该知道，前端最唾弃的就是使用久的东西<sup><a id="fnr.14" class="footref" href="#fn.14">14</a></sup>，这样一来 Clojure 这门全新的现代 lisp 方言显然是最好的选择。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline38" class="outline-4">
+<h4 id="orgheadline38"><span class="section-number-4">1.4.2</span> ClojureScript</h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+Clojure 是跑着 JVM 上的lisp 方言，而 ClojureScript 是能编译成 JavaScript 的 Clojure。但是请不要把 ClojureScript  与 CoffeeScript，LiveScript，TypeScript做比较，就像每一行 Clojure 代码不能一一对应到 Java 代码一样，你可能很难像 CoffeeScript 对应 JavaScript 一样能找到 ClojureScript 与其编译出来的 JavaScript 的对应关系。
+</p>
+
+
+<figure>
+<p><img src="./images/everyscript.png" alt="everyscript.png">
+</p>
+<figcaption><span class="figure-number">Figure 4:</span> 各种编译成 JavaScript 的函数式语言</figcaption>
+</figure>
+
+<p>
+不管怎么样，ClojureScript 把 Clojure 带到了前端确实是非常令人激动的一件事情。就跟前端程序员能在后端写 JavaScript 一样，Clojure 程序员终于能在前端也能找到自己熟悉的编程姿势。但是如同 Clojure 于 Java 的交互一样（或者更坏）， ClojureScript 与 JavaScript 及JavaScript 的库的交互并不是那么容易，或者可以说，不那么优雅。而且前端开发者可能并不能很快的适应 lisp 语言，项目（特别是开源项目）的维护不能只靠懂 clojure 的少数开发者，所以如果能用最受欢迎的 JavaScript，又还能使用到 Clojure 的所有好处，那将再好不过了。幸运的是，Clojure 的持久性数据结构被 David Nolen<sup><a id="fnr.15" class="footref" href="#fn.15">15</a></sup>移植到了原生 JavaScript —— <a href="https://github.com/swannodette/mori">mori</a>。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline39" class="outline-4">
+<h4 id="orgheadline39"><span class="section-number-4">1.4.3</span> Mori</h4>
+<div class="outline-text-4" id="text-1-4-3">
+<p>
+由于是移植的，所有的数据结构以及操作数据结构的函数都是 ClojureScript 保持一致，而且是作为 JavaScript 库，可以在原生 JavaScript 的代码中使用。显然 mori 是最适合用于前端函数式实践的库，当然也是本书为什么说是 Clojure 风格的函数式 JavaScript 的原因了。
+</p>
+
+<p>
+选择 mori 的另一原因是因为它特别区别于其他的函数式库的地方——它使用 ClojureScript 的数据结构。也就是说从根本上消除了 JavaScript 可变的数据结构模型，更利于我们的进行函数式编程。
+</p>
+
+<blockquote>
+<p>
+为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro —— <a href="http://ru-lang.org/">ru-lang</a>。更多的关于 macro 的讨论我会放到第五章。
+</p>
+</blockquote>
+
+<p>
+当然，选择 mori 并不说明它是工程的上函数式类库的最佳选择，facebook 活跃维护的 Immutable.js 也是不错的选择。但是在这里，mori 确实是能将 Clojure 编程思想蔓延到 JavaScript 中的最好桥梁。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+就像计算机程序构造与解释中说的，lisp 语言基本没有语法，就像学习象棋的规则只用花很少的时间，而如何下好棋，才是学习的关键。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+中文叫 Clojure 编程乐趣，但是只有第一版的，原书已经第二版了。 我刚好有幸翻译了作者 Michael Fogus 另一本《JavaScript 函数式编程》。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://github.com/jcouyang/clojure-flavored-javascript/tree/source">https://github.com/jcouyang/clojure-flavored-javascript/tree/source</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+当然逻辑式编程并不是本书的重点，也不会展开深入介绍，如果有兴趣，可以联系出版社让我在写一本。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+事实上，JavaScript 或者 Scala 其实也是通过把函数作为一种特殊的对象，来把函数变成一等公民。不过，在使用上基本感觉不到函数是对象。而在 Clojure 中，函数确确实实就是一等公民，因为所有 lisp 语言都一样，代码即是数据。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">
+thunk 的翻译“槽”来自《计算机程序的构造与解释》，但是我个人倾向不做翻译，因为很难从“槽”这一个字中获取到足够多的解释。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">
+相对于廋箭头（thin arrow）。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8">8</a></sup> <div class="footpara"><p class="footpara">
+正如我说的本书不是 JavaScript 的教科书，所以关于动态绑定和词法绑定，这里不会做太多的解释。简单的解释就是词法绑定可以从词法分析（通俗的说就是肉眼直接能看出来）判断出来绑定的值，而相反动态绑定需要根据运行时上下文决定。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9">9</a></sup> <div class="footpara"><p class="footpara">
+同样的，我读的中文技术书太少，倾向于不翻译此类专业名词。翻译错了反而体会不出来原词的意思。这里明显 structure 是构造，前面加 de 词根，就是构造的反过程。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10">10</a></sup> <div class="footpara"><p class="footpara">
+Underscore在github上的收藏量已经超过一万五了，无疑是JavaScript最流行的库之一。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.11" class="footnum" href="#fnr.11">11</a></sup> <div class="footpara"><p class="footpara">
+当然我并不是第一个发现 Undersocre 奇怪的人，13年一次js大会上就有人提出了这个话题 <a href="https://www.youtube.com/watch?v=m3svKOdZijA">https://www.youtube.com/watch?v=m3svKOdZijA</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.12" class="footnum" href="#fnr.12">12</a></sup> <div class="footpara"><p class="footpara">
+虽然 Michael Fogus 的《函数式 JavaScript 编程》中就是用 Underscore。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.13" class="footnum" href="#fnr.13">13</a></sup> <div class="footpara"><p class="footpara">
+根据 github 的报告 <a href="https://github.com/blog/2047-language-trends-on-github">https://github.com/blog/2047-language-trends-on-github</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.14" class="footnum" href="#fnr.14">14</a></sup> <div class="footpara"><p class="footpara">
+前端社区发展特别奇怪，不管是什么库，过一段时间就有类似的库出来，把前一个的缺点列一遍，大家都开始用新的，而唾弃旧的库。作者很好奇什么时候 React 会开始被唾弃。
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.15" class="footnum" href="#fnr.15">15</a></sup> <div class="footpara"><p class="footpara">
+ClojureScript 作者
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p>Author: Jichao Ouyang <a aria-label="Follow @jcouyang on GitHub" data-count-aria-label="# followers on GitHub" data-count-api="/users/jcouyang#followers" data-count-href="/jcouyang/followers" href="https://github.com/jcouyang" class="github-button">Follow @jcouyang</a>
+</p>
+<p>Modified: 2016-02-11 Thu 22:47</p>
+<p>Generated by: <a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.2)</p>
+<p>&lt;Publish&gt; with _(:з」∠)_ by <a href="https://github.com/jcouyang/orgpress">OrgPress</a></p>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
+<div class="github-fork-ribbon-wrapper right-bottom"><div class="github-fork-ribbon"><a href="https://github.com/jcouyang/clojure-flavored-javascript">Fork me on GitHub</a></div></div>
+
+
+<script>
+ (function(){
+   document.getElementById('edit-in-github').addEventListener("click",function(){
+     var pathname = window.location.pathname;
+     window.location.href = "https://github.com/jcouyang/clojure-flavored-javascript/edit/master/book/"+pathname.replace(".html",".org");
+   })
+ })()
+</script>
+<!-- Google Analystics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-32314154-10', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+ var disqus_shortname = 'orgblog';
+ var href = window.location.href;
+ href.replace(/^https/, 'http');
+ var disqus_url = href;
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+</body>
+</html>
