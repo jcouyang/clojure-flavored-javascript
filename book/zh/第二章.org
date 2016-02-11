@@ -1,5 +1,10 @@
 * COMMENT install
+#+BEGIN_SRC emacs-lisp
+(require 'ob-dot)
+#+END_SRC
 
+#+RESULTS:
+: ob-dot
 
 * 集合
 
@@ -18,6 +23,7 @@
 #+END_QUOTE
 ** 集合的使用
 *** 向量（vector）
+
 向量是带有索引（index）的一组数据。跟 JavaScript 的 Array 非常像，但是区别在于
 
 - 向量是不可变（immutable）数据结构
@@ -32,6 +38,7 @@
 下面我将介绍如何使用向量数据结构，当然，我不是深入细节，只是为了显示不可变数据结构与 JavaScript 原生可变数据结构的区别。
 
 **** 创建向量
+
 使用 Clojure 可以字面的（lieral）创建一个向量，或者用 vector 函数，效果都是一样的。
 
 #+BEGIN_SRC clojure
@@ -42,12 +49,6 @@
 #+RESULTS:
 | 1 | 2 | 3 | 4 |
 
-#+BEGIN_SRC clojure
-  (+ 1 1)
-#+END_SRC
-
-#+RESULTS:
-: 2
 
 其中，方括号用于字面创建向量，而圆括号表示调用了 =vector= 函数，参数列表为 ~1 2 3 4~ 。
 
@@ -88,6 +89,7 @@ mori.vector(1,2,3,4)
  #+END_SRC
  
 **** 添加元素
+
 Clojure 中所有集合的添加操作都可以通过 conj 函数，conj全称 conjoin。对于不同数据结构的 conj 操作可能添加的方向是不一样的，但不管怎么样，conj 都会选择最容易的添加(即复杂度最低)的方向添加数据。而在向量数据结构中，conj 的方向是往尾部添加元素：
 
 #+BEGIN_SRC js
@@ -115,6 +117,7 @@ vec // => [1 2 3 4]
 #+END_SRC
 
 **** 首个元素及剩余元素
+
 另外在函数式编程中，特别是递归的时候，经常会把列表分为首元素，和剩余（rest）元素集合。
 
 #+BEGIN_SRC js
@@ -139,7 +142,8 @@ vec // [1 2 3 4]
 #+END_QUOTE
  
 *** Map
-虽然想只介绍 vector 就好了，不过 ES6 的把 Map 纳入了标准，这里顺便介绍一下 Map 对应的 Clojure 的数据结构好了。在 Map 还没有被所有浏览器厂商实现之前，绝大多数情况下我们在写 JavaScript 时会使用 Object 来当做 Map 使用。当然，到底是使用 Map 还是 Object 并不是本书的重点，不管是 Map 还是 Object，重要的是他们仍然是可变的。
+
+虽然想只介绍 vector 就好了，但是 ES6 的把 Map 纳入了标准，这里顺便介绍一下 Map 对应的 Clojure 的数据结构好了。在 Map 还没有被所有浏览器厂商实现之前，绝大多数情况下我们在写 JavaScript 时会使用 Object 来当做 Map 使用。当然，到底是使用 Map 还是 Object 并不是本书的重点，不管是 Map 还是 Object，重点是他们仍然是可变的。
 
 #+BEGIN_SRC js
 var map = new Map();
@@ -175,10 +179,71 @@ m0 永远是 m0。 其中 =mori.assoc= 是更新操作，有意思的是，assoc
  mori.conj(m0, mori.vector("foo", "bar")) // => {"零" 0, "壹" 1, "foo" "bar"}
 #+END_SRC
 
+** 函数组合子
+借用函数组合子这个词来代表集合上的一些通用方法，如 map, filter, reduce。更详细的组合子定义可以在 stackoverflow[fn:5]上找到非常好的解释。先不用去管具体定义，下面我会简单列举一些函数式编程，特别是 Clojure 编程中经常会使用到的一些函数组合子。
+
+*** map
+map 把参数中的函数应用到集合中每一个元素上，并返回函数返回的元素组成的新集合。 比如要把一包奥利奥变成馅被舔掉的奥利奥：
+#+BEGIN_SRC js
+mori.map(lip, oreoPack)
+#+END_SRC
+这样产生一包里面都是没有馅的奥利奥。
+
+如果 oreoPack 是一个 JavaScript Array，同样可以直接使用 Array 的 map 组合子：
+#+BEGIN_SRC js
+oreoPack.map(lip)
+#+END_SRC
+
+似乎后者更符合我们的阅读习惯，不过我会在下一章解释什么情况更适合哪种情况。 但在本章我会一直使用 Clojure 的组合子使用习惯。
+
+*** filter
+filter 接收一个谓词函数（predicate function），用于判断哪些元素应该保留，哪些应该被剔除掉。谓词函数顾名思义就是用作谓词的函数，谓词自然应该就是“是”，“等于”，“大于”，“属于”之类的词。
+#+BEGIN_SRC js
+mori.filter(mori.isEven, [1,2,3,4,5]);
+// => (2 4)
+#+END_SRC
+
+ 同样的，Array 也有 filter 方法：
+#+BEGIN_SRC js
+[1,2,3,4,5].filter(x=>x%2==0);
+#+END_SRC
+
+
+*** reduce
+前面都是集合内容的转换，而使用 reduce 则方便的可以将集合规约成值，比如我们很容易的可以用 reduce 些一个 sum 函数：
+#+BEGIN_SRC js
+mori.reduce((a,b)=>a+b, 0, [1,2,3,4,5])
+// => 15
+#+END_SRC
+其中，第一个函数描述如何进行规约，第二个函数是规约的初始值，最后是集合。
+
+*** flattern
+用以把嵌套的集合展平：
+#+BEGIN_SRC js
+var v = mori.toClj([[1, 2], 3, [4], [[5, 6], 7]]);
+mori.flatten(v); // => (1 2 3 4 5 6 7)
+#+END_SRC
+
+*** take
+take 会经常用于从一个惰性的集合中取出一部分集合，比如：
+#+BEGIN_SRC js
+var s = mori.range(); //  无限序列
+ 
+mori.take(10, s); // => (0 1 2 3 4 5 6 7 8 9)
+#+END_SRC
+
+注意 s 是从 0 开始的无限整数序列，当使用 take 取出前 10 个是，会得到包含着前10个整数的序列。更多关于惰性的话题会在第5节继续。
+
+*** groupBy
+groupBy  根据提供的函数的结果来分区，产生相同结果的元素会被分到一个区：
+#+BEGIN_SRC js
+mori.partitionBy(x=>x%2==0?'event':'odd', [1,2,3,4,5])
+// => {"even" (2 4) "odd" (1 3 5)}
+#+END_SRC
 
 ** 持久性数据结构
 
-在上一节中大概对集合中的向量与 hashMap  做了简单的介绍，应该还记得介绍向量时提到的效率问题吗？我们来以向量为例，深入研究一下向量的数据结构到底是怎样的，又是如何做到持久性和不可变性，同时还能保证效率的？
+大概对集合中的向量与 hashMap，以及集合的常用组合子  简单的做了介绍，应该还记得介绍向量时提到的效率问题吗？我们来以向量为例，深入研究一下向量的数据结构到底是怎样的，又是如何做到持久性和不可变性，同时还保证效率的？
 
 首先在解释向量的数据结构之前，我想再普及一下什么是持久性数据结构和不可变性。
 
@@ -195,7 +260,7 @@ m0 永远是 m0。 其中 =mori.assoc= 是更新操作，有意思的是，assoc
 [[./images/mutable-push.png]]
 
 #+BEGIN_QUOTE
-⚠ 前方高能预警，一大波 Clojure 源代码来袭。
+⚠️前方高能预警，一大波 Clojure 源代码来袭。
 #+END_QUOTE
 
 *** 向量的持久性数据结构
@@ -249,12 +314,42 @@ public PersistentVector cons(Object val){
 2. 如果不满足 1 自然就是子树的叶子都是满的情况，但是满叶子的情况又分两种，如果是比完全树多一片满的叶子，再加一个叶子就溢出了。
 3. 剩下是没有溢出的情况。
 
+#+BEGIN_SRC dot :file images/tail-off.png :exports results
+  digraph {
+      node [shape=plaintext, fontsize=16];
+      vec
+      node [shape=record, height=.1];
+      vec -> node0
+      {rank=same; node4;node5;node6;node7;}
+      node0[label = "<f0> root |<f1> tail"];
+      node1[label="<f0>|<f1>"];
+      node2[label="<f0>|<f1>"];
+      node3[label="<f0>|<f1>"];
+      node4[label="<f0> 1|<f1> 2",color=orange];
+      node5[label="<f0> 3|<f1> 4",color=orange];
+      node6[label="<f0> 5|<f1> 6",color=orange];
+      node7[label="<f0> 7|<f1> "];
+      node0:f0 -> node1;
+      node0:f1 -> node7;
+      node1:f0 -> node2;
+      node1:f1 -> node3;
+      node2:f0 -> node4;
+      node2:f1 -> node5;
+      node3:f0 -> node6;
+      subgraph "tailoff" {
+              "node4";node6;node5;
+      }
+  }
+#+END_SRC
+
 #+caption: tailoff 的区域
-[[./images/tailoff.png]]
+#+RESULTS:
+[[file:images/tail-off.png]]
 
 下面我们再仔细看看如何处理这三种情况。
 
 *** 最后一片叶子不完整
+
 这种情况是第一个分支, 一共才 4 行代码，我们不妨仔细读读。
 
 #+BEGIN_SRC java -n -r
@@ -291,8 +386,51 @@ var vec = mori.vector(1,2,3,4,5,6,7)
 var vec2 = mori.conj(vec, 8)
 #+END_SRC
 
-#+caption: 向 vec 添加新元素 8
-[[./images/vec-conj8.png]]
+#+BEGIN_SRC dot :file images/vec-conj-8.png :exports results
+  digraph {
+          node[shape=record]
+          newrank=true;
+
+          subgraph cluster_level1{
+                  style=dotted;
+                  vec2[shape=plaintext]
+                  node0[label = "<f0> root |<f1> tail"];
+                  node1[label="<f0>|<f1>"];
+                  node2[label="<f0>|<f1>"];
+                  node3[label="<f0>|<f1>"];
+                  node4[label="<f0> 1|<f1> 2"];
+                  node5[label="<f0> 3|<f1> 4"];
+                  node6[label="<f0> 5|<f1> 6"];
+                  node7[label="<f0> 7|<f1> "];
+                  vec2 -> node0;
+          }
+          subgraph cluster_level2{
+                  style=dotted
+                  vec3[shape=plaintext]
+                  node8[label="<f0> root|<f1> tail"];
+                  node9[label="<f0>|<f1>"];
+                  node11[label="<f0> 7|<f1> 8",color=green];
+                  vec3 -> node8;
+          }
+          {rank=same; node0;node8;}
+          {rank=same; node7;node11;node4;node5;node6;}
+          node0:f0 -> node1;
+          node0:f1 -> node7;
+          node1:f0 -> node2;
+          node1:f1 -> node3;
+          node2:f0 -> node4;
+          node2:f1 -> node5;
+          node3:f0 -> node6;
+          node8:f0 -> node9;
+          node9:f0 -> node2;
+          node9:f1 -> node11;
+          node7 -> node11[label=copy,style=dotted]
+  }
+#+END_SRC
+
+#+CAPTION: 向 vec 添加新元素 8
+#+RESULTS:
+[[file:images/vec-conj-8.png]]
 
 细心的读者会发现，新的 =vec2.root= 还是指向旧的 =vec.root= ，只是 =vec2.tail= 为 =vec1.tail= 的拷贝再加上新的元素而已。这个操作应该是 O(1) 才对。没有错，这种情况下添加元素确实效率是 O(1)。但是再想想， =vec2= 不像是一颗连贯的树啊，tail 指到了一个完全分离的数组拷贝上。
 
@@ -315,21 +453,65 @@ var vec3 = mori.conj(vec2, 9)
 #+END_SRC
   
 也只有四行代码，我们来仔细读一下：
+1. 第[[(tailnode)]]行 创建一个节点，节点的数组指向当前的 tail，也就是 vec2.tail
+2. 第[[(newshift)]]行 不是很重要，表示二进制移多少位，对应到树里面就是可以判断当前在树的第几层
+3. 第[[(newroot)]]行的 pushTail 非常关键，如果你继续看 pushTail 的实现的话，大致意思就是从 vec2.root开始克隆 tail 一侧的节点，直到最后指向 tailnode 节点。
+4. 最后一行没有什么好解释的，vec3.tail 指向只包含7的新数组。
 
-[[(tailnode)]] 创建一个节点，节点的数组指向当前的 tail，也就是 vec2.tail
-[[(newshift)]] 这个在这里不是很重要，表示二进制移多少位，对应到树里面就是可以判断当前在树的第几层
-[[(newroot)]] pushTail 非常关键，如果你继续看 pushTail 的实现的话，大致意思就是从 vec2.root开始克隆 tail 一侧的节点，直到最后指向 tailnode 节点。
-[[(vector)]] 没有什么好解释的，vec3.tail 指向只包含7的新数组
+#+BEGIN_SRC dot :file images/vec-conj-9.png :exports results
+  digraph {
+          node[shape=record]
+          newrank=true;
+          subgraph cluster_level1{
+                  style=dotted;
+                  vec2[shape=plaintext]
+                  node0[label = "<f0> root |<f1> tail"];
+                  node1[label="<f0>|<f1>"];
+                  node2[label="<f0>|<f1>"];
+                  node3[label="<f0>|<f1>"];
+                  node4[label="<f0> 1|<f1> 2"];
+                  node5[label="<f0> 3|<f1> 4"];
+                  node6[label="<f0> 5|<f1> 6"];
+                  node7[label="<f0> 7|<f1> 8"];
+                  vec2 -> node0;
+          }
+          subgraph cluster_level2{
+                  style=dotted
+                  vec3[shape=plaintext]
+                  node8[label="<f0> root|<f1> tail"];
+                  node9[label="<f0>|<f1>"];
+                  node10[label="<f0>|<f1>"];
+                  node11[label="<f0> 9|<f1>",color=green];
+                  vec3 -> node8;
+          }
+          {rank=same; node0;node8;}
+          {rank=same; node7;node11}
+          node0:f0 -> node1;
+          node0:f1 -> node7;
+          node1:f0 -> node2;
+          node1:f1 -> node3;
+          node2:f0 -> node4;
+          node2:f1 -> node5;
+          node3:f0 -> node6;
+          node8:f0 -> node9;
+          node8:f1 -> node11;
+          node9:f0 -> node2;
+          node9:f1 -> node10;
+          node10:f0 -> node6;
+          node10:f1 -> node7;
+  }
+#+END_SRC
 
 #+caption: 在满叶子的情况下添加元素9
-[[./images/vec-conj9.png]]
+#+RESULTS:
+[[file:images/vec-conj-9.png]]
 
-这时候我们再添加10：
+这时候我们再添加 10：
 #+BEGIN_SRC js
 var vec4 = mori.conj(vec3, 10)
 #+END_SRC
 
-应该还是第一种情况，有叶子不满，那么我们再添加11会怎么样呢？
+应该还是第一种情况，有叶子不满，那么我们再添加 11 会怎么样呢？
 #+BEGIN_SRC js
  var vec5 = mori.conj(vec4, 11)
 #+END_SRC
@@ -351,10 +533,59 @@ return new PersistentVector(meta(), cnt + 1, newshift, newroot, new Object[]{val
 1. 创建一个新的节点，左子树指向 vec4.root
 2. 第二颗子树为新创建的 path，path 直通到 vec4.tail
 3. 树的高度加1
-4. vec5.tail指向新的对象数组，vec5.root指向 1 创建的新的节点
+4. vec5.tail指向新的对象数组，vec5.root 指向 1 创建的新的节点
+
+#+BEGIN_SRC dot :file images/vec-conj-11.png :exports results
+  digraph {
+          node[shape=record]
+          newrank=true;
+          subgraph cluster_level1{
+                  style=dotted;
+                  vec4[shape=plaintext]
+                  node0[label = "<f0> root |<f1> tail"];
+                  node1[label="<f0>|<f1>"];
+                  node2[label="<f0>|<f1>"];
+                  node3[label="<f0>|<f1>"];
+                  node4[label="<f0> 1|<f1> 2"];
+                  node5[label="<f0> 3|<f1> 4"];
+                  node6[label="<f0> 5|<f1> 6"];
+                  node7[label="<f0> 7|<f1> 8"];
+                  node11[label="<f0> 9|<f1> 10"];
+                  vec4 -> node0;
+          }
+          subgraph cluster_level2{
+                  style=dotted
+                  vec5[shape=plaintext]
+                  node8[label="<f0> root|<f1> tail"];
+                  node9[label="<f0>|<f1>"];
+                  node10[label="<f0>|<f1>"];
+                  node12[label="<f0>|<f1>"];
+
+                  node13[label="<f0> 11|<f1>",color=green];
+                  vec5 -> node8;
+          }
+          {rank=same; node0;node9;}
+          {rank=same; node7;node11;node13}
+          node0:f0 -> node1;
+          node0:f1 -> node11;
+          node1:f0 -> node2;
+          node1:f1 -> node3;
+          node2:f0 -> node4;
+          node2:f1 -> node5;
+          node3:f0 -> node6;
+          node3:f1 -> node7;
+          node8:f0 -> node9;
+          node8:f1 -> node13;
+          node9:f0 -> node1;
+          node9:f1 -> node10;
+          node10:f0 -> node12;
+          node12:f0 -> node11;
+  }
+#+END_SRC
 
 #+caption: 添加11
-[[./images/vec-conj11.png]]
+#+RESULTS:
+[[file:images/vec-conj-11.png]]
 
 好了，看到这里，我们已经看到了 Clojure 的向量数据结构完整的添加元素的过程。我们可以看到整个过程并没有做全部数据的拷贝，而只是最多 log_{32}N次，也就是树的高度次的拷贝。总体来说复杂度应该是非常可观的，因为一个 6 层的 32 叉树已经能存放 10亿（1,073,741,824）个元素了，而10亿个元素的添加操作最多也只是 O(6*32)，效率是非常不错的。
 
@@ -377,6 +608,9 @@ return new PersistentVector(meta(), cnt + 1, newshift, newroot, new Object[]{val
 3. 再把小鸟变 *“回来”* （这也是最难的步骤）
 
 注意到“消失”和“回来”我都加了引号，因为小鸟是真的“消失”，而”回来“的其实是另一只几乎一样的小鸟。
+
+#+CAPTION: 电影《致命魔术》海报
+[[./images/The-Prestige.png]]
 
 回到我们的话题上来，那么可变操作就像是让小鸟消失再回来，其实永远都找不回来消失的那只小鸟了。
 
@@ -408,45 +642,28 @@ birdInACage // => [{name:'tweety'}]
 虽然可变性 给我们编程带来了一些便利，这可能是因为我们的真实世界的所有东西都是可变的，这非常符合我们真实环境的思维方式。但是，这种可变性也能带来类似现实世界一样不可预测性的问题，有可能在不经意间会给我带来一些困扰，而却很难推理产生这种困扰的原因。
 
 *** 推理（reason about）
+
 由于所有的对象都是可变的，就像现实世界一样，对象之间靠消息通信，而通过各种消息发来发去之后谁也不知道在某一时间这些对象的状态都是些什么。然而对象的行为又可能依赖于其他对象的状态。这样依赖，如果想推测一个对象某个时间的行为，可能需要先确定其所有有消息通信相关的对象这时的状态。
 
-写过前端 JavaScript 的人都应该非常清楚前端代码是非常难推理的，光看一段代码片段很难推测出其行为。通常，自由变量越多，行为越不确定，而前端的自由变量太多太多：
+写过前端 JavaScript 的人都应该非常清楚前端代码是非常难推理的，光看一段代码片段很难推测出其行为。通常，自由变量越多，行为越不确定，而前端的 /自由变量/[fn:6] 太多太多：
 
 1. DOM：不管是谁都可以修改
 2. 全局变量：谁都可以该
 3. Event：事件绑定了一些函数，大部分事件函数一般都是有副作用的
 4. Persistent Data：比如 localStorage, cookie 之类的，谁都可以修改
 
-而通常 JavaScript 或前端一些框架，思路大致都是
+而通常 JavaScript 或前端一些框架，都或多或少的依赖于这些因素。 
 
-#+BEGIN_SRC dot :file images/update-dom.png :exports results
-digraph{
-用户事件 -> 发AJAX请求 -> 修改DOM
-用户事件 -> 修改DOM
-初始化 -> 发AJAX请求
-依赖1变化 -> 修改DOM
-依赖2变化 -> 修改DOM
-"依赖..." -> 修改DOM
-}
-#+END_SRC
-
-#+caption: 前端框架的大致思路
-#+RESULTS:
-[[file:images/update-dom.png]]
-
-最近特别火的 ReactJS 就特别容易推理。能做到这一点就是因为不可变的思想。React 的成功也充分的诠释了面向对象和函数式编程的完美结合。正常一个 React 控件是这样工作的：
+ 有意思的是的 ReactJS 就相对更容易推理。因为它使用了单向数据流状态机模型，VirtualDOM 的使用很好的隔离开了 DOM 的状态。React 的成功也充分的诠释了面向对象和函数式编程的完美结合。正常一个 React 控件是这样工作的：
 
 #+BEGIN_SRC dot :file images/react-flow.png :exports results
 digraph{
-状态更新 -> 返回新控件
-用户事件 -> 状态更新
-初始化 -> 属性更新 
-属性更新-> 返回新控件
-初始化 -> 发AJAX请求
-发AJAX请求 -> 状态更新
-子控件变化 -> 状态更新
-父控件变化 -> 属性更新
-返回新控件 -> VirtualDOM -> DOM
+{ rank = same; "初始化";"属性更新";"状态更新"; }
+数据 -> 属性更新-> VirtualDOM
+初始化 -> VirtualDOM
+状态更新 -> VirtualDOM
+VirtualDOM -> DOM [label=diff]
+DOM -> 状态更新 [label=用户事件, style=dotted]
 }
 #+END_SRC
 
@@ -454,7 +671,7 @@ digraph{
 #+RESULTS:
 [[file:images/react-flow.png]]
 
-所以，React 的模型为更高内聚的模型[fn:4]，只有当自己的属性和状态发生变化时，才会重新的返回该状态和属性下的 *全新* 控件。注意是全新的，不同于传统的修改 DOM 的可变性模型，React 的任何操作都是返回全新控件的不可变操作，就像操作 vector 一样，不会去修改，而是再建一个新的。而且，React 把所有可变的部分都隔离了，所有的可变的因素如，用户事件，数据变化，其他上下游控件的影响，都隔离在状态和属性之外。这样做使得我们的控件行为更简单，容易推理，也容易测试。就像接受两个参数（状态，属性）的函数，给定这两个参数 ，那么返回的控件一定是一样的。而可变的DOM，也被 Virtual DOM 隔离了。所以完全可以把所有 React 的控件编写的像纯函数一样。因此，也可以像纯函数一样轻松的把一个组件替换掉，轻松解耦了组件之间的关系。
+所以，React 的模型为更高内聚的模型[fn:4]，只有当自己的属性和状态发生变化时，才会重新的返回该状态和属性下的 *全新* 控件。注意是全新的，不同于传统的修改 DOM 的可变性模型，React 的任何操作都是返回全新控件的不可变操作，就像操作 vector 一样，不会去修改，而是再建一个新的。而且，React 把所有可变的部分都隔离了，所有的可变的因素如，用户事件，数据变化，其他上下游控件的影响，都隔离在状态和属性之外。这样做使得我们的控件行为更简单，容易推理，也容易测试。就像接受两个参数（状态，属性）的函数，给定这两个参数 ，那么返回的控件一定是一样的。而可变的 DOM，也被 VirtualDOM 隔离了。所以完全可以把所有 React 的控件编写的像纯函数一样。因此，也可以像纯函数一样轻松的把一个组件替换掉，轻松解耦了组件之间的关系。
 
 *** 线程不安全
 
@@ -529,9 +746,9 @@ mori.rest(vec) // => (2 3 4)
 
 我明明是取一个向量的尾部，为什么返回的不是方括号的向量，而是圆括号呢？
 
-这个圆括号代表惰性序列（lazy sequence），当然，我接着要来定义 /惰性/ 和 /序列/。
+这个圆括号代表惰性序列（lazy sequence），当然，我接着要来定义 /惰性/ 和 /序列/ 。
 
-这一章既介绍了集合 API 又读了 Clojure 源代码，实在是太无聊了，我自己都快写不下去了，所以我们先暂停一下，来一个十分生动的故事稍微提提神。
+这一章既介绍了集合 API 又读了 Clojure 源代码，实在是太无聊了，我自己都快写不下去了，所以我们不妨先暂停一下，来一个十分生动的故事稍微提提神。
 
 *** 改良吃奥利奥法
 
@@ -654,12 +871,11 @@ var wetOreoPack = mori.map(lipMiddle,oreoPack) // 无打印信息
 
 两种分支其实返回的都差不多，都是两个元素， 而第二个元素都是递归的再次调用 =map= 。我们先别看第一个分支，看看第二个简单分支。重要的是，所有的过程都放在一个叫 =lazy-seq= 的 macro 中。如果我们把 =(map lipMiddle oreoPack)= 代换展开的话会得到：
 
+#+BEGIN_SRC clojure
  (lazy-seq (cons (lipMiddle (first oreoPack) (map lipMiddle (rest oreoPack)))))
+#+END_SRC
 
 其中 =lazy-seq= 做的事情就是阻止 =(cons...)= 被求值，把序列从 /应用序/ 变成 /正则序/ 。回到我们的例子，这样一来， =map= 其实就是创建了一个 =lazy-seq=  的对象或者容器，容器内的序列其实还没有被求值。所以在 =map= 之后不会有任何的打印信息，因为所有的东西其实都还没有被求值，也就是我例子中说的，只是给奥利奥贴上了写满过程的小条而已。
-
-应用序，即在使用的时候才会被求值，那么什么时候才是“使用的时候”呢？
-
 这个例子中，就是在吃奥利奥的时候，我们才真正需要进行这么一个吃奥利奥的过程。所以当我从一包奥利奥中拿一个准备吃的时候，我需要安装条上的过程操作一遍：
 
 #+BEGIN_SRC clojure
@@ -682,6 +898,10 @@ var wetOreoPack = mori.map(lipMiddle,oreoPack) // 无打印信息
 好了，生动的故事真的要圆满结束了，如果这个故事都听明白了的话，再加上几个学术名词，我想我已经解释完什么是惰性和为什么要使用惰性了。故事中的小条，叫做 /thunk/ （我在第一章提过），而这种贴过条的序列，叫做 /惰性序列/ ，对应的 map 操作方式，叫 /惰性求值/ 。 Underscore 的这种立即执行的 map 方式，叫做 /及早求值/ 。
 
 * Footnotes
+
+[fn:6]  第四章会有专门的章节解释自由变量这个词。
+
+[fn:5] http://stackoverflow.com/questions/7533837/explanation-of-combinators-for-the-working-man
 
 [fn:4] 也有人认为 React 是紧耦合，不妨再仔细看看我画这张图。
 

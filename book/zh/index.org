@@ -1,7 +1,11 @@
 #+title: Clojure Flavored JavaScript
 #+author: Jichao Ouyang
 #+keywords: clojure, javascript, functional, mori, clojurescript
-#+OPTIONS: num:3 
+#+OPTIONS: num:3
+#+LATEX_CLASS: ./mitpress.cls
+#+LATEX_HEADER: \usepackage{fontspec}
+#+LATEX_HEADER: \usepackage{xeCJK}
+#+LATEX_HEADER: \setCJKmainfont{STXihei}
 #+LANGUAGE: zh-CN
 #+include: "./前言.org"
 #+include: "./第一章.org"
