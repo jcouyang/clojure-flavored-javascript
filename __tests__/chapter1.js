@@ -1,8 +1,9 @@
+import _ from 'mori'
 describe('Chapter 1', function() {
     beforeEach(() => {
       spyOn(console, 'log');
     })
-  describe('#1.2.1 Programming Paradigm', function() {
+  describe('#1.1.1 Programming Paradigm', function() {
     it('print 10 times 命令',function() {
       for (let i=0;i<10;i++){
         console.log('命令',i)
@@ -10,7 +11,7 @@ describe('Chapter 1', function() {
       expect(console.log.calls.length).toBe(10);
     })
   });
-  describe('#1.2.2 Native functional javascript', function() {
+  describe('#1.1.2 Native functional javascript', function() {
     it('support function as arguments', function() {
       expect([1,2,3,4].map(function(x){return ++x})).toEqual([2,3,4,5]);
     });
@@ -27,7 +28,7 @@ describe('Chapter 1', function() {
     });
   });
 
-  describe('#1.2.4 Lexical Binding', function() {
+  describe('#1.1.4 Lexical Binding', function() {
     var Multipler = function(inc){
       this.inc = inc;
     };
@@ -54,7 +55,7 @@ describe('Chapter 1', function() {
     });
   });
 
-  describe('#1.2.6 Desctructure', () => {
+  describe('#1.1.6 Desctructure', () => {
     describe('eating oreo', function() {
       let dipMilk = jest.genMockFunction(),
           lip = jest.genMockFunction().mockReturnValue('wetMiddleAndButton'),
@@ -83,7 +84,7 @@ describe('Chapter 1', function() {
     });
   });
 
-  describe('#1.3.1 Immutable', () => {
+  describe('#1.2.1 Immutable', () => {
     describe('Array is Mutable', () => {
       var a = [1,2,3]
       a.push(4)
@@ -92,11 +93,16 @@ describe('Chapter 1', function() {
       });
     });
     describe('Vector is Immutable', () => {
-
+      var a = _.vector(1,2,3)
+      expect(_.conj(a, 4).toString()).toEqual('[1 2 3 4]')
     });
   });
 
-  describe('', () => {
-
+  describe('#1.2.4', () => {
+    var a = [1,2,3,4]
+    var b = [4,3,2,1]
+    for(var i=0;i<4;i++)
+      a[i]+=b[i]
+    expect(a).toEqual([5,5,5,5])
   });
 });
