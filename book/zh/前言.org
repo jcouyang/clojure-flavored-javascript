@@ -1,42 +1,96 @@
 * 前言
+** 最好在看本书之前
 
-函数式编程可以说是非常古老的编程范式，
-但是近年来函数式编程越来越受到关注。不管是 Google 力推的 Go, 学术派的 Scala 与 Haskell，还是 lisp 跑在 JVM 上的新方言 Clojure，这些新的函数式编程语言也都越来越受到关注。
+*** 能看懂JavaScript代码
+这既不是一本介绍 Clojure 也不是介绍 JavaScript 的书，这是一本介绍如何用 JavaScript 函数式编程的书。其中一些函数式的思想和表现形式都借用了 Clojure，因此叫做 Clojure 风格的函数式 JavaScript，但是并不要求在读本书前会 Clojure[fn:1]，而只需要能阅读 JavaScript 代码，那就足够了。 如果你会 Clojure，可以完全忽略我解释 Clojure 代码的段落，当然 JavaScript 的部分才是重点。
 
-当然不仅是后端函数式语言层出不穷，前端也不甘示弱。
-即便前端浏览器只支持一门语言——JavaScript，但是
-能支持函数式编程的 JavaScript 库越来越多，比如 Functional
-JavaScript[fn:1]，Underscore, lodash...不仅如此，
-还有一些能编译成 JavaScript 的语言，能让前端的函数式编程发挥到极致,
-Haskell 的 PureScript, Scala 的 scalajs, Clojure 的 ClojureScript。
+*** 你可能买错书了，如果你是
 
-我两次都以 Clojure 结尾，是因为我喜欢把重点的留到最后。
-Clojure 独特于其他的语言，它即是一门新的语言，
-一门函数式编程范式的语言，同时又流淌着着古老的lisp血液[fn:2]。
-这是我选择用 Clojure 来诠释函数式编程的原因之一。
+**** 想学 JavaScript
 
-那么为什么我要选 JavaScript 作为函数式编程的目标呢。首先，正如 Rich Hickey 所言——“Clojure is Awesome, but JavaScript reaches”。Michael Fogus
-用二百多页向大家展示了不一样的《Functional JavaScript》编程方式，
-可惜 Fogus 作为 ClojureScript 编译器的贡献者，
-竟然选择了 Underscore 作为函数式库，
-直接导致并不能完全展示 JavaScript 所能达到的函数式编程能力。有趣的是，
-ClojureScript 的作者把 ClojureScript 的不可变（Immutable）数据结构移植到了 JavaScript,
-这下彻底将 JavaScript 的函数式编程提升到了用其他库都完成不了的新高度（虽然 facebook 也尝试实现自己的一个不可变数据结构 Immutable.js）。
-不仅如此, Mozilla 的 Sweet.js（https://github.com/mozilla/sweet.js）
-更是完成了另一个突破 —— JavaScript 的 macro，
-虽然不能算是函数式的概念，但也算是 lisp 语言的一项独门绝技了（虽然很多新的语言都在
-尝试实现 macro，比如 scala, rust 和 julia，但是由于语法过于复杂）。
+这不是一本 JavaScript 的教科书，这里只会介绍如何用 JavaScript 进行函数式编程，所以如果想要系统学习 JavaScript 的话，我猜看一看《JavaScript 语言精粹》已经足够了。另外如果读者的英文好的话，还有一本可以在线免费阅读的[[https://leanpub.com/javascriptallongesix/read][《JavaScript Allonge》]]。
 
-这一切的一切，都让我忍不住要帮 Fogus 出一本续集，用 JavaScript 实现其他函数式编程语言如 Clojure 甚至是 Haskell（就当是bonus了）的奇淫巧技，
-让大家进一步感受用 JavaScript 这门不完美的语言，
-同样可以编写出优雅的函数式代码，以不一样的方式思考和解决问题。
-于是不管你是想转行 JavaScript 的 Clojure 开发者，
-亦或是像了解 Clojure 或函数式编程的 JavaScript 开发者,
-都可以在此找到一些启发。
-但这并不是一本 JavaScript 入门的好书（Douglas 的《JavaScript 语言精粹》 是个不错的选择。另外如果读者的英文好的话，还有一本可以在线免费阅读的[[https://leanpub.com/javascriptallongesix/read][《JavaScript Allonge》]]）。
+**** 想学 Clojure
+
+同样的，这也不是 Clojure 的教科书，这里只含有一些用于阐述函数式编程思想的 Clojure 代码。作为副作用，你确实可以学到一些 Clojure 编程的知识，但很可能是非常零碎不完整的知识。如果是想要系统的了解和学习 Clojure 的话，非常推荐《The Joy of Clojure》[fn:2]，另外，如果读者英文比较好，还有一本可以免费在线阅读的[[http://braveclojure.com][《CLOJURE for the BRAVE and TRUE》]] 也非常的不错。
+
+**** 函数式编程的专家
+如果你已经在日常工作或学习中使用 Scala，Clojure 或者 Haskell 等函数式语言编程的话，那么本书对你在函数式编程上的帮助不会太大。 *不过* ：这本书对解你从函数式语言迁移到 JavaScript 编程的不适应该是非常有效的，当然，这也正是本书的目的之一。
+
+*** 准备环境
+在开始阅读本书之前，如果你希望能运行书中的代码的话，可能需要一些环境的配置。而且书中的所有源码和运行方式都可以在本书的 Github 仓库[fn:15]中找到。当然如果你使用 emacs（同时还配置了 org babel 的话） 阅读本书的源码的话，对于大部分代码只需要光标放在在代码处按 =c-c c-c= 即可。
+
+**** JavaScript
+
+原生的 JavaScript 没有什么好准备的，可以通过 Node 或者 Firefox（推荐）的 Console 运行代码。当然第五章会有一些使用 sweet.js 写的 macro，则需要安装 sweet.js。
+
+***** 安装 Node/iojs
+
+1. 下载[[https://nodejs.org/][ nodejs]]
+
+2. 如果使用 mac，可以直接用 brew 安装
+#+BEGIN_SRC sh
+  brew install node 
+  # 或者
+  brew install iojs
+#+END_SRC
+
+***** 安装 sweet.js
+在安装完 node 之后命令行输入：
+#+BEGIN_SRC sh
+npm install -g sweet.js
+#+END_SRC
+
+**** Clojure
+
+书中的 Clojure 代码大多都用来描述函数式编程的概念，当然如果想要运行书中的 Clojure 代码，首先需要安装 [[http://www.oracle.com/technetwork/java/javase/downloads/index.html][JVM 或者 JDK]]，至少需要1.6，推荐安装1.8。
+
+***** 安装 leiningen
+leiningen 是 clojure 的包管理工具，类似于 node 的 npm，ruby 的 bundle，python 的 pip。 另外 leinigen 还提供脚手架的功能。可以通过[[http://leiningen.org/][官网]]的脚本安装。 mac 用户可以简单的使用 =brew install leiningen= 安装。
+
+安装完之后，就可以运行 =lein repl=  打开 repl，试试输入下列 clojure 代码，你将会立马看见结果。
+#+BEGIN_SRC clojure
+(+ 1 1)
+;=> 2
+#+END_SRC
+
+***** 编辑器
+如果更喜欢使用编辑器用来编辑更长一段的代码，我推荐非 emacs 用户使用 [[http://lighttable.com/][Light Table]], intellij 用户对使用 [[https://cursive-ide.com/][cursive]]。当然如果读者已经在使用 Emacs，那就更完美了，emacs [[https://github.com/clojure-emacs/cider][cider mode]] 是 Clojure 编程不错的选择。
+
+** 本书中的代码
+书中的所有源码和运行方式都可以在本书的 Github 仓库[fn:15]中找到，书中几乎所有的例子都以测试的形式完成。并且，本书的文本源代码也在该仓库中，并且可以通过 https://oyanglul.us/clojure-flavored-javascript 访问到在线版。
+
+** 代码风格约定
+本书的 JavaScript 代码都遵循 [[https://github.com/airbnb/javascript][Airbnb JavaScript Style Guide]][fn:3]  中的 ES5 和 React 的风格约定。
+** TODO 本书的组织结构
+*** 第一章
+将介绍 JavaScript 的基本函数式背景，简要的介绍为什么要关心函数式编程，为什么说 Underscore 不够函数式，JavaScript 要作为完整的函数式语言还缺些什么？
+*** 
+
+** 本书使用的约定
+本书使用以下字体排版约定。
+*** /斜体/
+
+表示新的术语。
+*** =等宽字体=
+
+代码清单，出现在段落之内则表示变量，函数名，关键字等。
+*** *粗体*
+
+重点概念。
+*** _下划线_
+
+需要填入的词，我可能已经帮大家填上了。
+*** +横线+
+
+可以忽略掉的词。
 
 * Footnotes
 
-[fn:2] 还记得《计算机程序构造与解释》里面用的怪怪的括号语言 scheme 吗？就是 lisp 的一种方言。
+[fn:3] https://github.com/airbnb/javascript
 
-[fn:1]  作者真的有够懒的，名字都懒得起。
+[fn:15] https://github.com/jcouyang/clojure-flavored-javascript/tree/source。
+
+[fn:1] 就像计算机程序构造与解释中说的，lisp 语言基本没有语法，就像学习象棋的规则只用花很少的时间，而如何下好棋，才是学习的关键，也是乐趣所在。
+
+[fn:2] 中文叫 Clojure 编程乐趣，但是只有第一版的，原书已经第二版了。 我刚好有幸翻译了作者 Michael Fogus 另一本《JavaScript 函数式编程》。

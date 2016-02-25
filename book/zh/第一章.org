@@ -1,68 +1,10 @@
-* 函数式javascript
+* 函数式 JavaScript
 
 本章将介绍 JavaScript 的函数式背景：
 1. 为什么说 JavaScript 是函数式语言？
 2. 我们为什么要关心函数式编程？
-3. 为什么不用Underscore？
+3. 为什么说 Underscore 不够函数式？
 4. 要作为完整的函数式语言，JavaScript 还缺些什么？
-
-** 最好在看本书之前
-
-*** 能看懂JavaScript代码
-这既不是一本介绍 Clojure 也不是介绍 JavaScript 的书，这是一本介绍如何用 JavaScript 函数式编程的书。其中一些函数式的思想和表现形式都借用了 Clojure，因此叫做 Clojure 风格的函数式 JavaScript，但是并不要求在读本书前会 Clojure[fn:1]，而只需要能阅读 JavaScript 代码，那就足够了。 如果你会 Clojure，可以完全忽略我解释 Clojure 代码的段落，当然 JavaScript 的部分才是重点。
-
-*** 你可能买错书了，如果你是
-
-**** 想学 JavaScript
-
-这不是一本 JavaScript 的教科书，这里只会介绍如何用 JavaScript 进行函数式编程，所以如果想要系统学习 JavaScript 的话，我猜看一看《JavaScript 语言精粹》已经足够了。另外如果读者的英文好的话，还有一本可以在线免费阅读的[[https://leanpub.com/javascriptallongesix/read][《JavaScript Allonge》]]。
-
-**** 想学 Clojure
-
-同样的，这也不是 Clojure 的教科书，这里只含有一些用于阐述函数式编程思想的 Clojure 代码。作为副作用，你确实可以学到一些 Clojure 编程的知识，但很可能是非常零碎不完整的知识。如果是想要系统的了解和学习 Clojure 的话，非常推荐《The Joy of Clojure》[fn:2]，另外，如果读者英文比较好，还有一本可以免费在线阅读的[[http://braveclojure.com][《CLOJURE for the BRAVE and TRUE》]] 也非常的不错。
-
-**** 函数式编程的专家
-如果你已经在日常工作或学习中使用 Scala，Clojure 或者 Haskell 等函数式语言编程的话，那么本书对你在函数式编程上的帮助不会太大。 *不过* ：这本书对解你从函数式语言迁移到 JavaScript 编程的不适应该是非常有效的，当然，这也正是本书的目的之一。
-
-*** 准备环境
-在开始阅读本书之前，如果你希望能运行书中的代码的话，可能需要一些环境的配置。而且书中的所有源码和运行方式都可以在本书的 Github 仓库[fn:15]中找到。当然如果你使用 emacs（同时还配置了 org babel 的话） 阅读本书的源码的话，对于大部分代码只需要光标放在在代码处按 =c-c c-c= 即可。
-
-**** JavaScript
-
-原生的 JavaScript 没有什么好准备的，可以通过 Node 或者 Firefox（推荐）的 Console 运行代码。当然第五章会有一些使用 sweet.js 写的 macro，则需要安装 sweet.js。
-
-***** 安装 Node/iojs
-
-1. 下载[[https://nodejs.org/][ nodejs]]
-
-2. 如果使用 mac，可以直接用 brew 安装
-#+BEGIN_SRC sh
-  brew install node 
-  # 或者
-  brew install iojs
-#+END_SRC
-
-***** 安装 sweet.js
-在安装完 node 之后命令行输入：
-#+BEGIN_SRC sh
-npm install -g sweet.js
-#+END_SRC
-
-**** Clojure
-
-书中的 Clojure 代码大多都用来描述函数式编程的概念，当然如果想要运行书中的 Clojure 代码，首先需要安装 [[http://www.oracle.com/technetwork/java/javase/downloads/index.html][JVM 或者 JDK]]，至少需要1.6，推荐安装1.8。
-
-***** 安装 leiningen
-leiningen 是 clojure 的包管理工具，类似于 node 的 npm，ruby 的 bundle，python 的 pip。 另外 leinigen 还提供脚手架的功能。可以通过[[http://leiningen.org/][官网]]的脚本安装。 mac 用户可以简单的使用 =brew install leiningen= 安装。
-
-安装完之后，就可以运行 =lein repl=  打开 repl，试试输入下列 clojure 代码，你将会立马看见结果。
-#+BEGIN_SRC clojure
-(+ 1 1)
-;=> 2
-#+END_SRC
-
-***** 编辑器
-如果更喜欢使用编辑器用来编辑更长一段的代码，我推荐非 emacs 用户使用 [[http://lighttable.com/][Light Table]], intellij 用户对使用 [[https://cursive-ide.com/][cursive]]。当然如果读者已经在使用 Emacs，那就更完美了，emacs [[https://github.com/clojure-emacs/cider][cider mode]] 是 Clojure 编程不错的选择。
 
 ** JavaScript 也是函数式语言?
 
@@ -70,23 +12,27 @@ leiningen 是 clojure 的包管理工具，类似于 node 的 npm，ruby 的 bun
 
 *** 编程范式
 
+<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
 常见的编程范式有三种，命令式，面向对象以及函数式，事实上还有第四种，逻辑式编程。 如我们在大学时学过的C语言，就是标准的命令式语言。而如果你在大学自学过Java打过黑工的话，那么你对面向对象也再熟悉不过了吧。而可能大部分人（以为）接触函数式的机会比较少，因为它是更接近于数学和代数的一种编程范式。
+=======
+常见的编程范式有三种，命令式，面向对象以及函数式，事实上还有第四种，逻辑式编程。 如我们在大学时学过的C语言，就是标准的命令式语言。而如果你在大学自学过Java打过黑工的话，那么你对面向对象也再熟悉不过了吧。而可能大部分人（以为）接触函数式的机会比较少，因为它是更接近于数学和代数的一种编程范式。让我们分别看看这几种主要的编程范式。
+>>>>>>> add preface, update ch1
 
 **** 命令式
 
 这恐怕是我们最熟悉的编程范式了(大部分计算机课程都会是C)，命令式顾名思义就是以一条条命令的方式编程，告诉计算机我需要先做这个任务，然后另一个任务。还有一些控制命令执行过程的流控制，比如我们熟悉的循环语句：
 
 #+BEGIN_SRC js
-for(var i=0;i<10;i++){
-  console.log('命令',i)
-}
+  for (let i = 0; i < 10; i++) {
+    console.log('命令', i);
+  }
 #+END_SRC
 
 当然还有分支语句，switch等等，都是用来控制命令的执行 /过程/ 。
 
 **** 面向对象
 
-这恐怕是目前最常见的编程范式了（绝大部分的工程项目的语言都会是面向对象语言）。而面向对象的思想则更接近于现实世界，封装好的对象之间通过消息互相传递信息。面向对象有一些我们熟悉的概念比如封装，继承，多态等等。而面向对象的思维主要是通过抽象成包含状态和一些方法的对象来解决问题，可以通过继承关系复用一些方法和行为。
+这恐怕是目前最常见的编程范式了，绝大部分的工程项目的语言都会是面向对象语言。而面向对象的思想则更接近于现实世界，封装好的对象之间通过消息互相传递信息，以这种熟悉的方式来建模显然要更容易一线。面向对象有一些我们熟悉的概念组成，比如封装，继承，多态等等。而面向对象的思维主要是通过抽象成包含状态和一些方法的对象来解决问题，可以通过继承关系复用一些方法和行为。
 
 **** 函数式
 
@@ -96,6 +42,7 @@ for(var i=0;i<10;i++){
 [[./images/paradigm.png]]
 
 **** 逻辑式编程
+
 可能这个名词听的比较少，但是我们经常在用而却可呢过没有意识到的 SQL 的 query 语句就是逻辑式编程。所谓逻辑式，就是通过提问找到答案的编程方式。比如：
 
 #+BEGIN_SRC sql
@@ -111,16 +58,28 @@ select lastname from someTable where sex='女' and firstname in ('连顺','女�
 
 除了最常见的 SQL，Clojure 也提供了 =core.logic= 的库方便进行逻辑式编程。[fn:3]
 
+<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
 *** JavaScript对函数式的原生支持
+=======
+*** JavaScript 的函数式支持
+>>>>>>> add preface, update ch1
 
 说了这么多种编程范式，JavaScript 对函数式的支持到底如何呢？
 
 首先如果语言中的函数不是一等的，那么也就跟函数式编程也就基本划清界限了。比如 Java 8 之前的版本，值和对象才是一等公民，要写一个高阶函数可能还需要把函数包在对象中才行。[fn:4]
+<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
 
 幸好 JavaScript 中的函数是一等函数，所谓一等，就是说跟值一样都是一等公民，所有值能到的地方，都可以替换成函数。例如，可以跟值一样作为别的函数的参数，可以被别的函数想值一样返回，而这个“别的函数”叫做 /高阶函数/ 。
 
 **** 函数作为参数
 
+=======
+
+幸好 JavaScript 中的函数是一等函数，所谓一等，就是说跟值一样都是一等公民，所有值能到的地方，都可以替换成函数。例如，可以跟值一样作为别的函数的参数，可以被别的函数想值一样返回，而这个“别的函数”叫做 /高阶函数/ 。
+
+**** 函数作为参数
+
+>>>>>>> add preface, update ch1
 函数作为参数最典型的应用要数 map 了，想必如果没有使用过 Underscore，也或多或少会用过 ECMAScript 5 中 Array 的 map 方法吧。map 简单将一个数组转换为另一个数组。
 
 #+BEGIN_SRC js
@@ -139,7 +98,7 @@ select lastname from someTable where sex='女' and firstname in ('连顺','女�
 #+BEGIN_SRC js
   var array = [1, 2, 3, 4];
   var result = [];
-  for(var i in array){
+  for (var i in array){
     result.push(++i);
   }
 
@@ -172,14 +131,14 @@ thunk（槽）[fn:5] 是指有一些操作不被立即执行，也就是说准�
 [[./images/thunk.png]]
 
 **** 越来越函数式的ES6
-ECMAScript 6（也被叫做 ECMAScript 2015，本书中会简称为 ES6）终于正式发布了，新的规范有非常的新特性，其中不少借鉴自其他函数式语言的特性，给 JavaScript 语言添加了不少函数式的新特性。
+ECMAScript 6[fn:1]终于正式发布了，新的规范有非常的新特性，其中不少借鉴自其他函数式语言的特性，给 JavaScript 语言添加了不少函数式的新特性。
 
 #+BEGIN_QUOTE
 虽然浏览器厂商都还没有完全实现 ES6 的所有规范，但是其实我们是可以通过一些中间编译器使用大部分的 ES6 的新特性，如
 
 *Babel*
 
-这是目前支持 ES6 实现最多的编译器了，没有之一。 主要是 Facebook 在维护，因此也可以编译 Facebook 的 React。这也是目前能实现尾递归优化的唯一编译器。不过关于尾递归只能优化尾子递归，相互递归的优化还没有实现。
+这是目前支持 ES6 实现最多的编译器了，没有之一。 主要是 Facebook 在维护，因此也可以编译 Facebook 的 React。这也是目前[fn:2]能实现尾递归优化的唯一编译器。不过关于尾递归只能优化尾子递归，相互递归的优化还没有实现。
 
 *Traceur*
 
@@ -209,7 +168,7 @@ param => expression
 
 虽然看上去跟以前的匿名函数没有什么区别，我们可以对比旧的匿名函数是如何写一个使数组中数字都乘 2 的函数.
 #+BEGIN_SRC js
-var a = [1, 2, 3, 4,5];
+var a = [1, 2, 3, 4, 5];
 a.map(function(x){ return x*2 });
 #+END_SRC
 
@@ -218,9 +177,15 @@ a.map(function(x){ return x*2 });
 a.map(x => x*2);
 #+END_SRC
 
+<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
 使用箭头函数可以少写 function 和 return 以及块括号，从而让我们其实更关心的转换关系变得更明显。略去没用的长的匿名函数定义其实可以让代码更简洁更可读。特别是在传入高阶函数作为参数的时候， ~map(x=>x*2)~ 更形象和突出的表达了变换的逻辑。
 
 ***** 词法绑定
+=======
+使用箭头函数可以少写 function 和 return 以及块括号，从而让我们其实更关心的转换关系变得更明显。略去没用的长的函数关键字，其实可以让代码更简洁更可读。特别是在传入高阶函数作为参数的时候， ~map(x=>x*2)~ 更形象和突出的表达了核心变换逻辑。
+
+***** COMMENT 词法绑定
+>>>>>>> add preface, update ch1
 
 如果你觉得这种简化的语法糖还不足以说服你改变匿名函数的写法，那么想想以前写匿名函数中的经常需要 =var self=this= 的苦恼吧。
 
@@ -232,30 +197,38 @@ a.map(x => x*2);
       var self = this; // <= (ref:selfthis)
       return numbers.map(function(number){
         return self.inc * number; // <= (ref:self)
-      })
+      });
     }
-    new Multipler(2).multiple([1,2,3,4]) // => [ 2, 4, 6, 8 ]
+    new Multipler(2).multiple([1, 2, 3, 4]); // => [ 2, 4, 6, 8 ]
 #+END_SRC
 
 #+RESULTS:
 
-- [[(selfthis)][第(selfthis)行]]保持 Multipler 的 this 引用的缓存
-- [[(self)][第(self)行]]使用 self 引用 Multipler 的实例而不是 this
+- [[(selfthis)][第(selfthis)行]] 中使用 =self= 保持了指向 Multipler 实例的 this 引用的缓存。
+- [[(self)][第(self)行]]使用 =self= 引用 =Multipler= 的实例，而此时的 =this= 应该指向 =numbers= 的元素。
 
-这样做很怪不是吗，因此经常出现在各种面试题中，让你猜猜 this 到底是谁。或者让你去修正 this 绑定，方法如此之多，但是不管是使用 EcmaScript 5 的 bind，还是 map 的第三个参数来保证 this 的绑定不会出错，都逃脱不了要手动修正 this 绑定的命运。
+这样做很怪不是吗，因此经常出现在各种面试题中，让你猜猜 =this= 到底是谁。或者让你去修正 =this= 绑定，方法如此之多，但是不管是使用 EcmaScript 5 的 =bind= ，还是 =map= 的第三个参数来保证 =this= 的绑定不会出错，都逃脱不了要手动修正 =this= 绑定的命运。
 
-那么如果用箭头函数就不会存在这种问题：
+#+BEGIN_SRC js
+  ...
+  return numbers.map(function(number){
+    return self.inc * number; // <= (ref:self)
+  }.bind(this));
+  ...
+#+END_SRC
+
+那么如果用箭头函数就不会存在上述问题：
 #+BEGIN_SRC js
 Multipler.prototype.multiple = function(numbers){
-  return numbers.map(number => number*this.inc);
+  return numbers.map(number => number * this.inc);
 };
 
-new Multipler(2).multiple([1,2,3,4]);// => [ 2, 4, 6, 8 ]
+new Multipler(2).multiple([1, 2, 3, 4]);// => [ 2, 4, 6, 8 ]
 #+END_SRC
 
 #+RESULTS:
 
-现在，箭头函数里面的 this 绑定的是外层函数的 this 值，不会受到运行时上下文的影响。[fn:7]而是从词法上就能轻松确定 this 的绑定。不需要 =var self=this= 了是不是确实方便了许多，不仅不会再被各种怪异的面试题坑了，还让代码更容易推理。
+现在，箭头函数里面的 this 绑定的是外层函数的 this 值，不会受到运行时上下文的影响。[fn:7]而是从词法上就能轻松确定 this 的绑定。不需要 ~var self=this~ 了是不是确实方便了许多，不仅不会再被各种怪异的面试题坑了，还让代码更容易推理。
 
 **** 尾递归优化
 
@@ -270,24 +243,24 @@ Clojure 能够通过 =recur= 函数对 /尾递归/ 进行优化，但是 ES5 的
 
 1. 掰成两片，一片是不带馅的，一份是带馅的
 2. 带馅的一半沾一下牛奶
-3. 舔掉馅
+3. 舔掉中间夹心的馅
 4. 合起来吃掉
 
 如果写成代码，大致应该是这样的：
 #+BEGIN_SRC js
-var orea = ["top","middle","bottom"]
-var top = orea.shift(),middleAndButton=orea // <1>
-var wetMiddleAndButton = dipMilk(middleAndButton) // <2>
-var button = lip(wetMiddleAndButton) // <3>
-eat([top,button]) // <4>
+var orea = ["top","middle","bottom"];
+var top = orea.shift(), middleAndButton = orea; // <1>
+var wetMiddleAndButton = dipMilk(middleAndButton); // <2>
+var button = lip(wetMiddleAndButton); // <3>
+eat([top,button]); // <4>
 #+END_SRC
 
 注意那个诡异的 =shift= ，如果用 destructure 会写得稍微优雅一些：
 #+BEGIN_SRC js
-var [top, ...middleAndButton] = ["top","middle","bottom"] // <1>
-var wetMiddleAndButton = dipMilk(middleAndButton) // <2>
-var button = lip(wetMiddleAndButton) // <3>
-eat([top,button]) // <4>
+var [top, ...middleAndButton] = ["top", "middle", "bottom"]; // <1>
+var wetMiddleAndButton = dipMilk(middleAndButton); // <2>
+var button = lip(wetMiddleAndButton); // <3>
+eat([top,button]); // <4>
 #+END_SRC
 
 有没有觉得我掰奥利奥的姿势变酷了许多？这就是 destructure，给定一个特定的模式 =[top, ...middleAndButton]= ，让数据 =["top","middle","bottom"]= 按照该模式匹配进来。同样的，我将会专门在第6章介绍模式匹配这个概念，虽然它不是 Clojure 的重要概念，但是确实 Scala 或 Haskell 的核心所在。不过可以放心的是，你也不必在此之前先学习 Scala 和 Haskell，我还是会用最流行的 JavaScript 来介绍模式匹配。
@@ -297,20 +270,20 @@ eat([top,button]) // <4>
 
 ** 作为函数式语言 JavaScript 还差些什么
 
-作为多编程范式的语言，原型链支持的当然是面相对象编程，然而却同时支持一等函数的 JavaScript 也给函数式编程带来了无限的可能。之所以说可能是因为 JavaScript 本身对于函数式的支持还是非常局限的，为了让 JavaScript 全面支持函数式编程还需要非常多的第三方库的支持。下面我们来列一列到底 JavaScript 比起纯函数式语言，到底还差些什么？
+作为多编程范式的语言，原型链支持的当然是面向对象编程，然而却同时支持一等函数的 JavaScript 也给函数式编程带来了无限的可能。之所以说可能是因为 JavaScript 本身对于函数式的支持还是非常局限的，为了让 JavaScript 全面支持函数式编程还需要非常多的第三方库的支持。下面我们来列一列到底 JavaScript 比起纯函数式语言，到底还差些什么？
 
 *** 不可变数据结构
 
 首先需要支持的当然是不可变（immutable）数据结构，意味着任何操作都不会改变该数据结构的内容。JavaScript 中除了原始类型其他都是可变的（mutable）。相反，Clojure 的所有数据结构都是不可变的。
 
 #+BEGIN_QUOTE
-JavaScript 一共有6种原始类型（ES6 新加了 Symbol 类型），它们分别是 Boolean，Null，Undefined，Number String 和 Symbol。 除了这些原始类型，其他的都是 Object，而 Object 都是可变的。
+JavaScript 一共有6种原始类型（包括 ES6 新添加的 Symbol 类型），它们分别是 Boolean，Null，Undefined，Number String 和 Symbol。 除了这些原始类型，其他的都是 Object，而 Object 都是可变的。
 #+END_QUOTE
  
 比如 JavaScript 的 Array 是可变的：
 #+BEGIN_SRC js
-var a = [1,2,3]
-a.push(4)
+var a = [1, 2, 3];
+a.push(4);
 
 #+END_SRC
 
@@ -329,7 +302,7 @@ a ;; => [1 2 3]
 
 惰性（lazy）指求值的过程并不会立刻发生。比如一些数学题（特别是求极限的）我们可能不需要把所有表达式求值才能得到最终结果，以防在算过程中一些表达式能被消掉。所以惰性求值是相对于及早求值（eager evaluation）的。
 
-比如大部分语言中，参数中的表达式都会被先求值，这也称为 /应用序/ 语言。比如来看下这样个 JavaScript 的函数：
+比如大部分语言中，参数中的表达式都会被先求值，这也称为 /应用序/ 语言。比如看下面这样一个 JavaScript 的函数：
 #+BEGIN_SRC js
 wholeNameOf(getFirstName(), getLastName())
 #+END_SRC
@@ -337,7 +310,7 @@ wholeNameOf(getFirstName(), getLastName())
 
 另外，对于数组操作时，大部分语言也同样采用的是应用序。
 #+BEGIN_SRC js
-map(function(x){return ++x}, [1,2,3,4])
+map(function(x){return ++x}, [1, 2, 3, 4]);
 #+END_SRC
 
 所以，这个表达式立刻会返回结果 ~[1,2,3,4]~ 。
@@ -351,6 +324,7 @@ map(function(x){return ++x}, [1,2,3,4])
 面向对象可以通过继承和组合在对象之间分享一些行为或者说属性，函数式的思路就是通过 *组合* 已有函数形成一个新的函数。JavaScript 语言虽然支持高阶函数，但是并没有一个原生的利于组合函数产生新函数的方式。关于函数组合的技巧，会在第四章作详细的解释，而这些强大的函数组合方式却往往被类似 underscore 库的光芒掩盖掉。
 
 *** 尾递归优化
+<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
 
 Clojure 的数据结构都是不可变的，除了使用数据结果本身的方法进行遍历，另外的循环手段自然只能是递归了。但是在没尾递归优化的 JavaScript 中就不会那么愉快了。
 
@@ -384,6 +358,42 @@ recur 看起来跟 for 循环非常类似，其实它是尾递归，如果把 lo
 
 因此反过来看，若是要把尾递归换成循环是多么容易的一件事情，关键的是需要让解释器识别出来尾递归。
 
+=======
+
+Clojure 的数据结构都是不可变的，除了使用数据结果本身的方法进行遍历，另外的循环手段自然只能是递归了。但是在没尾递归优化的 JavaScript 中就不会那么愉快了。
+
+在 JavaScript 中可能会经常看到这样的代码：
+#+BEGIN_SRC js
+  var a = [1, 2, 3, 4]
+  var b = [4, 3, 2, 1]
+  for (var i = 0; i < 4; i++){
+    a[i]+=b[i]
+  }
+  console.log(a);
+  // => [5,5,5,5]
+#+END_SRC
+
+如果使用 Clojure 硬要做类似的事情通常只能使用 reduce 解决，代码会变成这样：
+
+#+BEGIN_SRC clojure
+  (loop [a [1 2 3 4] 
+         b [4 3 2 1]
+         i (dec (len a))]
+    (recur (assoc a i (get b i) b (dec i))))
+#+END_SRC
+
+recur 看起来跟 for 循环非常类似，其实它是尾递归，如果把 loop 写成一个函数：
+#+BEGIN_SRC clojure
+  (defn zipping-add [a b i]
+    (recur (assoc a i (get b i) b (dec i))))
+(zipping-add [1 2 3 4] [4 3 2 1] (dec (len a)))
+#+END_SRC
+
+事实上效果是一样的，但是如果把 =recur= 想象成是 =zipping-add= ，明显能看出 =zipping-add= 是一个尾递归函数。
+
+因此反过来看，若是要把尾递归换成循环是多么容易的一件事情，关键的是需要让解释器识别出来尾递归。
+
+>>>>>>> add preface, update ch1
 但是这不是 Clojure 的风格，亦不是函数式的风格。递归应该被认为是比较低级别的操作，像这种高级别的操作还是应该优先使用 map，reduce 来解决。
 
 #+BEGIN_SRC clojure
@@ -460,18 +470,28 @@ Clojure 是跑着 JVM 上的lisp 方言，而 ClojureScript 是能编译成 Java
 选择 mori 的另一原因是因为它特别区别于其他的函数式库的地方——它使用 ClojureScript 的数据结构。也就是说从根本上消除了 JavaScript 可变的数据结构模型，更利于我们的进行函数式编程。
 
 #+BEGIN_QUOTE
+<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
   为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro —— [[http://ru-lang.org][ru-lang]]。更多的关于 macro 的讨论我会放到第五章。
+=======
+  为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro —— [[http://ru-lang.org][ru-lang]][fn:15]。更多的关于 macro 的讨论我会放到第五章。
+>>>>>>> add preface, update ch1
 #+END_QUOTE
 
 当然，选择 mori 并不说明它是工程的上函数式类库的最佳选择，facebook 活跃维护的 Immutable.js 也是不错的选择。但是在这里，mori 确实是能将 Clojure 编程思想蔓延到 JavaScript 中的最好桥梁。
 
 * Footnotes
 
+<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
 [fn:15] https://github.com/jcouyang/clojure-flavored-javascript/tree/source
 
 [fn:1] 就像计算机程序构造与解释中说的，lisp 语言基本没有语法，就像学习象棋的规则只用花很少的时间，而如何下好棋，才是学习的关键。
+=======
+[fn:15] http://ru-lang.org
 
-[fn:2] 中文叫 Clojure 编程乐趣，但是只有第一版的，原书已经第二版了。 我刚好有幸翻译了作者 Michael Fogus 另一本《JavaScript 函数式编程》。
+[fn:2]  至少在本书写到这一行之前是这样的。
+>>>>>>> add preface, update ch1
+
+[fn:1] 也被叫做 ECMAScript 2015，本书中会简称为 ES6。
 
 [fn:3] 当然逻辑式编程并不是本书的重点，也不会展开深入介绍，如果有兴趣，可以联系出版社让我在写一本。
 
@@ -487,13 +507,13 @@ Clojure 是跑着 JVM 上的lisp 方言，而 ClojureScript 是能编译成 Java
 
 [fn:9] Underscore在github上的收藏量已经超过一万五了，无疑是JavaScript最流行的库之一。
 
-[fn:10] 当然我并不是第一个发现 Undersocre 奇怪的人，13年一次js大会上就有人提出了这个话题 https://www.youtube.com/watch?v=m3svKOdZijA
+[fn:10] 当然我并不是第一个发现 Undersocre 奇怪的人，13年一次js大会上就有人提出了这个话题 https://www.youtube.com/watch?v=m3svKOdZijA。
 
 [fn:11] 虽然 Michael Fogus 的《函数式 JavaScript 编程》中就是用 Underscore。
 
-[fn:12] 根据 github 的报告 https://github.com/blog/2047-language-trends-on-github
+[fn:12] 根据 github 的报告 https://github.com/blog/2047-language-trends-on-github。
 
 [fn:13] 前端社区发展特别奇怪，不管是什么库，过一段时间就有类似的库出来，把前一个的缺点列一遍，大家都开始用新的，而唾弃旧的库。作者很好奇什么时候 React 会开始被唾弃。
 
-[fn:14] ClojureScript 作者
+[fn:14] ClojureScript 作者。
 
