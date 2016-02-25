@@ -12,11 +12,7 @@
 
 *** 编程范式
 
-<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
-常见的编程范式有三种，命令式，面向对象以及函数式，事实上还有第四种，逻辑式编程。 如我们在大学时学过的C语言，就是标准的命令式语言。而如果你在大学自学过Java打过黑工的话，那么你对面向对象也再熟悉不过了吧。而可能大部分人（以为）接触函数式的机会比较少，因为它是更接近于数学和代数的一种编程范式。
-=======
 常见的编程范式有三种，命令式，面向对象以及函数式，事实上还有第四种，逻辑式编程。 如我们在大学时学过的C语言，就是标准的命令式语言。而如果你在大学自学过Java打过黑工的话，那么你对面向对象也再熟悉不过了吧。而可能大部分人（以为）接触函数式的机会比较少，因为它是更接近于数学和代数的一种编程范式。让我们分别看看这几种主要的编程范式。
->>>>>>> add preface, update ch1
 
 **** 命令式
 
@@ -58,28 +54,16 @@ select lastname from someTable where sex='女' and firstname in ('连顺','女�
 
 除了最常见的 SQL，Clojure 也提供了 =core.logic= 的库方便进行逻辑式编程。[fn:3]
 
-<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
-*** JavaScript对函数式的原生支持
-=======
 *** JavaScript 的函数式支持
->>>>>>> add preface, update ch1
 
 说了这么多种编程范式，JavaScript 对函数式的支持到底如何呢？
 
 首先如果语言中的函数不是一等的，那么也就跟函数式编程也就基本划清界限了。比如 Java 8 之前的版本，值和对象才是一等公民，要写一个高阶函数可能还需要把函数包在对象中才行。[fn:4]
-<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
 
 幸好 JavaScript 中的函数是一等函数，所谓一等，就是说跟值一样都是一等公民，所有值能到的地方，都可以替换成函数。例如，可以跟值一样作为别的函数的参数，可以被别的函数想值一样返回，而这个“别的函数”叫做 /高阶函数/ 。
 
 **** 函数作为参数
 
-=======
-
-幸好 JavaScript 中的函数是一等函数，所谓一等，就是说跟值一样都是一等公民，所有值能到的地方，都可以替换成函数。例如，可以跟值一样作为别的函数的参数，可以被别的函数想值一样返回，而这个“别的函数”叫做 /高阶函数/ 。
-
-**** 函数作为参数
-
->>>>>>> add preface, update ch1
 函数作为参数最典型的应用要数 map 了，想必如果没有使用过 Underscore，也或多或少会用过 ECMAScript 5 中 Array 的 map 方法吧。map 简单将一个数组转换为另一个数组。
 
 #+BEGIN_SRC js
@@ -177,15 +161,9 @@ a.map(function(x){ return x*2 });
 a.map(x => x*2);
 #+END_SRC
 
-<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
-使用箭头函数可以少写 function 和 return 以及块括号，从而让我们其实更关心的转换关系变得更明显。略去没用的长的匿名函数定义其实可以让代码更简洁更可读。特别是在传入高阶函数作为参数的时候， ~map(x=>x*2)~ 更形象和突出的表达了变换的逻辑。
-
-***** 词法绑定
-=======
 使用箭头函数可以少写 function 和 return 以及块括号，从而让我们其实更关心的转换关系变得更明显。略去没用的长的函数关键字，其实可以让代码更简洁更可读。特别是在传入高阶函数作为参数的时候， ~map(x=>x*2)~ 更形象和突出的表达了核心变换逻辑。
 
 ***** COMMENT 词法绑定
->>>>>>> add preface, update ch1
 
 如果你觉得这种简化的语法糖还不足以说服你改变匿名函数的写法，那么想想以前写匿名函数中的经常需要 =var self=this= 的苦恼吧。
 
@@ -324,41 +302,6 @@ map(function(x){return ++x}, [1, 2, 3, 4]);
 面向对象可以通过继承和组合在对象之间分享一些行为或者说属性，函数式的思路就是通过 *组合* 已有函数形成一个新的函数。JavaScript 语言虽然支持高阶函数，但是并没有一个原生的利于组合函数产生新函数的方式。关于函数组合的技巧，会在第四章作详细的解释，而这些强大的函数组合方式却往往被类似 underscore 库的光芒掩盖掉。
 
 *** 尾递归优化
-<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
-
-Clojure 的数据结构都是不可变的，除了使用数据结果本身的方法进行遍历，另外的循环手段自然只能是递归了。但是在没尾递归优化的 JavaScript 中就不会那么愉快了。
-
-在 JavaScript 中可能会经常看到这样的代码：
-#+BEGIN_SRC js
-  var a = [1,2,3,4]
-  var b = [4,3,2,1]
-  for(var i=0;i<10;i++)
-   a[i]+=b[i]
-  console.log(a);
-  // => [5,5,5,5]
-#+END_SRC
-
-如果使用 Clojure 硬要做类似的事情通常只能使用 reduce 解决，代码会变成这样：
-
-#+BEGIN_SRC clojure
-  (loop [a [1 2 3 4] 
-         b [4 3 2 1]
-         i (dec (len a))]
-    (recur (assoc a i (get b i) b (dec i))))
-#+END_SRC
-
-recur 看起来跟 for 循环非常类似，其实它是尾递归，如果把 loop 写成一个函数：
-#+BEGIN_SRC clojure
-  (defn zipping-add [a b i]
-    (recur (assoc a i (get b i) b (dec i))))
-(zipping-add [1 2 3 4] [4 3 2 1] (dec (len a)))
-#+END_SRC
-
-事实上效果是一样的，但是如果把 =recur= 想象成是 =zipping-add= ，明显能看出 =zipping-add= 是一个尾递归函数。
-
-因此反过来看，若是要把尾递归换成循环是多么容易的一件事情，关键的是需要让解释器识别出来尾递归。
-
-=======
 
 Clojure 的数据结构都是不可变的，除了使用数据结果本身的方法进行遍历，另外的循环手段自然只能是递归了。但是在没尾递归优化的 JavaScript 中就不会那么愉快了。
 
@@ -393,7 +336,6 @@ recur 看起来跟 for 循环非常类似，其实它是尾递归，如果把 lo
 
 因此反过来看，若是要把尾递归换成循环是多么容易的一件事情，关键的是需要让解释器识别出来尾递归。
 
->>>>>>> add preface, update ch1
 但是这不是 Clojure 的风格，亦不是函数式的风格。递归应该被认为是比较低级别的操作，像这种高级别的操作还是应该优先使用 map，reduce 来解决。
 
 #+BEGIN_SRC clojure
@@ -470,26 +412,16 @@ Clojure 是跑着 JVM 上的lisp 方言，而 ClojureScript 是能编译成 Java
 选择 mori 的另一原因是因为它特别区别于其他的函数式库的地方——它使用 ClojureScript 的数据结构。也就是说从根本上消除了 JavaScript 可变的数据结构模型，更利于我们的进行函数式编程。
 
 #+BEGIN_QUOTE
-<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
-  为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro —— [[http://ru-lang.org][ru-lang]]。更多的关于 macro 的讨论我会放到第五章。
-=======
   为了保持从风格上更类似于 Clojure，以及迁移 Clojure 中的一些 macro，本书中也使用了我写的一系列的 macro —— [[http://ru-lang.org][ru-lang]][fn:15]。更多的关于 macro 的讨论我会放到第五章。
->>>>>>> add preface, update ch1
 #+END_QUOTE
 
 当然，选择 mori 并不说明它是工程的上函数式类库的最佳选择，facebook 活跃维护的 Immutable.js 也是不错的选择。但是在这里，mori 确实是能将 Clojure 编程思想蔓延到 JavaScript 中的最好桥梁。
 
 * Footnotes
 
-<<<<<<< 7b2b92de2a470ced9d126fd95c13c6eaa861f405
-[fn:15] https://github.com/jcouyang/clojure-flavored-javascript/tree/source
-
-[fn:1] 就像计算机程序构造与解释中说的，lisp 语言基本没有语法，就像学习象棋的规则只用花很少的时间，而如何下好棋，才是学习的关键。
-=======
 [fn:15] http://ru-lang.org
 
 [fn:2]  至少在本书写到这一行之前是这样的。
->>>>>>> add preface, update ch1
 
 [fn:1] 也被叫做 ECMAScript 2015，本书中会简称为 ES6。
 
