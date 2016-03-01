@@ -3,6 +3,20 @@
 This is Draft Version of Book /Clojure Flavored JavaScript/, 
 it's free to read and contribution welcome.
 
+* Install
+the manuscript is written in org-mode, which means you have to install emacs & friends to compile
+#+BEGIN_SRC shell
+brew install emacs --with-cocoa
+brew install cask
+cask install
+cask exec emacs --batch -l emacs.el -f org-publish-all
+#+END_SRC
+
+then it will generate pdf and html version of this book under =public= folder.
+
+* BUY EARLY ACCESS VERSION PDF
+Comming soon ...
+
 * License
 #+HTML: <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
 
