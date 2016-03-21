@@ -147,7 +147,130 @@ describe('Chapter 2', function() {
             .toString()
         ).toBe('(#js {:name "Turanga Leela", :date "2974-12-3"} #js {:name "Hubert J. Farnsworth", :date "2841-4-9"} #js {:name "Bender Bending Rodríguez, Sr.", :date "2996"} #js {:name "Amy Wong", :date "2978-5-4"})');
       });
+    });
+  });
 
+  describe('#2.3.1', () => {
+    it('Prestige', () => {
+      const birdInACage = [{name: 'tweety'}];
+      const magic = cage => cage[0] = {name: '翠花'};
+      magic(birdInACage);
+      expect(birdInACage).toEqual([{name: '翠花'}]);
+    });
+
+    it('happy immutable world', () => {
+      const birdInACage = [{name: 'tweety'}];
+      const magic = (birdInCage) => birdInCage.map(bird => ({
+        name:'翠花'
+      }));
+      const anotherBirdInTheCage = magic(birdInACage);
+      expect(anotherBirdInTheCage).toEqual([{name: '翠花'}]);
+      expect(birdInACage).toEqual([{name:'tweety'}]);
+    });
+  });
+
+  describe('#2.3.2 referential transparent', () => {
+    it('fib', () => {
+      function fib(n){
+        switch (n) {
+        case 0: return 1
+        case 1: return 1
+        default:
+          return fib(n-1)+fib(n-2);
+        }
+      }
+      expect(fib(30)).toBe(1346269);
+    });
+
+    it('memoize fib', () => {
+      const fib = _.memoize(function(n){
+        switch (n) {
+        case 0: return 1
+        case 1: return 1
+        default:
+          return fib(n-1)+fib(n-2);
+        }
+      });
+      expect(fib(30)).toBe(1346269);
+    });
+  });
+
+  describe('#2.3.4 concurrent', () => {
+    it('mutable in concurrent', () => {
+      function charge(order,callback){
+        console.log(callback);
+        setTimeout(() => callback(order), 100);
+      }
+      // 假设熊孩子喝牛奶只需要99ms（可能熊孩子是闪电侠）
+      function drinkMilkThenChange(order){
+        setTimeout(()=>order.push({name: 'R2D2', price: 99999}),
+                   99);
+      }
+      // 打印发票
+      let printReceipt = jest.genMockFn();
+      // 熊孩子买了两个东西
+      let order = [{name:'kindle',price:99}, {name:'drone', price:299}];
+      // 熊孩子结账
+      charge(order, printReceipt);
+      // 熊孩子喝了杯牛奶后过来修改订单
+      drinkMilkThenChange(order);
+      expect(order).toEqual([{name:'kindle',price:99}, {name:'drone', price:299}]);
+      jest.runAllTimers();
+      expect(order).toEqual([{name:'kindle',price:99}, {name:'drone', price:299}, {name: 'R2D2', price: 99999}]);
+      expect(printReceipt).toBeCalledWith([{name:'kindle',price:99}, {name:'drone', price:299}, {name: 'R2D2', price: 99999}]);
+    });
+
+    it('mutable in concurrent', () => {
+      function charge(order,callback){
+        console.log(callback);
+        setTimeout(() => callback(order), 100);
+      }
+      // 假设熊孩子喝牛奶只需要99ms（可能熊孩子是闪电侠）
+      function drinkMilkThenChange(order){
+        setTimeout(() => _.conj(order, {name: 'R2D2', price: 99999}),
+                   99);
+      }
+      // 打印发票
+      let printReceipt = jest.genMockFn();
+      // 熊孩子买了两个东西
+      let order = mori.vector({name: 'kindle', price: 99},
+                              {name: 'drone',  price: 299});
+      // 熊孩子结账
+      charge(order, printReceipt);
+      // 熊孩子喝了杯牛奶后过来修改订单
+      drinkMilkThenChange(order);
+      expect(order.toString()).toBe('[#js {:name "kindle", :price 99} #js {:name "drone", :price 299}]');
+      jest.runAllTimers();
+      expect(order.toString()).toEqual('[#js {:name "kindle", :price 99} #js {:name "drone", :price 299}]');
+    });
+  });
+
+  describe('#2.4.1 lazy seq', () => {
+    const dipMilk = _.identity;
+    const lip = ([middle, bottom]) => bottom;
+    function lipMiddle(oreo){
+      let wetOreo = dipMilk(oreo);
+      let [top, ...middleBottom] = wetOreo;
+      let bottom = lip(middleBottom);
+      return [top, bottom];
+    }
+    it('lodash oreo eater', () => {
+      let eat = jest.genMockFn();
+      let _ = require('lodash');
+      let oreoPack = _.range(10)
+            .map(x => ["top", "middle", "bottom"]);
+      let wetOreoPack = _.map(oreoPack, lipMiddle);
+      _.each(wetOreoPack, eat);
+      expect(eat.mock.calls.length).toBe(10);
+    })
+
+    it('mori oreo eater', () => {
+      let eat = jest.genMockFn();
+      let oreoPack = _.repeat(["top", "middle", "bottom"]);
+      let wetOreoPack = _.map(lipMiddle, oreoPack);
+      // // 条都塞好了，现在该吃了，假设我吃3块
+      _.each(_.take(3, wetOreoPack), eat);
+      expect(eat.mock.calls.length).toBe(3);
     });
   });
 });

@@ -32,6 +32,7 @@
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/con.js",
+      "<rootDir>/node_modules/lodash",
       "<rootDir>/node_modules/mori",
       "<rootDir>/node_modules/core-js"
     ],
@@ -47,6 +48,7 @@
   },
   "dependencies": {
     "con.js": "^0.6.0",
+    "lodash": "^4.6.1",
     "mori": "^0.3.2"
   }
 }
