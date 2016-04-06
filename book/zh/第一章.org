@@ -321,16 +321,25 @@ Clojure 的数据结构都是不可变的，除了使用数据结果本身的方
 #+BEGIN_SRC clojure
   (loop [a [1 2 3 4] 
          b [4 3 2 1]
-         i (dec (len a))]
-    (recur (assoc a i (get b i) b (dec i))))
-#+END_SRC
+         i (dec (count a))]
+    (if (< i 0) a
+        (recur (update a i #(+ % (get b i))) b (dec i))))
+#+End_src
+
+#+RESULTS:
+| 5 | 5 | 5 | 5 |
 
 recur 看起来跟 for 循环非常类似，其实它是尾递归，如果把 loop 写成一个函数：
+
 #+BEGIN_SRC clojure
   (defn zipping-add [a b i]
-    (recur (assoc a i (get b i) b (dec i))))
-(zipping-add [1 2 3 4] [4 3 2 1] (dec (len a)))
+    (if (< i 0) a
+        (recur (update a i #(+ % (get b i))) b (dec i))))
+  (zipping-add [1 2 3 4] [4 3 2 1] 3)
 #+END_SRC
+
+#+Results:
+: #'user/zipping-add[5 5 5 5]
 
 事实上效果是一样的，但是如果把 =recur= 想象成是 =zipping-add= ，明显能看出 =zipping-add= 是一个尾递归函数。
 
