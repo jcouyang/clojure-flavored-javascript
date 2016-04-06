@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-02-14 Sun 14:29 -->
+<!-- 2016-04-06 Wed 17:23 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Clojure Flavored JavaScript</title>
@@ -70,7 +70,7 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline31">1. Functional JavaScript</a>
+<li><a href="#orgheadline32">1. Functional JavaScript</a>
 <ul>
 <li><a href="#orgheadline13">1.1. Before Reading This Book, You Better&#x2026;</a>
 <ul>
@@ -130,17 +130,15 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#orgheadline30">1.4. Well, Underscore You are Doing it Wrong!</a></li>
+<li><a href="#orgheadline31">1.5. </a></li>
 </ul>
 </li>
 </ul>
 </div>
 </nav>
-<p>
-<a href="./zh/">&gt; <b>中文</b> &lt;</a>
-</p>
 
-<div id="outline-container-orgheadline31" class="outline-2">
-<h2 id="orgheadline31"><span class="section-number-2">1</span> Functional JavaScript</h2>
+<div id="outline-container-orgheadline32" class="outline-2">
+<h2 id="orgheadline32"><span class="section-number-2">1</span> Functional JavaScript</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 This is an introducing chapter will explain the following:
@@ -455,33 +453,140 @@ A thunk is something not executed yet, but waiting someone to click the <b>Butto
 <div id="outline-container-orgheadline29" class="outline-3">
 <h3 id="orgheadline29"><span class="section-number-3">1.3</span> The Missing Things from JavaScript for a Functional Language</h3>
 <div class="outline-text-3" id="text-1-3">
-</div><div id="outline-container-orgheadline25" class="outline-4">
+<p>
+JavaScript is always rekon as a prototype-based language, but first-class function support made everthing functional also possiable in JavaScript. But we need tools and libs to make JavaScript more functional. 
+</p>
+</div>
+
+<div id="outline-container-orgheadline25" class="outline-4">
 <h4 id="orgheadline25"><span class="section-number-4">1.3.1</span> Immutable Data Structure</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+First thing JS really missing is <i>Immutable Datastrcuture</i>, which mean thing that once created can never be changed. What I mean missing is, for example, a very common code in JS like this:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="color: #00008b;">var</span> <span style="color: #b8860b;">a</span> = [1, 2, 3];
+a.push(4);
+</pre>
+</div>
+
+<p>
+Now, a is something else, not <code>[1, 2, 3]</code> anymore, it's modified to <code>[1, 2, 3, 4]</code>.
+</p>
+
+<p>
+Comparing to Clojure, who's datastructure is almost all immutable, we cannot do anything to modify a thing, instead, it should return a new one instead.
+</p>
+
+<blockquote>
+<p>
+There're 6 primitive types in JavaScript, Boolean, Null, Undefined, Number and String(and Symbol in ES6). All primitive type is immutable, so Object is only mutable type.
+</p>
+</blockquote>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #00008b;">def</span> <span style="color: #b8860b;">a</span> [1 2 3])
+(conj a 4) <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3 4]</span>
+a <span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">=&gt; [1 2 3]</span>
+</pre>
+</div>
+
+<p>
+As you can see, nothing is change here, a is still <code>[1 2 3]</code>, but <code>conj</code> return a pretty new Vector, instead of modifing a.
+</p>
+</div>
 </div>
 
 <div id="outline-container-orgheadline26" class="outline-4">
 <h4 id="orgheadline26"><span class="section-number-4">1.3.2</span> Lazy evaluation</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+<i>Lazy evaluation</i> means something has not happen yet, unless you need it. The opposite one is called <i>eager evaluation</i>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">wholeNameOf(getFirstName(), getLastName())
+</pre>
+</div>
+
+<p>
+the evaluation order of <code>wholeNameOf</code> in JavaScript will be:
+</p>
+<ol class="org-ol">
+<li><code>getFirstName</code></li>
+<li><code>getLastName</code></li>
+<li>expressions in <code>wholeNameOf</code>'s body</li>
+</ol>
+
+<p>
+so something like this in JavaScript will eval the result to you immediately:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">map(<span style="color: #00008b;">function</span>(<span style="color: #b8860b;">x</span>) {<span style="color: #00008b;">return</span> ++x}, [1, 2, 3, 4]);
+</pre>
+</div>
+
+<p>
+And this will lead to very slow performance if the list is really large or infinite.
+</p>
+
+<p>
+so in clojure, you never get result from <code>map</code>, unless you use it.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure">(map inc [1 2 3 4])
+<span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">A lazy sequence</span>
+(take 3 (map inc [1 2 3 4]))
+<span style="color: #8c8c8c; font-style: italic;">;; </span><span style="color: #8c8c8c; font-style: italic;">(1 2 3)</span>
+</pre>
+</div>
+</div>
 </div>
 
 <div id="outline-container-orgheadline27" class="outline-4">
 <h4 id="orgheadline27"><span class="section-number-4">1.3.3</span> Composable Function</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+Instead of abstracting object and inherent one from another, Functional Programming tend to abstract actions to functions, and compose what you have to a new function.
+</p>
+
+<p>
+But composing function in neither JavaScript nor popular lib such as Underscore is not as convenient as Functional Programming Language.
+I'll talk about more about functional composition in Chapter 4.
+</p>
+</div>
 </div>
 
 <div id="outline-container-orgheadline28" class="outline-4">
 <h4 id="orgheadline28"><span class="section-number-4">1.3.4</span> Tail Recursion Optimization</h4>
+<div class="outline-text-4" id="text-1-3-4">
+<p>
+Recursion is very important concept in FP, but since we're in 
+Tail Recursion is actually very special form of loop in FP, unlike other FP languages, JavaScript doesn't have a proper way to optimize tail recursion into a loop.
+</p>
+</div>
 </div>
 </div>
 
 <div id="outline-container-orgheadline30" class="outline-3">
 <h3 id="orgheadline30"><span class="section-number-3">1.4</span> Well, Underscore You are Doing it Wrong!</h3>
 </div>
+
+<div id="outline-container-orgheadline31" class="outline-3">
+<h3 id="orgheadline31"><span class="section-number-3">1.5</span> </h3>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p>Author: Jichao Ouyang <a aria-label="Follow @jcouyang on GitHub" data-count-aria-label="# followers on GitHub" data-count-api="/users/jcouyang#followers" data-count-href="/jcouyang/followers" href="https://github.com/jcouyang" class="github-button">Follow @jcouyang</a>
 </p>
-<p>Modified: 2016-02-14 Sun 14:29</p>
-<p>Generated by: <a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.2)</p>
+<p>Modified: 2016-04-05 Tue 17:10</p>
+<p>Generated by: <a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4)</p>
 <p>&lt;Publish&gt; with _(:з」∠)_ by <a href="https://github.com/jcouyang/orgpress">OrgPress</a></p>
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
 
