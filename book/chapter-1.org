@@ -142,13 +142,72 @@ A thunk is something not executed yet, but waiting someone to click the *Button*
 
 
 ** The Missing Things from JavaScript for a Functional Language
+JavaScript is always rekon as a prototype-based language, but first-class function support made everthing functional also possiable in JavaScript. But we need tools and libs to make JavaScript more functional. 
 
 *** Immutable Data Structure
 
+First thing JS really missing is /Immutable Datastrcuture/, which mean thing that once created can never be changed. What I mean missing is, for example, a very common code in JS like this:
+#+BEGIN_SRC js
+var a = [1, 2, 3];
+a.push(4);
+#+END_SRC
+
+Now, a is something else, not =[1, 2, 3]= anymore, it's modified to =[1, 2, 3, 4]=.
+
+Comparing to Clojure, who's datastructure is almost all immutable, we cannot do anything to modify a thing, instead, it should return a new one instead.
+
+#+BEGIN_QUOTE
+There're 6 primitive types in JavaScript, Boolean, Null, Undefined, Number and String(and Symbol in ES6). All primitive type is immutable, so Object is only mutable type.
+#+END_QUOTE
+ 
+#+BEGIN_SRC clojure
+(def a [1 2 3])
+(conj a 4) ;; => [1 2 3 4]
+a ;; => [1 2 3]
+#+END_SRC
+
+#+RESULTS:
+: #'user/a[1 2 3 4][1 2 3]
+
+As you can see, nothing is change here, a is still =[1 2 3]=, but =conj= return a pretty new Vector, instead of modifing a.
+
 *** Lazy evaluation
+/Lazy evaluation/ means something has not happen yet, unless you need it. The opposite one is called /eager evaluation/.
+
+#+BEGIN_SRC js
+wholeNameOf(getFirstName(), getLastName())
+#+END_SRC
+
+the evaluation order of =wholeNameOf= in JavaScript will be:
+1. =getFirstName=
+2. =getLastName=
+3. expressions in =wholeNameOf='s body
+
+so something like this in JavaScript will eval the result to you immediately:
+#+Begin_src js
+map(function(x) {return ++x}, [1, 2, 3, 4]);
+#+END_SRC
+
+And this will lead to very slow performance if the list is really large or infinite.
+
+so in clojure, you never get result from =map=, unless you use it.
+#+BEGIN_SRC clojure
+(map inc [1 2 3 4])
+;; A lazy sequence
+(take 3 (map inc [1 2 3 4]))
+;; (1 2 3)
+#+END_SRC
 
 *** Composable Function
+Instead of abstracting object and inherent one from another, Functional Programming tend to abstract actions to functions, and compose what you have to a new function.
+
+But composing function in neither JavaScript nor popular lib such as Underscore is not as convenient as Functional Programming Language.
+I'll talk about more about functional composition in Chapter 4.
 
 *** Tail Recursion Optimization
+Recursion is very important concept in FP, but since we're in 
+Tail Recursion is actually very special form of loop in FP, unlike other FP languages, JavaScript doesn't have a proper way to optimize tail recursion into a loop.
 
 ** Well, Underscore You are Doing it Wrong!
+
+** 
