@@ -208,6 +208,86 @@ I'll talk about more about functional composition in Chapter 4.
 Recursion is very important concept in FP, but since we're in 
 Tail Recursion is actually very special form of loop in FP, unlike other FP languages, JavaScript doesn't have a proper way to optimize tail recursion into a loop.
 
-** Well, Underscore You are Doing it Wrong!
+#+BEGIN_SRC js
+  var a = [1, 2, 3, 4]
+  var b = [4, 3, 2, 1]
+  for (var i = 0; i < 4; i++){
+    a[i]+=b[i]
+  }
+  console.log(a);
+  // => [5,5,5,5]
+#+END_SRC
 
-** 
+Such code in JavaScript will be the same as in Clojure:
+
+#+BEGIN_SRC clojure
+  (loop [a [1 2 3 4] 
+         b [4 3 2 1]
+         i (dec (count a))]
+    (if (< i 0) a
+        (recur (update a i #(+ % (get b i))) b (dec i))))
+#+End_src
+
+Looks very similar, but actually the Clojure way of loop is actually functional, since no variable or mutation happen in this =loop recur=.
+
+=recur= is like tail recursively calling =loop= again and again, the recursion will not end until the =if= express return =true=.
+
+Also, you can turn the =loop= expression into a function:
+#+BEGIN_SRC clojure
+  (defn zipping-add [a b i]
+    (if (< i 0) a
+        (recur (update a i #(+ % (get b i))) b (dec i))))
+  (zipping-add [1 2 3 4] [4 3 2 1] 3)
+#+END_SRC
+
+It return the same result as =loop recur= expression.
+
+** Well, Underscore You are Doing it Wrong!
+If you familiar with Undercore, or lodash, I think the first impression would be that they are functional programming library.
+
+But I doubt that eversince I saw the =map= method from underscore:
+#+BEGIN_SRC js
+_.map([1,2,3], function(x){return x+1})
+#+END_SRC
+
+Well, seems nothing is wrong about it, take a array, map over each of them with the function following.
+
+But if you have a glance at other languages or libs:
+
+[[http://ramdajs.com/][*ramdajs*]]：
+#+BEGIN_SRC js
+R.map(function(x){return x+1}, [1,2,3])
+#+END_SRC
+
+[[http://functionaljs.com/][*functionaljs：*]]
+#+BEGIN_SRC js
+fjs.map(function(x){return x+1}, [1,2,3])
+#+END_SRC
+
+*Clojure：*
+#+BEGIN_SRC clojure
+(map inc [1 2 3])
+#+END_SRC
+
+*Haskell：*
+#+BEGIN_SRC haskell
+map (1+) [1,2,3]
+#+END_SRC
+
+Did you notice that the array actually always come as the last parameter.
+Got to be something wrong with underscore.
+
+** ClojureScript
+
+To understand why underscore doing it wrong, I can take any of those languages or libs, and descript how it doing thing this way and why it's more reasonable and better. Howerver, I tend to choose one of the most simple and eligant language -- Clojure. Since I'm talking about JavaScript, ClojureScript become the first choice to compare and discuss about. Even further, with library such as [[https://github.com/swannodette/mori][mori]][fn:1], we can event get almost all the benefits from ClojureScript for JavaScript.
+
+** Mori
+
+Since it's ported from ClojureScript, which means you can do anything same as ClojureScript through JavaScript API. It's perfect amend to the fact that missing persistent datastructure in JavaScript.
+
+Of course it's no the only option to get persistent datastructure in JavaScript. Facebook has a very nice opensource lib =Immutable.js= as well. Howerver, mori is more suitable for undestanding FP.
+
+
+* Footnotes
+
+[fn:1] ClojureScript Persistent Datastrcuture ported to JavaScript by David Nolen.
