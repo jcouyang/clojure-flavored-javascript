@@ -27,7 +27,9 @@ Pull Request Welcome, please see the contribution guide for how this works for a
 
 * Clojure风格JavaScript编程
 
-这里是《Clojure风格JavaScript编程》的草稿和源码，完成后中文纸质版由电子工业出版社出版。英文版只有电子版。
+https://img3.doubanio.com/lpic/s29070174.jpg
+
+这里是[[https://book.douban.com/subject/26883736/][《前端函数式攻城指南》]] 的草稿和源码，中文纸质版由电子工业出版社出版。英文版只有电子版。
 
 * 版权
 本草稿的版权为：
