@@ -1,4 +1,4 @@
-* 函数式 JavaScript
+** 函数式 JavaScript
 
 本章将介绍 JavaScript 的函数式背景：
 1. 为什么说 JavaScript 是函数式语言？
@@ -227,21 +227,21 @@ Clojure 能够通过 =recur= 函数对 /尾递归/ 进行优化，但是 ES5 的
 如果写成代码，大致应该是这样的：
 #+BEGIN_SRC js
 var orea = ["top","middle","bottom"];
-var top = orea.shift(), middleAndButton = orea; // <1>
-var wetMiddleAndButton = dipMilk(middleAndButton); // <2>
-var button = lip(wetMiddleAndButton); // <3>
-eat([top,button]); // <4>
+var top = orea.shift(), middleAndBottom = orea; // <1>
+var wetMiddleAndBottom = dipMilk(middleAndBottom); // <2>
+var bottom = lip(wetMiddleAndBottom); // <3>
+eat([top,bottom]); // <4>
 #+END_SRC
 
 注意那个诡异的 =shift= ，如果用 destructure 会写得稍微优雅一些：
 #+BEGIN_SRC js
-var [top, ...middleAndButton] = ["top", "middle", "bottom"]; // <1>
-var wetMiddleAndButton = dipMilk(middleAndButton); // <2>
-var button = lip(wetMiddleAndButton); // <3>
-eat([top,button]); // <4>
+var [top, ...middleAndBottom] = ["top", "middle", "bottom"]; // <1>
+var wetMiddleAndBottom = dipMilk(middleAndBottom); // <2>
+var bottom = lip(wetMiddleAndBottom); // <3>
+eat([top,bottom]); // <4>
 #+END_SRC
 
-有没有觉得我掰奥利奥的姿势变酷了许多？这就是 destructure，给定一个特定的模式 =[top, ...middleAndButton]= ，让数据 =["top","middle","bottom"]= 按照该模式匹配进来。同样的，我将会专门在第6章介绍模式匹配这个概念，虽然它不是 Clojure 的重要概念，但是确实 Scala 或 Haskell 的核心所在。不过可以放心的是，你也不必在此之前先学习 Scala 和 Haskell，我还是会用最流行的 JavaScript 来介绍模式匹配。
+有没有觉得我掰奥利奥的姿势变酷了许多？这就是 destructure，给定一个特定的模式 =[top, ...middleAndBottom]= ，让数据 =["top","middle","bottom"]= 按照该模式匹配进来。同样的，我将会专门在第6章介绍模式匹配这个概念，虽然它不是 Clojure 的重要概念，但是确实 Scala 或 Haskell 的核心所在。不过可以放心的是，你也不必在此之前先学习 Scala 和 Haskell，我还是会用最流行的 JavaScript 来介绍模式匹配。
 
 #+CAPTION: 我觉得这个玩具可以特别形象的解释模式匹配这个概念
 [[./images/patten-matching.jpg]]
